@@ -22,6 +22,18 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 
+def serialize_datetime_objects(obj):
+    """Recursively convert datetime objects to ISO format strings for JSON serialization"""
+    if isinstance(obj, datetime):
+        return obj.isoformat()
+    elif isinstance(obj, dict):
+        return {key: serialize_datetime_objects(value) for key, value in obj.items()}
+    elif isinstance(obj, list):
+        return [serialize_datetime_objects(item) for item in obj]
+    else:
+        return obj
+
+
 class SupabaseManager:
     """Manages Supabase database and storage operations"""
     
@@ -88,7 +100,7 @@ class SupabaseManager:
                 'upside_percent': analysis_data.get('upside_percent'),
                 'recommendation': analysis_data.get('recommendation'),
                 'confidence_score': analysis_data.get('confidence_score'),
-                'results_json': analysis_data.get('results_json') or analysis_data,
+                'results_json': serialize_datetime_objects(analysis_data.get('results_json') or analysis_data),
                 'summary': analysis_data.get('summary'),
                 'error_message': analysis_data.get('error_message'),
                 'user_id': analysis_data.get('user_id'),
@@ -181,7 +193,9 @@ class SupabaseManager:
             
             # Add any additional data
             if additional_data:
-                update_data.update(additional_data)
+                # Serialize datetime objects in additional_data
+                serialized_additional_data = serialize_datetime_objects(additional_data)
+                update_data.update(serialized_additional_data)
             
             result = self.client.table('analysis_results').update(update_data).eq('id', analysis_id).execute()
             
@@ -349,7 +363,7 @@ class SupabaseManager:
         try:
             insert_data = {
                 'cache_key': key,
-                'cache_value': value,
+                'cache_value': serialize_datetime_objects(value),
                 'ttl_hours': ttl_hours,
                 'created_at': datetime.now(timezone.utc).isoformat(),
                 'expires_at': datetime.now(timezone.utc).isoformat()  # Will be calculated by DB

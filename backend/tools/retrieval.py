@@ -146,6 +146,8 @@ class DocumentRetriever:
         
         if not faiss_path.exists():
             logger.error(f"No FAISS index found for {ticker} at {faiss_path}")
+            # Try to check if index exists in Supabase storage
+            logger.info(f"💡 Consider creating index for {ticker} first using: python -m ingestion.enhanced_embed_index_v2 --ticker {ticker}")
             return None
         
         # Auto-detect embedding provider if in auto mode
@@ -233,6 +235,7 @@ class DocumentRetriever:
         index = self._load_index(ticker)
         if index is None:
             logger.error(f"Could not load index for {ticker}")
+            logger.warning(f"⚠️ No vector index available for {ticker}. Analysis will proceed without SEC document retrieval.")
             return []
         
         try:
