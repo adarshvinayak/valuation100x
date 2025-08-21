@@ -77,7 +77,7 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# CORS middleware for frontend
+# CORS middleware for frontend - Updated for Lovable integration
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Allow all origins - can be restricted later for production
