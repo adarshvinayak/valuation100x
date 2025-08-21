@@ -376,7 +376,7 @@ class EnhancedEmbeddingIndexer:
             print(f"\n Step 4: Creating {provider_desc} Vector Embeddings")
         
         # Use manual FAISS creation to ensure proper binary format
-        index_path = self._save_faiss_index_manual(chunks, ticker)
+        index_path = await self._save_faiss_index_manual(chunks, ticker)
         
         # Step 5: Save metadata
         metadata = self._create_comprehensive_metadata(ticker, sec_summary)
@@ -514,7 +514,7 @@ class EnhancedEmbeddingIndexer:
         """Get index directory path for ticker"""
         return self.base_index_path / ticker.upper()
     
-    def _save_faiss_index_manual(self, chunks: List, ticker: str) -> str:
+    async def _save_faiss_index_manual(self, chunks: List, ticker: str) -> str:
         """Create and save FAISS index manually in proper binary format"""
         ticker_index_dir = self._get_index_path(ticker)
         ticker_index_dir.mkdir(parents=True, exist_ok=True)
@@ -572,6 +572,34 @@ class EnhancedEmbeddingIndexer:
             logger.info(f"✅ Manual FAISS index created successfully for {ticker}")
             logger.info(f"📁 Index file: {faiss_path.stat().st_size / 1024:.1f} KB")
             logger.info(f"📁 Metadata file: {metadata_path.stat().st_size / 1024:.1f} KB")
+            
+            # Upload to Supabase Storage if available
+            try:
+                from database.supabase_client import supabase_manager
+                if supabase_manager.initialized:
+                    # Upload FAISS index
+                    with open(faiss_path, 'rb') as f:
+                        index_data = f.read()
+                    
+                    upload_url = await supabase_manager.upload_vector_index(ticker, index_data)
+                    if upload_url:
+                        logger.info(f"📤 Uploaded FAISS index to Supabase: {upload_url}")
+                    
+                    # Upload metadata
+                    with open(metadata_path, 'rb') as f:
+                        metadata_data = f.read()
+                    
+                    metadata_url = await supabase_manager.upload_file(
+                        bucket='vector-indexes',
+                        file_path=f"{ticker}/chunk_metadata.json",
+                        file_data=metadata_data,
+                        content_type='application/json'
+                    )
+                    if metadata_url:
+                        logger.info(f"📤 Uploaded index metadata to Supabase: {metadata_url}")
+                        
+            except Exception as e:
+                logger.warning(f"⚠️ Failed to upload index to Supabase: {e}")
             
             return str(ticker_index_dir)
             

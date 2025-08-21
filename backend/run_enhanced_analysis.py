@@ -14,6 +14,7 @@ import json
 import logging
 import os
 import sys
+import uuid
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, Any
@@ -656,18 +657,38 @@ The following SEC documents were analyzed for this research:
             return base_results
     
     async def _save_comprehensive_results(self, results: Dict[str, Any], ticker: str):
-        """Save comprehensive results to files"""
+        """Save comprehensive results to files and Supabase Storage"""
         
         try:
+            # Import Supabase manager
+            from database.supabase_client import supabase_manager
+            
             ticker_dir = self.output_dir / ticker
             ticker_dir.mkdir(exist_ok=True)
             
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            analysis_id = results.get("analysis_id", str(uuid.uuid4()))
             
-            # Save comprehensive JSON
+            # Save comprehensive JSON locally
             json_file = ticker_dir / f"{ticker}_enhanced_comprehensive_{timestamp}.json"
             with open(json_file, 'w', encoding='utf-8') as f:
                 json.dump(results, f, indent=2, ensure_ascii=False, default=str)
+            
+            # Upload JSON to Supabase Storage
+            if supabase_manager.initialized:
+                try:
+                    json_content = json.dumps(results, indent=2, ensure_ascii=False, default=str)
+                    json_url = await supabase_manager.upload_analysis_report(
+                        ticker=ticker,
+                        analysis_id=analysis_id,
+                        report_content=json_content,
+                        report_type='json'
+                    )
+                    if json_url:
+                        logger.info(f"📤 Uploaded JSON report to Supabase: {json_url}")
+                        results["supabase_json_url"] = json_url
+                except Exception as e:
+                    logger.warning(f"⚠️ Failed to upload JSON to Supabase: {e}")
             
             # Save enhanced markdown report
             formatted_reports = results.get("formatted_reports", {})
@@ -675,6 +696,21 @@ The following SEC documents were analyzed for this research:
                 md_file = ticker_dir / f"{ticker}_enhanced_comprehensive_{timestamp}.md"
                 with open(md_file, 'w', encoding='utf-8') as f:
                     f.write(formatted_reports["markdown"])
+                
+                # Upload Markdown to Supabase Storage
+                if supabase_manager.initialized:
+                    try:
+                        md_url = await supabase_manager.upload_analysis_report(
+                            ticker=ticker,
+                            analysis_id=analysis_id,
+                            report_content=formatted_reports["markdown"],
+                            report_type='markdown'
+                        )
+                        if md_url:
+                            logger.info(f"📤 Uploaded Markdown report to Supabase: {md_url}")
+                            results["supabase_markdown_url"] = md_url
+                    except Exception as e:
+                        logger.warning(f"⚠️ Failed to upload Markdown to Supabase: {e}")
             
             # Save enhanced JSON report
             if formatted_reports.get("json"):
@@ -682,10 +718,10 @@ The following SEC documents were analyzed for this research:
                 with open(enhanced_json_file, 'w', encoding='utf-8') as f:
                     f.write(formatted_reports["json"])
             
-            logger.info(f"Enhanced comprehensive results saved to {ticker_dir}")
+            logger.info(f"✅ Enhanced comprehensive results saved to {ticker_dir}")
             
         except Exception as e:
-            logger.error(f"Error saving comprehensive results: {e}")
+            logger.error(f"❌ Error saving comprehensive results: {e}")
             raise e
 
 async def main():
