@@ -691,11 +691,18 @@ async def run_comprehensive_analysis(analysis_id: str, ticker: str, company_name
             })
 
 if __name__ == "__main__":
+    # Railway provides PORT environment variable
+    port = int(os.getenv("PORT", 8000))
+    
+    # Detect environment (Railway sets RAILWAY_ENVIRONMENT)
+    is_production = os.getenv("RAILWAY_ENVIRONMENT") == "production"
+    
     uvicorn.run(
         "api_server:app",
         host="0.0.0.0",
-        port=8000,
-        reload=True,
+        port=port,
+        reload=not is_production,  # No reload in production
+        workers=1,  # Single worker for Railway
         log_level="info"
     )
 
