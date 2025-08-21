@@ -24,6 +24,7 @@ import redis.asyncio as redis
 # Import your existing analysis components
 from run_enhanced_analysis import EnhancedAnalysisRunner
 from tools.fmp import get_financials_fmp
+from database.supabase_client import supabase_manager
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -42,13 +43,22 @@ async def lifespan(app: FastAPI):
     # Startup
     logger.info("Starting DeepResearch API Server...")
     
-    # Initialize Redis for caching and session management
+    # Initialize Supabase
     try:
-        redis_client = await redis.from_url("redis://localhost:6379", decode_responses=True)
-        await redis_client.ping()
-        logger.info("Connected to Redis")
+        await supabase_manager.initialize()
+        logger.info("✅ Supabase connection established")
     except Exception as e:
-        logger.warning(f"Redis connection failed: {e}. Using in-memory storage.")
+        logger.error(f"❌ Supabase initialization failed: {e}")
+        # Continue without Supabase - will fallback to local storage
+    
+    # Initialize Redis for caching and session management
+    redis_url = os.getenv("REDIS_URL", "redis://localhost:6379")
+    try:
+        redis_client = await redis.from_url(redis_url, decode_responses=True)
+        await redis_client.ping()
+        logger.info("✅ Redis connection established")
+    except Exception as e:
+        logger.info(f"🔄 Redis not available ({redis_url}). Using in-memory storage (normal for Railway free tier).")
         redis_client = None
     
     yield
@@ -57,6 +67,7 @@ async def lifespan(app: FastAPI):
     logger.info("Shutting down API server...")
     if redis_client:
         await redis_client.close()
+    await supabase_manager.close()
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -228,7 +239,43 @@ async def validate_ticker(ticker: str) -> TickerValidation:
         raise HTTPException(status_code=500, detail="Ticker validation failed")
 
 async def store_analysis_state(analysis_id: str, state: dict):
-    """Store analysis state in Redis or memory"""
+    """Store analysis state in Supabase, Redis, and memory"""
+    
+    # Store in Supabase database
+    if supabase_manager.initialized:
+        try:
+            # Prepare analysis data for Supabase
+            analysis_data = {
+                'id': analysis_id,
+                'ticker': state.get('ticker'),
+                'analysis_type': 'comprehensive',
+                'status': state.get('status'),
+                'session_id': state.get('session_id'),
+                'results_json': state,
+                'processing_time_seconds': None,
+                'created_at': state.get('started_at', datetime.utcnow()).isoformat(),
+                'updated_at': datetime.utcnow().isoformat()
+            }
+            
+            # Store or update in Supabase
+            if state.get('status') == 'running' and 'started_at' in state:
+                # First time - insert
+                await supabase_manager.store_analysis_result(analysis_data)
+            else:
+                # Update existing
+                await supabase_manager.update_analysis_status(
+                    analysis_id, 
+                    state.get('status', 'running'),
+                    {
+                        'results_json': state,
+                        'processing_time_seconds': state.get('processing_time_seconds'),
+                        'error_message': state.get('error')
+                    }
+                )
+        except Exception as e:
+            logger.error(f"Supabase storage error: {e}")
+    
+    # Store in Redis for fast access
     if redis_client:
         try:
             await redis_client.setex(f"analysis:{analysis_id}", 3600, json.dumps(state, default=str))

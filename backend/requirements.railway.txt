@@ -39,6 +39,9 @@ tenacity>=8.0.0
 pyyaml>=6.0.0
 redis>=4.5.0
 
+# Database & Storage
+supabase>=2.3.0
+
 # Web scraping
 beautifulsoup4>=4.12.0
 
