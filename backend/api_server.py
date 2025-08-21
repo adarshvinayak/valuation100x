@@ -2,6 +2,7 @@
 """
 FastAPI Server for DeepResearch Comprehensive Analysis
 Provides REST API endpoints and WebSocket connections for the frontend.
+Updated: Datetime serialization fixes applied
 """
 
 import asyncio
