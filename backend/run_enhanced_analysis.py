@@ -707,8 +707,12 @@ Examples:
     parser.add_argument("--verbose", action="store_true", help="Verbose output with live progress")
     parser.add_argument("--years-back", type=int, default=3, help="Years of SEC data to analyze (default: 3)")
     parser.add_argument("--force-rebuild", action="store_true", help="Force rebuild of vector index")
-    parser.add_argument("--embedding-provider", choices=["local", "openai"], default="local", 
-                       help="Embedding provider: 'local' (FREE, default) or 'openai' (requires API key)")
+    # Auto-detect environment and set appropriate default
+    is_railway = os.getenv("RAILWAY_ENVIRONMENT") is not None
+    default_provider = "openai" if is_railway else "local"
+    
+    parser.add_argument("--embedding-provider", choices=["local", "openai"], default=default_provider, 
+                       help=f"Embedding provider: 'local' (FREE) or 'openai' (requires API key). Default: {default_provider} (auto-detected)")
     
     args = parser.parse_args()
     
