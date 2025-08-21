@@ -1,0 +1,131 @@
+# DeepResearch .gitignore - Comprehensive exclusions
+
+# Environment and secrets
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+*.env
+secrets/
+keys/
+config/secrets.yaml
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# IDE and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Data and outputs (keep structure but ignore large files)
+data/outputs/*/
+data/cache/
+data/temp/
+data/transcripts_raw/
+logs/
+*.log
+
+# Models and embeddings (large files)
+models/embeddings/
+*.pkl
+*.joblib
+*.h5
+*.hdf5
+
+# API cache
+cache/
+.cache/
+
+# Node.js (if frontend is added)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Docker
+.dockerignore
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Large data files
+*.db
+*.sqlite
+*.sqlite3
+faiss_index*
+*.index
+
+# Development and testing artifacts
+*_backup.py
+*_temp.py
+*_original.py
+*_test.py
+test_*.py
+demo_*.py
+fix_*.py
+*_summary.md
+*_summary.py
+debug_*.py
+*_debug.py
+
+# PowerShell scripts (development only)
+*.ps1
+
+# Raw data downloads
+data/filings_raw/
+data/transcripts_raw/
