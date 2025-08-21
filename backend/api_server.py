@@ -81,9 +81,10 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Allow all origins - can be restricted later for production
-    allow_credentials=True,
+    allow_credentials=False,  # Set to False when using allow_origins=["*"]
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
 
 # Pydantic models
@@ -299,6 +300,11 @@ async def get_analysis_state(analysis_id: str) -> Optional[dict]:
     return analysis_tasks.get(analysis_id)
 
 # API Endpoints
+
+@app.options("/{path:path}")
+async def options_handler(path: str):
+    """Handle preflight OPTIONS requests for CORS"""
+    return {}
 
 @app.get("/", tags=["Root"])
 async def root():
