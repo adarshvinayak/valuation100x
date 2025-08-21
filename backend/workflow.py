@@ -27,7 +27,13 @@ from llama_index.core.workflow import (
     HumanResponseEvent,
     step
 )
-from llama_index.utils.workflow import draw_all_possible_flows
+# Optional workflow visualization (disabled for Railway deployment compatibility)
+try:
+    from llama_index.utils.workflow import draw_all_possible_flows
+    WORKFLOW_VISUALIZATION_AVAILABLE = True
+except ImportError:
+    WORKFLOW_VISUALIZATION_AVAILABLE = False
+    draw_all_possible_flows = None
 
 # Import our agents and tools
 from agents.questions_fixed import get_question_agent
@@ -745,8 +751,12 @@ async def main():
     
     if args.draw_workflow:
         # Generate workflow diagram
-        draw_all_possible_flows(DeepStockResearchWorkflow, filename="stock_research_workflow.html")
-        print("Workflow diagram saved to stock_research_workflow.html")
+        if WORKFLOW_VISUALIZATION_AVAILABLE:
+            draw_all_possible_flows(DeepStockResearchWorkflow, filename="stock_research_workflow.html")
+            print("Workflow diagram saved to stock_research_workflow.html")
+        else:
+            print("❌ Workflow visualization not available - llama_index.utils.workflow not found")
+            print("This feature is disabled for Railway deployment compatibility")
         return
     
     # Run analysis
