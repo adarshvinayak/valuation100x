@@ -1,5 +1,5 @@
-# Optimized Requirements for Railway with Heavy Analysis Support
-# Balanced approach: Core heavy ML without the largest dependencies
+# Optimized Requirements for Railway Deployment
+# Core dependencies only for stable deployment
 
 # FastAPI Server
 fastapi>=0.100.0
@@ -8,7 +8,7 @@ pydantic>=2.0.0
 python-multipart>=0.0.5
 aiofiles>=23.0.0
 
-# OpenAI (essential for embeddings and LLM)
+# OpenAI (essential for embeddings)
 openai>=1.0.0
 
 # Core LlamaIndex
@@ -17,7 +17,7 @@ llama-index-llms-openai>=0.1.0
 llama-index-embeddings-openai>=0.1.0
 llama-index-vector-stores-faiss>=0.1.0
 
-# Vector database (CPU version for Railway)
+# Vector database (lightweight)
 faiss-cpu>=1.7.0
 
 # API clients
@@ -52,16 +52,3 @@ pdfplumber>=0.9.0
 click>=8.0.0
 tqdm>=4.65.0
 colorama>=0.4.0
-rich>=13.0.0
-
-# Heavy ML Dependencies - Optimized for Railway
-# Use lighter versions to stay within build limits
-sentence-transformers>=2.2.0
-scikit-learn>=1.3.0
-
-# Conditional heavy dependencies (will gracefully fallback if not available)
-# transformers>=4.30.0  # Commented out - too large for Railway
-# torch>=2.0.0  # Commented out - too large for Railway
-
-# Additional analysis tools
-lxml>=4.9.0

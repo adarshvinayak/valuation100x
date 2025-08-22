@@ -22,10 +22,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Set work directory
 WORKDIR /app
 
-# Copy Railway-optimized requirements (heavy ML but within limits)
+# Copy optimized requirements
 COPY requirements.railway.txt .
 
-# Install Python dependencies with Railway optimization
+# Install Python dependencies with optimization
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.railway.txt
 
