@@ -113,15 +113,15 @@ class SupabaseManager:
             # Remove None values
             insert_data = {k: v for k, v in insert_data.items() if v is not None}
             
-            # Insert into database
-            result = self.client.table('analysis_results').insert(insert_data).execute()
+            # Use upsert to handle duplicate analysis IDs gracefully
+            result = self.client.table('analysis_results').upsert(insert_data, on_conflict='id').execute()
             
             if result.data:
                 analysis_id = result.data[0]['id']
-                logger.info(f"✅ Stored analysis result for {insert_data['ticker']} (ID: {analysis_id})")
+                logger.info(f"✅ Stored/Updated analysis result for {insert_data['ticker']} (ID: {analysis_id})")
                 return analysis_id
             else:
-                raise Exception("No data returned from insert operation")
+                raise Exception("No data returned from upsert operation")
                 
         except Exception as e:
             logger.error(f"❌ Failed to store analysis result: {e}")

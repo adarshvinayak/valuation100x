@@ -350,6 +350,37 @@ async def validate_ticker_endpoint(ticker: str):
     """Validate a stock ticker and get company information"""
     return await validate_ticker(ticker)
 
+@app.get("/api/analysis/{analysis_id}/recover", response_model=AnalysisResponse, tags=["Analysis"])
+async def recover_analysis(analysis_id: str):
+    """Recover an existing analysis for page refresh/reconnection"""
+    try:
+        # Get analysis state from storage
+        state = await get_analysis_state(analysis_id)
+        
+        if not state:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Analysis {analysis_id} not found"
+            )
+        
+        # Return current analysis state for frontend recovery
+        return AnalysisResponse(
+            analysis_id=analysis_id,
+            ticker=state.get("ticker"),
+            company_name=state.get("company_name"),
+            status=state.get("status", "unknown"),
+            message=f"Recovered analysis for {state.get('ticker')}",
+            estimated_completion_time=5 if state.get("status") == "running" else 0,
+            websocket_url=f"/api/analysis/{analysis_id}/ws"
+        )
+        
+    except Exception as e:
+        logger.error(f"Failed to recover analysis {analysis_id}: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to recover analysis: {str(e)}"
+        )
+
 @app.post("/api/analysis/comprehensive/start", response_model=AnalysisResponse, tags=["Analysis"])
 async def start_comprehensive_analysis(
     request: AnalysisRequest,
@@ -366,11 +397,24 @@ async def start_comprehensive_analysis(
         )
     
     # Check if analysis is already running for this ticker
+    existing_analysis = None
     for analysis_id, task in analysis_tasks.items():
         if task.get("ticker") == request.ticker and task.get("status") == "running":
-            raise HTTPException(
-                status_code=409,
-                detail=f"Analysis already in progress for {request.ticker}"
+            existing_analysis = analysis_id
+            break
+    
+    # If analysis already running, return existing analysis ID for recovery
+    if existing_analysis:
+        existing_state = await get_analysis_state(existing_analysis)
+        if existing_state and existing_state.get("status") == "running":
+            return AnalysisResponse(
+                analysis_id=existing_analysis,
+                ticker=request.ticker,
+                company_name=existing_state.get("company_name"),
+                status="running",
+                message=f"Reconnected to existing analysis for {request.ticker}",
+                estimated_completion_time=5,  # Will be updated via WebSocket
+                websocket_url=f"/api/analysis/{existing_analysis}/ws"
             )
     
     # Generate analysis ID
