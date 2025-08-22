@@ -120,10 +120,13 @@ class FMPClient:
     async def get_key_metrics(self, ticker: str, period: str = "annual", limit: int = 5) -> List[Dict[str, Any]]:
         """Get key financial metrics and ratios"""
         try:
-            data = await self._make_request(
-                f"key-metrics-ttm/{ticker}" if period == "ttm" else f"key-metrics/{ticker}",
-                {"period": period, "limit": limit}
-            )
+            # Use the correct FMP endpoint for ratios
+            endpoint = f"ratios-ttm/{ticker}" if period == "ttm" else f"ratios/{ticker}"
+            params = {"limit": limit}
+            if period != "ttm":
+                params["period"] = period
+                
+            data = await self._make_request(endpoint, params)
             
             if not data or not isinstance(data, list):
                 return []
@@ -283,7 +286,7 @@ class FMPClient:
                     "total_liabilities": statement.get("totalLiabilities", 0),
                     
                     # Equity
-                    "shareholders_equity": statement.get("totalShareholdersEquity", 0),
+                    "shareholders_equity": statement.get("totalStockholdersEquity", 0),
                     "retained_earnings": statement.get("retainedEarnings", 0),
                     "common_stock": statement.get("commonStock", 0),
                     
@@ -350,31 +353,49 @@ class FMPClient:
             return []
     
 def _normalize_financial_metrics(profile: Dict, ratios: Dict, 
-                               income: Dict, balance: Dict) -> Dict[str, Any]:
+                               income: Dict, balance: Dict, cash_flow: Dict = None) -> Dict[str, Any]:
         """Normalize financial metrics to standard format"""
         try:
-            # Extract basic data
-            shares_out = income.get("shares_outstanding", 0) or profile.get("shares_outstanding", 0)
+            # Extract basic data using correct FMP field names
             market_cap = profile.get("market_cap", 0)
             revenue_ttm = income.get("revenue", 0)
             ebitda_ttm = income.get("ebitda", 0)
             net_income_ttm = income.get("net_income", 0)
             
-            # Balance sheet items
+            # Balance sheet items using correct FMP field names  
             total_debt = balance.get("total_debt", 0)
             cash_and_equivalents = balance.get("cash_and_equivalents", 0)
             total_assets = balance.get("total_assets", 0)
             shareholders_equity = balance.get("shareholders_equity", 0)
             
+            # Free cash flow from cash flow statement
+            free_cash_flow = cash_flow.get("free_cash_flow", 0) if cash_flow else 0
+            
             # Calculate derived metrics
             net_debt = max(0, total_debt - cash_and_equivalents)
             enterprise_value = market_cap + net_debt if market_cap > 0 else 0
             
-            # Ratios
-            pe_ttm = ratios.get("pe_ratio", 0)
-            ev_ebitda_ttm = enterprise_value / ebitda_ttm if ebitda_ttm > 0 else 0
-            gross_margin_ttm = ratios.get("gross_profit_margin", 0)
-            op_margin_ttm = ratios.get("operating_margin", 0)
+            # Ratios - calculate from raw data if ratios endpoint fails
+            pe_ttm = ratios.get("peRatio", 0) or ratios.get("pe_ratio", 0)
+            if pe_ttm == 0 and net_income_ttm > 0 and market_cap > 0:
+                # Calculate P/E from market cap and net income
+                pe_ttm = market_cap / net_income_ttm
+            
+            # Debt to equity ratio
+            debt_to_equity = ratios.get("debtEquityRatio", 0) or ratios.get("debt_to_equity", 0)
+            if debt_to_equity == 0 and shareholders_equity > 0:
+                debt_to_equity = total_debt / shareholders_equity
+            
+            # Margins
+            gross_margin_ttm = ratios.get("grossProfitMargin", 0) or ratios.get("gross_profit_margin", 0)
+            if gross_margin_ttm == 0 and revenue_ttm > 0:
+                gross_profit = income.get("grossProfit", 0) or income.get("gross_profit", 0)
+                gross_margin_ttm = gross_profit / revenue_ttm if gross_profit > 0 else 0
+                
+            operating_margin_ttm = ratios.get("operatingProfitMargin", 0) or ratios.get("operating_margin", 0)
+            if operating_margin_ttm == 0 and revenue_ttm > 0:
+                operating_income = income.get("operatingIncome", 0) or income.get("operating_income", 0)
+                operating_margin_ttm = operating_income / revenue_ttm if operating_income > 0 else 0
             
             # ROIC estimate (simplified)
             # ROIC = NOPAT / Invested Capital
@@ -386,17 +407,21 @@ def _normalize_financial_metrics(profile: Dict, ratios: Dict,
             roic_estimate = nopat / invested_capital if invested_capital > 0 else 0
             
             return {
-                "shares_out": float(shares_out),
                 "market_cap": float(market_cap),
                 "enterprise_value": float(enterprise_value),
                 "revenue_ttm": float(revenue_ttm),
                 "ebitda_ttm": float(ebitda_ttm),
+                "free_cash_flow_ttm": float(free_cash_flow),
                 "net_debt": float(net_debt),
-                "pe_ttm": float(pe_ttm),
-                "ev_ebitda_ttm": float(ev_ebitda_ttm),
-                "gross_margin_ttm": float(gross_margin_ttm),
-                "op_margin_ttm": float(op_margin_ttm),
-                "roic_estimate": float(roic_estimate),
+                "pe_ratio": float(pe_ttm),
+                "debt_to_equity": float(debt_to_equity),
+                "roe": float(ratios.get("returnOnEquity", 0) or 0),
+                "roa": float(ratios.get("returnOnAssets", 0) or 0),
+                "current_ratio": float(ratios.get("currentRatio", 0) or 0),
+                "quick_ratio": float(ratios.get("quickRatio", 0) or 0),
+                "gross_margin": float(gross_margin_ttm),
+                "operating_margin": float(operating_margin_ttm),
+                "net_margin": float(net_income_ttm / revenue_ttm if revenue_ttm > 0 else 0),
                 "calculation_date": datetime.now().isoformat()
             }
             
@@ -476,7 +501,8 @@ async def get_financials_fmp(ticker: str) -> Dict[str, Any]:
             # Calculate normalized metrics
             normalized_metrics = _normalize_financial_metrics(
                 profile, ratios_ttm[0] if ratios_ttm else {}, 
-                income[0] if income else {}, balance[0] if balance else {}
+                income[0] if income else {}, balance[0] if balance else {},
+                cash_flow[0] if cash_flow else {}
             )
             
             return {
