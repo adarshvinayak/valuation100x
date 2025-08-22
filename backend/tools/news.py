@@ -275,13 +275,18 @@ async def news_summary(ticker: str,
         searcher = NewsSearcher(api_key)
         
         # Search for different types of content
+        # Ensure minimum of 1 for each search type
+        news_count = max(1, n//2)
+        earnings_count = max(1, n//4)
+        research_count = max(1, n//4)
+        
         tasks = [
-            searcher.search_company_news(ticker, company, max_results=n//2),
-            searcher.search_earnings_news(ticker, company, max_results=n//4)
+            searcher.search_company_news(ticker, company, max_results=news_count),
+            searcher.search_earnings_news(ticker, company, max_results=earnings_count)
         ]
         
         if include_research:
-            tasks.append(searcher.search_analyst_research(ticker, company, max_results=n//4))
+            tasks.append(searcher.search_analyst_research(ticker, company, max_results=research_count))
         
         # Execute searches concurrently
         results = await asyncio.gather(*tasks, return_exceptions=True)
