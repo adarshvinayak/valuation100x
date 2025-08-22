@@ -210,14 +210,15 @@ async def validate_ticker(ticker: str) -> TickerValidation:
                 # Get company profile to validate ticker
                 profile = await fmp.get_company_profile(ticker)
                 
-                if profile and profile.get("companyName"):
+                # FMP returns normalized field names (snake_case)
+                if profile and profile.get("company_name"):
                     return TickerValidation(
                         ticker=ticker,
                         is_valid=True,
-                        company_name=profile["companyName"],
+                        company_name=profile["company_name"],
                         exchange=profile.get("exchange", "Unknown"),
                         sector=profile.get("sector", "Unknown"),
-                        market_cap=profile.get("mktCap", 0),
+                        market_cap=profile.get("market_cap", 0),
                         last_updated=datetime.utcnow()
                     )
                 else:
