@@ -50,6 +50,9 @@ from .enhanced_sec_ingest import EnhancedSECIngestor, SECDocument, convert_sec_d
 from .rate_limited_embeddings import RateLimitedOpenAIEmbedding
 from .local_embeddings import LocalEmbeddingFactory
 
+# 🎯 Enable clean progress bars - suppress sentence-transformers noise
+from . import suppress_progress
+
 logger = logging.getLogger(__name__)
 
 if RICH_AVAILABLE:
@@ -465,29 +468,29 @@ class EnhancedEmbeddingIndexer:
                 TimeElapsedColumn(),
                 console=console
             ) as progress:
-                embed_task = progress.add_task(f" Creating {provider_desc}...", total=100)
+                embed_task = progress.add_task(f"🔮 Creating {provider_desc} for {len(chunks)} chunks...", total=100)
                 
                 # Create vector store
                 faiss_index = faiss.IndexFlatIP(self.embedding_dimension)
                 vector_store = FaissVectorStore(faiss_index=faiss_index)
                 
-                progress.update(embed_task, advance=20, description=" Initializing FAISS index...")
+                progress.update(embed_task, advance=20, description="🔧 Initializing FAISS index...")
                 
-                # Create vector index
-                progress.update(embed_task, advance=30, description=f" Processing {provider_desc}...")
+                # Create vector index (this is where sentence-transformers would show batch progress)
+                progress.update(embed_task, advance=30, description=f"🧠 Processing {len(chunks)} chunks with {provider_desc}...")
                 
                 index = VectorStoreIndex(
                     nodes=chunks,
                     vector_store=vector_store
                 )
                 
-                progress.update(embed_task, advance=40, description=" Building index structure...")
+                progress.update(embed_task, advance=40, description="📚 Building index structure...")
                 
                 # Save index
                 index_path = self._save_faiss_index(index, ticker)
                 
-                progress.update(embed_task, advance=10, description=" Saving index to disk...")
-                progress.update(embed_task, completed=100, description=" Vector index complete!")
+                progress.update(embed_task, advance=10, description="💾 Saving index to disk...")
+                progress.update(embed_task, completed=100, description="✅ Vector index complete!")
         else:
             if self.verbose:
                 print(f" Creating FAISS vector index with {provider_desc}...")
