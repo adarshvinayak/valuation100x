@@ -22,12 +22,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Set work directory
 WORKDIR /app
 
-# Copy optimized requirements
-COPY requirements.railway.txt .
+# Copy full requirements with heavy ML dependencies
+COPY requirements.txt .
 
-# Install Python dependencies with optimization
+# Install Python dependencies with optimization (includes heavy ML)
 RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirements.railway.txt
+    pip install --no-cache-dir -r requirements.txt
 
 # Production stage
 FROM python:3.11-slim

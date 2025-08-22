@@ -747,8 +747,17 @@ async def run_comprehensive_analysis(analysis_id: str, ticker: str, company_name
             }
         })
         
-        # Run the actual analysis (this is your existing code)
-        results = await runner.run_comprehensive_analysis(ticker, company_name)
+        # Run the actual analysis with heavy ML dependencies on Railway
+        is_railway = os.getenv("RAILWAY_ENVIRONMENT") is not None
+        embedding_provider = "openai" if is_railway else "local"
+        
+        logger.info(f"🧠 Using embedding provider: {embedding_provider} (Railway: {is_railway})")
+        results = await runner.run_comprehensive_analysis(
+            ticker=ticker, 
+            company_name=company_name,
+            verbose=True,
+            embedding_provider=embedding_provider
+        )
         
         # Complete the analysis
         state = await get_analysis_state(analysis_id)
