@@ -1,0 +1,2270 @@
+{
+  "ticker": "TSLA",
+  "created_at": "2025-08-22T18:02:46.544970",
+  "indexing_method": "enhanced_sec_integration_v2",
+  "embedding_provider": "local",
+  "embedding_model": "fast",
+  "embedding_dimension": 384,
+  "chunk_size": 1200,
+  "chunk_overlap": 200,
+  "vector_store": "faiss",
+  "sec_documents": {
+    "processing_summary": {
+      "total_found": 100,
+      "downloaded": 100,
+      "cached": 0,
+      "failed": 0,
+      "total_size_mb": 21.560142517089844,
+      "processing_time": 38.586469
+    },
+    "document_count": 100,
+    "total_size_mb": 21.56,
+    "date_range": {
+      "earliest": "2023-09-07T19:32:12-04:00",
+      "latest": "2025-08-04T19:00:13-04:00"
+    },
+    "documents_by_type": {
+      "4": [
+        {
+          "accession_no": "0001104659-25-073753",
+          "filing_date": "2025-08-04T19:00:13-04:00",
+          "period_end_date": "2025-08-03",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000110465925073753/xslF345X05/tm2522507-1_4seq1.xml",
+          "size_kb": 16.1,
+          "document_id": "f38608318263ef36af1e5d3bba0f1ca5"
+        },
+        {
+          "accession_no": "0001104659-25-068165",
+          "filing_date": "2025-07-15T19:30:50-04:00",
+          "period_end_date": "2025-07-11",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000110465925068165/xslF345X05/tm2520998-1_4seq1.xml",
+          "size_kb": 17.2,
+          "document_id": "b9ff8e41cd143b46029ae2d96e4312d7"
+        },
+        {
+          "accession_no": "0001104659-25-066775",
+          "filing_date": "2025-07-09T20:12:54-04:00",
+          "period_end_date": "2025-07-07",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000110465925066775/xslF345X05/tm2520098-1_4seq1.xml",
+          "size_kb": 27.9,
+          "document_id": "b450845490b996ea05ccc7f4a3bd6d6c"
+        },
+        {
+          "accession_no": "0001972928-25-000003",
+          "filing_date": "2025-06-16T19:59:54-04:00",
+          "period_end_date": "2025-06-12",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000197292825000003/xslF345X05/edgardoc.xml",
+          "size_kb": 17.5,
+          "document_id": "8ee4a5867107fe475db36894a34a0238"
+        },
+        {
+          "accession_no": "0001104659-25-057932",
+          "filing_date": "2025-06-09T19:59:00-04:00",
+          "period_end_date": "2025-06-05",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000110465925057932/xslF345X05/tm2517471-1_4seq1.xml",
+          "size_kb": 18.2,
+          "document_id": "fd6b9182861363d65f52d8a2af0abd16"
+        },
+        {
+          "accession_no": "0001104659-25-056561",
+          "filing_date": "2025-06-04T21:00:09-04:00",
+          "period_end_date": "2025-06-02",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000110465925056561/xslF345X05/tm2517124-1_4seq1.xml",
+          "size_kb": 31.8,
+          "document_id": "0aec601d0d292c8858fd77f27cbc37da"
+        },
+        {
+          "accession_no": "0001104659-25-054372",
+          "filing_date": "2025-05-29T19:02:10-04:00",
+          "period_end_date": "2025-05-27",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000110465925054372/xslF345X05/tm2516319-2_4seq1.xml",
+          "size_kb": 38.2,
+          "document_id": "d9887ee9502d7dd942da4377f0cf14e0"
+        },
+        {
+          "accession_no": "0001104659-25-054371",
+          "filing_date": "2025-05-29T19:00:18-04:00",
+          "period_end_date": "2025-05-27",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000110465925054371/xslF345X05/tm2516319-1_4seq1.xml",
+          "size_kb": 34.7,
+          "document_id": "db0837f9694c254e1a6dcf05a60188b4"
+        },
+        {
+          "accession_no": "0001771340-25-000009",
+          "filing_date": "2025-05-20T19:24:21-04:00",
+          "period_end_date": "2025-05-16",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134025000009/xslF345X05/edgardoc.xml",
+          "size_kb": 18.5,
+          "document_id": "b7dad498fc6a2e978c9605ef5dce4e7b"
+        },
+        {
+          "accession_no": "0001771340-25-000008",
+          "filing_date": "2025-05-13T19:47:40-04:00",
+          "period_end_date": "2025-05-09",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134025000008/xslF345X05/edgardoc.xml",
+          "size_kb": 17.9,
+          "document_id": "3b4f309b303bd0a08d6dc87895382b24"
+        },
+        {
+          "accession_no": "0001104659-25-046296",
+          "filing_date": "2025-05-08T19:00:09-04:00",
+          "period_end_date": "2025-05-06",
+          "url": "https://www.sec.gov/Archives/edgar/data/1242782/000110465925046296/xslF345X05/tm2514194-1_4seq1.xml",
+          "size_kb": 24.0,
+          "document_id": "461300822cfc3b8adafe3f546ab6ff98"
+        },
+        {
+          "accession_no": "0001771340-25-000007",
+          "filing_date": "2025-05-05T21:33:46-04:00",
+          "period_end_date": "2025-05-01",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134025000007/xslF345X05/edgardoc.xml",
+          "size_kb": 26.9,
+          "document_id": "b1690b77625bc8647c178d887b731461"
+        },
+        {
+          "accession_no": "0001104659-25-043639",
+          "filing_date": "2025-05-01T20:04:32-04:00",
+          "period_end_date": "2025-05-01",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000110465925043639/xslF345X05/tm2513581-6_4seq1.xml",
+          "size_kb": 17.6,
+          "document_id": "1e13f30a17f9781e821ba8988ff453c8"
+        },
+        {
+          "accession_no": "0001104659-25-043638",
+          "filing_date": "2025-05-01T20:03:49-04:00",
+          "period_end_date": "2025-05-01",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000110465925043638/xslF345X05/tm2513581-5_4seq1.xml",
+          "size_kb": 16.2,
+          "document_id": "e3493ce8228a643659d91ab89128f586"
+        },
+        {
+          "accession_no": "0001104659-25-043637",
+          "filing_date": "2025-05-01T20:02:43-04:00",
+          "period_end_date": "2025-05-01",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000110465925043637/xslF345X05/tm2513581-4_4seq1.xml",
+          "size_kb": 16.2,
+          "document_id": "69ef9f301d038fbef13e6df3eedf7fa6"
+        },
+        {
+          "accession_no": "0001104659-25-043636",
+          "filing_date": "2025-05-01T20:01:37-04:00",
+          "period_end_date": "2025-05-01",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000110465925043636/xslF345X05/tm2513581-3_4seq1.xml",
+          "size_kb": 16.2,
+          "document_id": "e9fadc0a727c6009ad1f1575eb1db17a"
+        },
+        {
+          "accession_no": "0001104659-25-043635",
+          "filing_date": "2025-05-01T20:00:25-04:00",
+          "period_end_date": "2025-05-01",
+          "url": "https://www.sec.gov/Archives/edgar/data/1242782/000110465925043635/xslF345X05/tm2513581-2_4seq1.xml",
+          "size_kb": 20.9,
+          "document_id": "765da7de49235ee0ef2db47785f0352a"
+        },
+        {
+          "accession_no": "0001104659-25-043625",
+          "filing_date": "2025-05-01T19:00:14-04:00",
+          "period_end_date": "2025-04-29",
+          "url": "https://www.sec.gov/Archives/edgar/data/1242782/000110465925043625/xslF345X05/tm2513581-1_4seq1.xml",
+          "size_kb": 27.5,
+          "document_id": "3d7020040f394974f4ccf5a4f623f8c1"
+        },
+        {
+          "accession_no": "0001771340-25-000006",
+          "filing_date": "2025-04-28T18:45:17-04:00",
+          "period_end_date": "2025-04-24",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134025000006/xslF345X05/edgardoc.xml",
+          "size_kb": 15.5,
+          "document_id": "a97d50dcc809244232291ca2b54777c7"
+        },
+        {
+          "accession_no": "0001771340-25-000005",
+          "filing_date": "2025-04-09T19:35:02-04:00",
+          "period_end_date": "2025-04-07",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134025000005/xslF345X05/edgardoc.xml",
+          "size_kb": 17.9,
+          "document_id": "58628cb76e3053d248f6f5983f05f4fd"
+        },
+        {
+          "accession_no": "0001771340-25-000004",
+          "filing_date": "2025-03-12T19:12:18-04:00",
+          "period_end_date": "2025-03-10",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134025000004/xslF345X05/edgardoc.xml",
+          "size_kb": 20.6,
+          "document_id": "48f32966abddaf3dbf0fce8fe72f937c"
+        },
+        {
+          "accession_no": "0001771340-25-000003",
+          "filing_date": "2025-03-06T20:40:21-05:00",
+          "period_end_date": "2025-03-05",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134025000003/xslF345X05/edgardoc.xml",
+          "size_kb": 17.8,
+          "document_id": "1094bb43590648b9e5d9dff8a314b003"
+        },
+        {
+          "accession_no": "0001104659-25-021101",
+          "filing_date": "2025-03-05T21:44:10-05:00",
+          "period_end_date": "2025-03-03",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000110465925021101/xslF345X05/tm258138-2_4seq1.xml",
+          "size_kb": 33.3,
+          "document_id": "83a4fa25618175149d1bedbf421519f3"
+        },
+        {
+          "accession_no": "0001104659-25-021023",
+          "filing_date": "2025-03-05T19:01:19-05:00",
+          "period_end_date": "2025-03-03",
+          "url": "https://www.sec.gov/Archives/edgar/data/1242782/000110465925021023/xslF345X05/tm258138-1_4seq1.xml",
+          "size_kb": 29.9,
+          "document_id": "f5558bb22afe7a29aab12bc598e6fc11"
+        },
+        {
+          "accession_no": "0001494731-25-000001",
+          "filing_date": "2025-02-10T18:40:33-05:00",
+          "period_end_date": "2025-02-06",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000149473125000001/xslF345X05/edgardoc.xml",
+          "size_kb": 16.4,
+          "document_id": "f91c29c428a642b92c213c3a19cfb33d"
+        },
+        {
+          "accession_no": "0001771340-25-000002",
+          "filing_date": "2025-02-05T20:19:30-05:00",
+          "period_end_date": "2025-02-03",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134025000002/xslF345X05/edgardoc.xml",
+          "size_kb": 29.6,
+          "document_id": "b3c7f88aec040877b91bb8632da50ed9"
+        },
+        {
+          "accession_no": "0000950170-25-014794",
+          "filing_date": "2025-02-05T19:00:07-05:00",
+          "period_end_date": "2025-02-03",
+          "url": "https://www.sec.gov/Archives/edgar/data/1242782/000095017025014794/xslF345X05/ownership.xml",
+          "size_kb": 33.6,
+          "document_id": "9a8c9f1b0e23cf6dabb9a6e7e76f656b"
+        },
+        {
+          "accession_no": "0001771340-25-000001",
+          "filing_date": "2025-01-08T19:48:44-05:00",
+          "period_end_date": "2025-01-06",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134025000001/xslF345X05/edgardoc.xml",
+          "size_kb": 33.2,
+          "document_id": "38404ccf5ed8c0334831f3f19eeac303"
+        },
+        {
+          "accession_no": "0000950170-25-003585",
+          "filing_date": "2025-01-08T19:00:05-05:00",
+          "period_end_date": "2025-01-06",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000095017025003585/xslF345X05/ownership.xml",
+          "size_kb": 43.1,
+          "document_id": "0c95b17653afdf31bd8079939036305f"
+        },
+        {
+          "accession_no": "0000950170-24-141705",
+          "filing_date": "2024-12-31T19:32:23-05:00",
+          "period_end_date": "2024-12-30",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000095017024141705/xslF345X05/ownership.xml",
+          "size_kb": 15.4,
+          "document_id": "6d27072b6091ae5399174efe16bdd2be"
+        },
+        {
+          "accession_no": "0001494731-24-000002",
+          "filing_date": "2024-12-13T19:08:47-05:00",
+          "period_end_date": "2024-12-11",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000149473124000002/xslF345X05/edgardoc.xml",
+          "size_kb": 14.9,
+          "document_id": "3c119d81865fc693e3e0c1d68f232816"
+        },
+        {
+          "accession_no": "0001771340-24-000009",
+          "filing_date": "2024-12-09T18:58:03-05:00",
+          "period_end_date": "2024-12-05",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134024000009/xslF345X05/edgardoc.xml",
+          "size_kb": 17.4,
+          "document_id": "190b9e6476edf765c6344afaa4a9e27f"
+        },
+        {
+          "accession_no": "0000950170-24-134264",
+          "filing_date": "2024-12-06T19:00:05-05:00",
+          "period_end_date": "2024-12-04",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000095017024134264/xslF345X05/ownership.xml",
+          "size_kb": 28.0,
+          "document_id": "597a828852fc06b5d9f20f4e7e0690f8"
+        },
+        {
+          "accession_no": "0001771340-24-000008",
+          "filing_date": "2024-12-04T20:24:06-05:00",
+          "period_end_date": "2024-12-02",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134024000008/xslF345X05/edgardoc.xml",
+          "size_kb": 24.7,
+          "document_id": "46f6f74b40d2c2adfa3428c7aa1b0ae4"
+        },
+        {
+          "accession_no": "0000950170-24-133415",
+          "filing_date": "2024-12-04T19:00:03-05:00",
+          "period_end_date": "2024-12-02",
+          "url": "https://www.sec.gov/Archives/edgar/data/1242782/000095017024133415/xslF345X05/ownership.xml",
+          "size_kb": 24.9,
+          "document_id": "54433267c6ff589115114b5e40b33302"
+        },
+        {
+          "accession_no": "0000950170-24-128931",
+          "filing_date": "2024-11-19T19:00:03-05:00",
+          "period_end_date": "2024-11-15",
+          "url": "https://www.sec.gov/Archives/edgar/data/1242782/000095017024128931/xslF345X05/ownership.xml",
+          "size_kb": 29.5,
+          "document_id": "6ff29b4823b2fd4d7a16a6777a3263f0"
+        },
+        {
+          "accession_no": "0001771340-24-000007",
+          "filing_date": "2024-11-13T19:27:34-05:00",
+          "period_end_date": "2024-11-08",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134024000007/xslF345X05/edgardoc.xml",
+          "size_kb": 21.4,
+          "document_id": "35552feaeec47d1aacb5f3669ba0ba04"
+        },
+        {
+          "accession_no": "0000950170-24-126580",
+          "filing_date": "2024-11-13T19:00:14-05:00",
+          "period_end_date": "2024-11-11",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000095017024126580/xslF345X05/ownership.xml",
+          "size_kb": 43.4,
+          "document_id": "309f0c8f3fde80369ac866c9233098c2"
+        },
+        {
+          "accession_no": "0001494731-24-000001",
+          "filing_date": "2024-11-05T20:14:55-05:00",
+          "period_end_date": "2024-11-01",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000149473124000001/xslF345X05/edgardoc.xml",
+          "size_kb": 25.3,
+          "document_id": "6e489e2c8516abd63f78c799d4112830"
+        },
+        {
+          "accession_no": "0001771340-24-000006",
+          "filing_date": "2024-11-04T19:08:51-05:00",
+          "period_end_date": "2024-10-31",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134024000006/xslF345X05/edgardoc.xml",
+          "size_kb": 21.4,
+          "document_id": "d009c41daf60ac573ffe86b8933f1435"
+        },
+        {
+          "accession_no": "0001771340-24-000005",
+          "filing_date": "2024-10-28T20:28:41-04:00",
+          "period_end_date": "2024-10-24",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134024000005/xslF345X05/edgardoc.xml",
+          "size_kb": 17.5,
+          "document_id": "287c2e847a2b3eb647593b35ef547c8b"
+        },
+        {
+          "accession_no": "0001771340-24-000004",
+          "filing_date": "2024-09-25T19:48:42-04:00",
+          "period_end_date": "2024-09-23",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134024000004/xslF345X05/edgardoc.xml",
+          "size_kb": 17.7,
+          "document_id": "7155697f1ebd1997c3e2a17a6201e482"
+        },
+        {
+          "accession_no": "0001972928-24-000003",
+          "filing_date": "2024-09-09T20:02:19-04:00",
+          "period_end_date": "2024-09-05",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000197292824000003/xslF345X05/edgardoc.xml",
+          "size_kb": 17.4,
+          "document_id": "3fc8dad813047d3996fde220b1d6c18c"
+        },
+        {
+          "accession_no": "0000950170-24-087441",
+          "filing_date": "2024-07-29T19:00:04-04:00",
+          "period_end_date": "2024-07-25",
+          "url": "https://www.sec.gov/Archives/edgar/data/1242782/000095017024087441/xslF345X05/ownership.xml",
+          "size_kb": 29.9,
+          "document_id": "54ecca40f3f25bf09669df6f0a446e7f"
+        },
+        {
+          "accession_no": "0001972928-24-000002",
+          "filing_date": "2024-06-07T18:46:36-04:00",
+          "period_end_date": "2024-06-05",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000197292824000002/xslF345X05/edgardoc.xml",
+          "size_kb": 17.4,
+          "document_id": "616ef77f61559dcd5d645c0af752672f"
+        },
+        {
+          "accession_no": "0001771340-24-000003",
+          "filing_date": "2024-06-05T19:16:39-04:00",
+          "period_end_date": "2024-06-03",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134024000003/xslF345X05/edgardoc.xml",
+          "size_kb": 16.2,
+          "document_id": "a55986c3c99c493943d73a0e85956389"
+        },
+        {
+          "accession_no": "0000950170-24-054842",
+          "filing_date": "2024-05-07T18:12:12-04:00",
+          "period_end_date": "2024-05-06",
+          "url": "https://www.sec.gov/Archives/edgar/data/1242782/000095017024054842/xslF345X05/ownership.xml",
+          "size_kb": 24.8,
+          "document_id": "fbaec8a8d6b7e24643d485eb360cea62"
+        },
+        {
+          "accession_no": "0001790565-24-000003",
+          "filing_date": "2024-04-03T20:02:18-04:00",
+          "period_end_date": "2024-04-01",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000179056524000003/xslF345X05/edgardoc.xml",
+          "size_kb": 17.3,
+          "document_id": "bf614d4c1ab1a731e259b9bde5626787"
+        },
+        {
+          "accession_no": "0001771340-24-000002",
+          "filing_date": "2024-03-14T20:03:11-04:00",
+          "period_end_date": "2024-03-12",
+          "url": "https://www.sec.gov/Archives/edgar/data/1242782/000177134024000002/xslF345X05/edgardoc.xml",
+          "size_kb": 25.4,
+          "document_id": "4561ac1de695e488e11b16eedd02852b"
+        },
+        {
+          "accession_no": "0001972928-24-000001",
+          "filing_date": "2024-03-07T20:06:22-05:00",
+          "period_end_date": "2024-03-05",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000197292824000001/xslF345X05/edgardoc.xml",
+          "size_kb": 17.6,
+          "document_id": "bc5b40d67e2ff08cbcc02dbae540330b"
+        },
+        {
+          "accession_no": "0001790565-24-000002",
+          "filing_date": "2024-03-04T20:10:14-05:00",
+          "period_end_date": "2024-02-29",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000179056524000002/xslF345X05/edgardoc.xml",
+          "size_kb": 17.3,
+          "document_id": "e0ba967e28758891a5e48be6341d3dcd"
+        },
+        {
+          "accession_no": "0001771340-24-000001",
+          "filing_date": "2024-02-23T18:52:43-05:00",
+          "period_end_date": "2024-02-21",
+          "url": "https://www.sec.gov/Archives/edgar/data/1242782/000177134024000001/xslF345X05/edgardoc.xml",
+          "size_kb": 23.6,
+          "document_id": "10536d13fd6175312ad19ac91d0df768"
+        },
+        {
+          "accession_no": "0001790565-24-000001",
+          "filing_date": "2024-02-02T18:48:58-05:00",
+          "period_end_date": "2024-01-31",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000179056524000001/xslF345X05/edgardoc.xml",
+          "size_kb": 14.9,
+          "document_id": "bf4a0da802526ac071ebdb53823fcaa8"
+        },
+        {
+          "accession_no": "0001771340-23-000012",
+          "filing_date": "2023-12-18T19:17:20-05:00",
+          "period_end_date": "2023-12-14",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134023000012/xslF345X05/edgardoc.xml",
+          "size_kb": 17.3,
+          "document_id": "6cc3f15d7d36c8b742c89a45dc597546"
+        },
+        {
+          "accession_no": "0001972928-23-000009",
+          "filing_date": "2023-12-07T20:26:21-05:00",
+          "period_end_date": "2023-12-05",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000197292823000009/xslF345X05/edgardoc.xml",
+          "size_kb": 17.3,
+          "document_id": "7ed4991a274011e29473cde2bf1e3f6d"
+        },
+        {
+          "accession_no": "0001790565-23-000014",
+          "filing_date": "2023-12-07T20:24:37-05:00",
+          "period_end_date": "2023-12-05",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000179056523000014/xslF345X05/edgardoc.xml",
+          "size_kb": 17.3,
+          "document_id": "d84e447759be59157b88f76398104fab"
+        },
+        {
+          "accession_no": "0001771340-23-000011",
+          "filing_date": "2023-12-07T20:16:27-05:00",
+          "period_end_date": "2023-12-05",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134023000011/xslF345X05/edgardoc.xml",
+          "size_kb": 17.3,
+          "document_id": "6084afa956f5078611aa36ee84542312"
+        },
+        {
+          "accession_no": "0001771340-23-000010",
+          "filing_date": "2023-12-01T18:38:00-05:00",
+          "period_end_date": "2023-11-29",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134023000010/xslF345X05/edgardoc.xml",
+          "size_kb": 17.3,
+          "document_id": "c430dd5227d989ebc32569ab2f22951a"
+        },
+        {
+          "accession_no": "0001790565-23-000013",
+          "filing_date": "2023-10-31T18:48:19-04:00",
+          "period_end_date": "2023-10-27",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000179056523000013/xslF345X05/edgardoc.xml",
+          "size_kb": 17.2,
+          "document_id": "7aa3b51c7a2728846e82992d0d94894f"
+        },
+        {
+          "accession_no": "0001771340-23-000009",
+          "filing_date": "2023-10-11T19:08:16-04:00",
+          "period_end_date": "2023-10-06",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134023000009/xslF345X05/edgardoc.xml",
+          "size_kb": 17.3,
+          "document_id": "5de5f5f64c2966122eaff1a1c5210e90"
+        },
+        {
+          "accession_no": "0001790565-23-000012",
+          "filing_date": "2023-09-29T18:49:18-04:00",
+          "period_end_date": "2023-09-27",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000179056523000012/xslF345X05/edgardoc.xml",
+          "size_kb": 17.2,
+          "document_id": "c06ccdb3fe3be8a8b07f17553ed1d5d3"
+        },
+        {
+          "accession_no": "0001771340-23-000008",
+          "filing_date": "2023-09-07T19:39:15-04:00",
+          "period_end_date": "2023-09-05",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134023000008/xslF345X05/edgardoc.xml",
+          "size_kb": 21.0,
+          "document_id": "cc173eb4ab6fb50ba0e0622c6aa31eda"
+        },
+        {
+          "accession_no": "0001972928-23-000008",
+          "filing_date": "2023-09-07T19:32:12-04:00",
+          "period_end_date": "2023-09-05",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000197292823000008/xslF345X05/edgardoc.xml",
+          "size_kb": 17.3,
+          "document_id": "6ac0381de28f588b30c6ac0b29fe1a82"
+        }
+      ],
+      "8-K": [
+        {
+          "accession_no": "0001104659-25-073263",
+          "filing_date": "2025-08-04T06:03:14-04:00",
+          "period_end_date": "2025-08-03",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000110465925073263/tm2522385d1_8k.htm",
+          "size_kb": 47.9,
+          "document_id": "d3a29e1c61ca1596bb7139dfa3cbc14f"
+        },
+        {
+          "accession_no": "0001628280-25-035738",
+          "filing_date": "2025-07-23T16:14:09-04:00",
+          "period_end_date": "2025-07-23",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828025035738/tsla-20250723.htm",
+          "size_kb": 26.4,
+          "document_id": "baae3c2095a3eb58ef4a366b44b8c0d0"
+        },
+        {
+          "accession_no": "0001628280-25-034692",
+          "filing_date": "2025-07-09T21:18:15-04:00",
+          "period_end_date": "2025-07-09",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828025034692/tsla-20250709.htm",
+          "size_kb": 23.7,
+          "document_id": "e8ae2181fe5a0a336ea52526a3d1a3d7"
+        },
+        {
+          "accession_no": "0001628280-25-033842",
+          "filing_date": "2025-07-02T09:05:13-04:00",
+          "period_end_date": "2025-07-02",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828025033842/tsla-20250702.htm",
+          "size_kb": 26.3,
+          "document_id": "59f6025c02fa78110ef7546c87dfeb8f"
+        },
+        {
+          "accession_no": "0001104659-25-050072",
+          "filing_date": "2025-05-16T17:01:19-04:00",
+          "period_end_date": "2025-05-15",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000110465925050072/tm2515421d1_8k.htm",
+          "size_kb": 27.1,
+          "document_id": "5f12d0747df6e0c16f5aeb3f005e733d"
+        },
+        {
+          "accession_no": "0001628280-25-026148",
+          "filing_date": "2025-05-16T07:00:28-04:00",
+          "period_end_date": "2025-05-15",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828025026148/tsla-20250515.htm",
+          "size_kb": 27.9,
+          "document_id": "69f4c0a573b05c45a9e3e6743829711c"
+        },
+        {
+          "accession_no": "0001628280-25-018851",
+          "filing_date": "2025-04-22T16:10:12-04:00",
+          "period_end_date": "2025-04-22",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828025018851/tsla-20250422.htm",
+          "size_kb": 26.8,
+          "document_id": "77764fcf53a9f387cb7f9606b4266069"
+        },
+        {
+          "accession_no": "0001628280-25-016070",
+          "filing_date": "2025-04-02T09:05:22-04:00",
+          "period_end_date": "2025-04-02",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828025016070/tsla-20250402.htm",
+          "size_kb": 26.3,
+          "document_id": "249b62eb5fb92358ef113a448001260b"
+        },
+        {
+          "accession_no": "0001628280-25-002993",
+          "filing_date": "2025-01-29T16:09:13-05:00",
+          "period_end_date": "2025-01-29",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828025002993/tsla-20250129.htm",
+          "size_kb": 27.6,
+          "document_id": "e15e2f2fb4165abf94f2a8f1e3e44e00"
+        },
+        {
+          "accession_no": "0001628280-25-000007",
+          "filing_date": "2025-01-02T09:06:39-05:00",
+          "period_end_date": "2025-01-02",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828025000007/tsla-20250102.htm",
+          "size_kb": 27.2,
+          "document_id": "40b9861a3c2d21afd0ad8ba768960dc1"
+        },
+        {
+          "accession_no": "0001628280-24-043432",
+          "filing_date": "2024-10-23T16:09:26-04:00",
+          "period_end_date": "2024-10-23",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828024043432/tsla-20241023.htm",
+          "size_kb": 26.8,
+          "document_id": "49289ae4c5311bc7c0e3f7da66e6b986"
+        },
+        {
+          "accession_no": "0001628280-24-041816",
+          "filing_date": "2024-10-02T09:06:34-04:00",
+          "period_end_date": "2024-10-02",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828024041816/tsla-20241002.htm",
+          "size_kb": 33.6,
+          "document_id": "0dbb80b52093a673b08f0a04696b224a"
+        },
+        {
+          "accession_no": "0001628280-24-032603",
+          "filing_date": "2024-07-23T16:32:27-04:00",
+          "period_end_date": "2024-07-23",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828024032603/tsla-20240723.htm",
+          "size_kb": 26.0,
+          "document_id": "7bf368d64365d59e32d1c244ce49507c"
+        },
+        {
+          "accession_no": "0001628280-24-030714",
+          "filing_date": "2024-07-02T09:24:01-04:00",
+          "period_end_date": "2024-07-02",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828024030714/tsla-20240702.htm",
+          "size_kb": 33.3,
+          "document_id": "b8cafa4c5b523d255476201a6f20404f"
+        },
+        {
+          "accession_no": "0001104659-24-071439",
+          "filing_date": "2024-06-14T06:02:55-04:00",
+          "period_end_date": "2024-06-13",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000110465924071439/tm2413800d31_8k.htm",
+          "size_kb": 63.7,
+          "document_id": "7a577829c28a66509d59d486efe4e6cb"
+        },
+        {
+          "accession_no": "0000950170-24-046895",
+          "filing_date": "2024-04-23T16:09:55-04:00",
+          "period_end_date": "2024-04-23",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000095017024046895/tsla-20240423.htm",
+          "size_kb": 43.8,
+          "document_id": "93aa5bba76fb2a278da25034cd4621c1"
+        },
+        {
+          "accession_no": "0000950170-24-044588",
+          "filing_date": "2024-04-16T06:07:17-04:00",
+          "period_end_date": "2024-04-14",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000095017024044588/tsla-20240414.htm",
+          "size_kb": 42.7,
+          "document_id": "5a83db185aef1da29830031108125e68"
+        },
+        {
+          "accession_no": "0000950170-24-040274",
+          "filing_date": "2024-04-02T16:47:22-04:00",
+          "period_end_date": "2024-04-02",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000095017024040274/tsla-20240402.htm",
+          "size_kb": 47.2,
+          "document_id": "837549442d5f0f122cb2d40a55932b62"
+        },
+        {
+          "accession_no": "0000950170-24-007073",
+          "filing_date": "2024-01-24T17:24:27-05:00",
+          "period_end_date": "2024-01-24",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000095017024007073/tsla-20240124.htm",
+          "size_kb": 43.8,
+          "document_id": "4b2fb4b1f6a89111094a2ae478a75b3d"
+        },
+        {
+          "accession_no": "0000950170-24-000282",
+          "filing_date": "2024-01-02T16:29:17-05:00",
+          "period_end_date": "2024-01-02",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000095017024000282/tsla-20240102.htm",
+          "size_kb": 46.7,
+          "document_id": "494f1741385b4ca2fe21ac5353da3bf0"
+        },
+        {
+          "accession_no": "0001628280-23-034588",
+          "filing_date": "2023-10-18T16:15:00-04:00",
+          "period_end_date": "2023-10-18",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828023034588/tsla-20231018.htm",
+          "size_kb": 27.4,
+          "document_id": "7d6873c57cefb84350653e61fd5ae35d"
+        },
+        {
+          "accession_no": "0000950170-23-050938",
+          "filing_date": "2023-10-02T09:05:38-04:00",
+          "period_end_date": "2023-10-02",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000095017023050938/tsla-20231002.htm",
+          "size_kb": 55.9,
+          "document_id": "52294b1a6fa0497b54904ae4364cf378"
+        }
+      ],
+      "10-Q": [
+        {
+          "accession_no": "0001628280-25-035806",
+          "filing_date": "2025-07-23T20:23:31-04:00",
+          "period_end_date": "2025-06-30",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828025035806/tsla-20250630.htm",
+          "size_kb": 1482.9,
+          "document_id": "e7055c3397c6ed09a14607bb844ec8dc"
+        },
+        {
+          "accession_no": "0001628280-25-018911",
+          "filing_date": "2025-04-22T21:02:10-04:00",
+          "period_end_date": "2025-03-31",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828025018911/tsla-20250331.htm",
+          "size_kb": 1197.1,
+          "document_id": "ea74e49cea79fe083c5298942c1fbc1d"
+        },
+        {
+          "accession_no": "0001628280-24-043486",
+          "filing_date": "2024-10-23T20:42:47-04:00",
+          "period_end_date": "2024-09-30",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828024043486/tsla-20240930.htm",
+          "size_kb": 1467.5,
+          "document_id": "3d94d0b44abe0505827a5b170c790290"
+        },
+        {
+          "accession_no": "0001628280-24-032662",
+          "filing_date": "2024-07-23T19:41:09-04:00",
+          "period_end_date": "2024-06-30",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828024032662/tsla-20240630.htm",
+          "size_kb": 1453.1,
+          "document_id": "fbd9b28e7dec9b3de2da4c518f334ca5"
+        },
+        {
+          "accession_no": "0001628280-24-017503",
+          "filing_date": "2024-04-23T20:27:48-04:00",
+          "period_end_date": "2024-03-31",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828024017503/tsla-20240331.htm",
+          "size_kb": 1151.4,
+          "document_id": "8d3891de9f52996e044aad624905d4c5"
+        },
+        {
+          "accession_no": "0001628280-23-034847",
+          "filing_date": "2023-10-20T18:41:03-04:00",
+          "period_end_date": "2023-09-30",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828023034847/tsla-20230930.htm",
+          "size_kb": 1516.8,
+          "document_id": "2a4159a46b6dc54aab238c4dcc581483"
+        }
+      ],
+      "3": [
+        {
+          "accession_no": "0001771340-25-000012",
+          "filing_date": "2025-06-04T19:01:05-04:00",
+          "period_end_date": "2025-06-04",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134025000012/xslF345X02/edgardoc.xml",
+          "size_kb": 11.4,
+          "document_id": "33a07e6e2b89c717843c91cb95c3ffd2"
+        }
+      ],
+      "10-K/A": [
+        {
+          "accession_no": "0001104659-25-042659",
+          "filing_date": "2025-04-30T17:08:56-04:00",
+          "period_end_date": "2024-12-31",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000110465925042659/tm252787d2_10ka.htm",
+          "size_kb": 854.4,
+          "document_id": "95a816004ecbefd131fb8a88ff22cd91"
+        }
+      ],
+      "10-K": [
+        {
+          "accession_no": "0001628280-25-003063",
+          "filing_date": "2025-01-29T20:42:33-05:00",
+          "period_end_date": "2024-12-31",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828025003063/tsla-20241231.htm",
+          "size_kb": 2535.6,
+          "document_id": "3ba1e6d3bd193f9fda939078e49e28ca"
+        },
+        {
+          "accession_no": "0001628280-24-002390",
+          "filing_date": "2024-01-26T21:00:20-05:00",
+          "period_end_date": "2023-12-31",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828024002390/tsla-20231231.htm",
+          "size_kb": 2610.1,
+          "document_id": "326dd86e3a599261b6ce687b4deedcd1"
+        }
+      ],
+      "DEF 14A": [
+        {
+          "accession_no": "0001104659-24-053333",
+          "filing_date": "2024-04-29T06:28:36-04:00",
+          "period_end_date": "2024-06-13",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000110465924053333/tm2326076d15_def14a.htm",
+          "size_kb": 5505.7,
+          "document_id": "3659df7e2a13a530c9f2c44e2ed53ac1"
+        }
+      ],
+      "SC 13G/A": [
+        {
+          "accession_no": "0001193125-24-036110",
+          "filing_date": "2024-02-14T16:01:18-05:00",
+          "period_end_date": "",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000119312524036110/d64998dsc13ga.htm",
+          "size_kb": 39.3,
+          "document_id": "2609cbf131ecfd73456fe785cb3c46de"
+        },
+        {
+          "accession_no": "0001104659-24-020124",
+          "filing_date": "2024-02-13T16:55:53-05:00",
+          "period_end_date": "",
+          "url": "https://www.sec.gov/Archives/edgar/data/102909/000110465924020124/tv0132-teslainc.htm",
+          "size_kb": 11.1,
+          "document_id": "73ba73c2c4f6c28b789f490cbd5741fc"
+        },
+        {
+          "accession_no": "0001086364-24-005595",
+          "filing_date": "2024-01-29T17:25:52-05:00",
+          "period_end_date": "",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000108636424005595/us88160r1014_012924.txt",
+          "size_kb": 11.7,
+          "document_id": "8e4d3a49e3b297e24d92187eda311253"
+        }
+      ],
+      "8-K/A": [
+        {
+          "accession_no": "0000950170-23-052618",
+          "filing_date": "2023-10-10T16:03:28-04:00",
+          "period_end_date": "2023-05-16",
+          "url": "https://www.sec.gov/Archives/edgar/data/1318605/000095017023052618/tsla-20230516.htm",
+          "size_kb": 57.1,
+          "document_id": "5209ecd4ca5a2d3222c8cecfb56f96ae"
+        }
+      ]
+    },
+    "coverage_quality": {
+      "essential_coverage": 1.0,
+      "important_coverage": 0.3333333333333333,
+      "total_score": 0.7999999999999999,
+      "missing_essential": [],
+      "recent_coverage": true
+    },
+    "document_list": [
+      {
+        "form_type": "4",
+        "filing_date": "2025-08-04T19:00:13-04:00",
+        "accession_no": "0001104659-25-073753",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000110465925073753/xslF345X05/tm2522507-1_4seq1.xml"
+      },
+      {
+        "form_type": "8-K",
+        "filing_date": "2025-08-04T06:03:14-04:00",
+        "accession_no": "0001104659-25-073263",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.05,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000110465925073263/tm2522385d1_8k.htm"
+      },
+      {
+        "form_type": "10-Q",
+        "filing_date": "2025-07-23T20:23:31-04:00",
+        "accession_no": "0001628280-25-035806",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 1.45,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828025035806/tsla-20250630.htm"
+      },
+      {
+        "form_type": "8-K",
+        "filing_date": "2025-07-23T16:14:09-04:00",
+        "accession_no": "0001628280-25-035738",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.03,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828025035738/tsla-20250723.htm"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-07-15T19:30:50-04:00",
+        "accession_no": "0001104659-25-068165",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000110465925068165/xslF345X05/tm2520998-1_4seq1.xml"
+      },
+      {
+        "form_type": "8-K",
+        "filing_date": "2025-07-09T21:18:15-04:00",
+        "accession_no": "0001628280-25-034692",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828025034692/tsla-20250709.htm"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-07-09T20:12:54-04:00",
+        "accession_no": "0001104659-25-066775",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.03,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000110465925066775/xslF345X05/tm2520098-1_4seq1.xml"
+      },
+      {
+        "form_type": "8-K",
+        "filing_date": "2025-07-02T09:05:13-04:00",
+        "accession_no": "0001628280-25-033842",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.03,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828025033842/tsla-20250702.htm"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-06-16T19:59:54-04:00",
+        "accession_no": "0001972928-25-000003",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000197292825000003/xslF345X05/edgardoc.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-06-09T19:59:00-04:00",
+        "accession_no": "0001104659-25-057932",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000110465925057932/xslF345X05/tm2517471-1_4seq1.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-06-04T21:00:09-04:00",
+        "accession_no": "0001104659-25-056561",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.03,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000110465925056561/xslF345X05/tm2517124-1_4seq1.xml"
+      },
+      {
+        "form_type": "3",
+        "filing_date": "2025-06-04T19:01:05-04:00",
+        "accession_no": "0001771340-25-000012",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.01,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134025000012/xslF345X02/edgardoc.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-05-29T19:02:10-04:00",
+        "accession_no": "0001104659-25-054372",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.04,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000110465925054372/xslF345X05/tm2516319-2_4seq1.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-05-29T19:00:18-04:00",
+        "accession_no": "0001104659-25-054371",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.03,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000110465925054371/xslF345X05/tm2516319-1_4seq1.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-05-20T19:24:21-04:00",
+        "accession_no": "0001771340-25-000009",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134025000009/xslF345X05/edgardoc.xml"
+      },
+      {
+        "form_type": "8-K",
+        "filing_date": "2025-05-16T17:01:19-04:00",
+        "accession_no": "0001104659-25-050072",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.03,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000110465925050072/tm2515421d1_8k.htm"
+      },
+      {
+        "form_type": "8-K",
+        "filing_date": "2025-05-16T07:00:28-04:00",
+        "accession_no": "0001628280-25-026148",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.03,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828025026148/tsla-20250515.htm"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-05-13T19:47:40-04:00",
+        "accession_no": "0001771340-25-000008",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134025000008/xslF345X05/edgardoc.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-05-08T19:00:09-04:00",
+        "accession_no": "0001104659-25-046296",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1242782/000110465925046296/xslF345X05/tm2514194-1_4seq1.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-05-05T21:33:46-04:00",
+        "accession_no": "0001771340-25-000007",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.03,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134025000007/xslF345X05/edgardoc.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-05-01T20:04:32-04:00",
+        "accession_no": "0001104659-25-043639",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000110465925043639/xslF345X05/tm2513581-6_4seq1.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-05-01T20:03:49-04:00",
+        "accession_no": "0001104659-25-043638",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000110465925043638/xslF345X05/tm2513581-5_4seq1.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-05-01T20:02:43-04:00",
+        "accession_no": "0001104659-25-043637",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000110465925043637/xslF345X05/tm2513581-4_4seq1.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-05-01T20:01:37-04:00",
+        "accession_no": "0001104659-25-043636",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000110465925043636/xslF345X05/tm2513581-3_4seq1.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-05-01T20:00:25-04:00",
+        "accession_no": "0001104659-25-043635",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1242782/000110465925043635/xslF345X05/tm2513581-2_4seq1.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-05-01T19:00:14-04:00",
+        "accession_no": "0001104659-25-043625",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.03,
+        "url": "https://www.sec.gov/Archives/edgar/data/1242782/000110465925043625/xslF345X05/tm2513581-1_4seq1.xml"
+      },
+      {
+        "form_type": "10-K/A",
+        "filing_date": "2025-04-30T17:08:56-04:00",
+        "accession_no": "0001104659-25-042659",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.83,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000110465925042659/tm252787d2_10ka.htm"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-04-28T18:45:17-04:00",
+        "accession_no": "0001771340-25-000006",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134025000006/xslF345X05/edgardoc.xml"
+      },
+      {
+        "form_type": "10-Q",
+        "filing_date": "2025-04-22T21:02:10-04:00",
+        "accession_no": "0001628280-25-018911",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 1.17,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828025018911/tsla-20250331.htm"
+      },
+      {
+        "form_type": "8-K",
+        "filing_date": "2025-04-22T16:10:12-04:00",
+        "accession_no": "0001628280-25-018851",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.03,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828025018851/tsla-20250422.htm"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-04-09T19:35:02-04:00",
+        "accession_no": "0001771340-25-000005",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134025000005/xslF345X05/edgardoc.xml"
+      },
+      {
+        "form_type": "8-K",
+        "filing_date": "2025-04-02T09:05:22-04:00",
+        "accession_no": "0001628280-25-016070",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.03,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828025016070/tsla-20250402.htm"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-03-12T19:12:18-04:00",
+        "accession_no": "0001771340-25-000004",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134025000004/xslF345X05/edgardoc.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-03-06T20:40:21-05:00",
+        "accession_no": "0001771340-25-000003",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134025000003/xslF345X05/edgardoc.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-03-05T21:44:10-05:00",
+        "accession_no": "0001104659-25-021101",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.03,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000110465925021101/xslF345X05/tm258138-2_4seq1.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-03-05T19:01:19-05:00",
+        "accession_no": "0001104659-25-021023",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.03,
+        "url": "https://www.sec.gov/Archives/edgar/data/1242782/000110465925021023/xslF345X05/tm258138-1_4seq1.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-02-10T18:40:33-05:00",
+        "accession_no": "0001494731-25-000001",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000149473125000001/xslF345X05/edgardoc.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-02-05T20:19:30-05:00",
+        "accession_no": "0001771340-25-000002",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.03,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134025000002/xslF345X05/edgardoc.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-02-05T19:00:07-05:00",
+        "accession_no": "0000950170-25-014794",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.03,
+        "url": "https://www.sec.gov/Archives/edgar/data/1242782/000095017025014794/xslF345X05/ownership.xml"
+      },
+      {
+        "form_type": "10-K",
+        "filing_date": "2025-01-29T20:42:33-05:00",
+        "accession_no": "0001628280-25-003063",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 2.48,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828025003063/tsla-20241231.htm"
+      },
+      {
+        "form_type": "8-K",
+        "filing_date": "2025-01-29T16:09:13-05:00",
+        "accession_no": "0001628280-25-002993",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.03,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828025002993/tsla-20250129.htm"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-01-08T19:48:44-05:00",
+        "accession_no": "0001771340-25-000001",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.03,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134025000001/xslF345X05/edgardoc.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-01-08T19:00:05-05:00",
+        "accession_no": "0000950170-25-003585",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.04,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000095017025003585/xslF345X05/ownership.xml"
+      },
+      {
+        "form_type": "8-K",
+        "filing_date": "2025-01-02T09:06:39-05:00",
+        "accession_no": "0001628280-25-000007",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.03,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828025000007/tsla-20250102.htm"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-12-31T19:32:23-05:00",
+        "accession_no": "0000950170-24-141705",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000095017024141705/xslF345X05/ownership.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-12-13T19:08:47-05:00",
+        "accession_no": "0001494731-24-000002",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.01,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000149473124000002/xslF345X05/edgardoc.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-12-09T18:58:03-05:00",
+        "accession_no": "0001771340-24-000009",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134024000009/xslF345X05/edgardoc.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-12-06T19:00:05-05:00",
+        "accession_no": "0000950170-24-134264",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.03,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000095017024134264/xslF345X05/ownership.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-12-04T20:24:06-05:00",
+        "accession_no": "0001771340-24-000008",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134024000008/xslF345X05/edgardoc.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-12-04T19:00:03-05:00",
+        "accession_no": "0000950170-24-133415",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1242782/000095017024133415/xslF345X05/ownership.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-11-19T19:00:03-05:00",
+        "accession_no": "0000950170-24-128931",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.03,
+        "url": "https://www.sec.gov/Archives/edgar/data/1242782/000095017024128931/xslF345X05/ownership.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-11-13T19:27:34-05:00",
+        "accession_no": "0001771340-24-000007",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134024000007/xslF345X05/edgardoc.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-11-13T19:00:14-05:00",
+        "accession_no": "0000950170-24-126580",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.04,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000095017024126580/xslF345X05/ownership.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-11-05T20:14:55-05:00",
+        "accession_no": "0001494731-24-000001",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000149473124000001/xslF345X05/edgardoc.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-11-04T19:08:51-05:00",
+        "accession_no": "0001771340-24-000006",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134024000006/xslF345X05/edgardoc.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-10-28T20:28:41-04:00",
+        "accession_no": "0001771340-24-000005",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134024000005/xslF345X05/edgardoc.xml"
+      },
+      {
+        "form_type": "10-Q",
+        "filing_date": "2024-10-23T20:42:47-04:00",
+        "accession_no": "0001628280-24-043486",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 1.43,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828024043486/tsla-20240930.htm"
+      },
+      {
+        "form_type": "8-K",
+        "filing_date": "2024-10-23T16:09:26-04:00",
+        "accession_no": "0001628280-24-043432",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.03,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828024043432/tsla-20241023.htm"
+      },
+      {
+        "form_type": "8-K",
+        "filing_date": "2024-10-02T09:06:34-04:00",
+        "accession_no": "0001628280-24-041816",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.03,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828024041816/tsla-20241002.htm"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-09-25T19:48:42-04:00",
+        "accession_no": "0001771340-24-000004",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134024000004/xslF345X05/edgardoc.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-09-09T20:02:19-04:00",
+        "accession_no": "0001972928-24-000003",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000197292824000003/xslF345X05/edgardoc.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-07-29T19:00:04-04:00",
+        "accession_no": "0000950170-24-087441",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.03,
+        "url": "https://www.sec.gov/Archives/edgar/data/1242782/000095017024087441/xslF345X05/ownership.xml"
+      },
+      {
+        "form_type": "10-Q",
+        "filing_date": "2024-07-23T19:41:09-04:00",
+        "accession_no": "0001628280-24-032662",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 1.42,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828024032662/tsla-20240630.htm"
+      },
+      {
+        "form_type": "8-K",
+        "filing_date": "2024-07-23T16:32:27-04:00",
+        "accession_no": "0001628280-24-032603",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.03,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828024032603/tsla-20240723.htm"
+      },
+      {
+        "form_type": "8-K",
+        "filing_date": "2024-07-02T09:24:01-04:00",
+        "accession_no": "0001628280-24-030714",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.03,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828024030714/tsla-20240702.htm"
+      },
+      {
+        "form_type": "8-K",
+        "filing_date": "2024-06-14T06:02:55-04:00",
+        "accession_no": "0001104659-24-071439",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.06,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000110465924071439/tm2413800d31_8k.htm"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-06-07T18:46:36-04:00",
+        "accession_no": "0001972928-24-000002",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000197292824000002/xslF345X05/edgardoc.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-06-05T19:16:39-04:00",
+        "accession_no": "0001771340-24-000003",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134024000003/xslF345X05/edgardoc.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-05-07T18:12:12-04:00",
+        "accession_no": "0000950170-24-054842",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1242782/000095017024054842/xslF345X05/ownership.xml"
+      },
+      {
+        "form_type": "DEF 14A",
+        "filing_date": "2024-04-29T06:28:36-04:00",
+        "accession_no": "0001104659-24-053333",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 5.38,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000110465924053333/tm2326076d15_def14a.htm"
+      },
+      {
+        "form_type": "10-Q",
+        "filing_date": "2024-04-23T20:27:48-04:00",
+        "accession_no": "0001628280-24-017503",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 1.12,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828024017503/tsla-20240331.htm"
+      },
+      {
+        "form_type": "8-K",
+        "filing_date": "2024-04-23T16:09:55-04:00",
+        "accession_no": "0000950170-24-046895",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.04,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000095017024046895/tsla-20240423.htm"
+      },
+      {
+        "form_type": "8-K",
+        "filing_date": "2024-04-16T06:07:17-04:00",
+        "accession_no": "0000950170-24-044588",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.04,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000095017024044588/tsla-20240414.htm"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-04-03T20:02:18-04:00",
+        "accession_no": "0001790565-24-000003",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000179056524000003/xslF345X05/edgardoc.xml"
+      },
+      {
+        "form_type": "8-K",
+        "filing_date": "2024-04-02T16:47:22-04:00",
+        "accession_no": "0000950170-24-040274",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.05,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000095017024040274/tsla-20240402.htm"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-03-14T20:03:11-04:00",
+        "accession_no": "0001771340-24-000002",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1242782/000177134024000002/xslF345X05/edgardoc.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-03-07T20:06:22-05:00",
+        "accession_no": "0001972928-24-000001",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000197292824000001/xslF345X05/edgardoc.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-03-04T20:10:14-05:00",
+        "accession_no": "0001790565-24-000002",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000179056524000002/xslF345X05/edgardoc.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-02-23T18:52:43-05:00",
+        "accession_no": "0001771340-24-000001",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1242782/000177134024000001/xslF345X05/edgardoc.xml"
+      },
+      {
+        "form_type": "SC 13G/A",
+        "filing_date": "2024-02-14T16:01:18-05:00",
+        "accession_no": "0001193125-24-036110",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.04,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000119312524036110/d64998dsc13ga.htm"
+      },
+      {
+        "form_type": "SC 13G/A",
+        "filing_date": "2024-02-13T16:55:53-05:00",
+        "accession_no": "0001104659-24-020124",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.01,
+        "url": "https://www.sec.gov/Archives/edgar/data/102909/000110465924020124/tv0132-teslainc.htm"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-02-02T18:48:58-05:00",
+        "accession_no": "0001790565-24-000001",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.01,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000179056524000001/xslF345X05/edgardoc.xml"
+      },
+      {
+        "form_type": "SC 13G/A",
+        "filing_date": "2024-01-29T17:25:52-05:00",
+        "accession_no": "0001086364-24-005595",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.01,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000108636424005595/us88160r1014_012924.txt"
+      },
+      {
+        "form_type": "10-K",
+        "filing_date": "2024-01-26T21:00:20-05:00",
+        "accession_no": "0001628280-24-002390",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 2.55,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828024002390/tsla-20231231.htm"
+      },
+      {
+        "form_type": "8-K",
+        "filing_date": "2024-01-24T17:24:27-05:00",
+        "accession_no": "0000950170-24-007073",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.04,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000095017024007073/tsla-20240124.htm"
+      },
+      {
+        "form_type": "8-K",
+        "filing_date": "2024-01-02T16:29:17-05:00",
+        "accession_no": "0000950170-24-000282",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.05,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000095017024000282/tsla-20240102.htm"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2023-12-18T19:17:20-05:00",
+        "accession_no": "0001771340-23-000012",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134023000012/xslF345X05/edgardoc.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2023-12-07T20:26:21-05:00",
+        "accession_no": "0001972928-23-000009",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000197292823000009/xslF345X05/edgardoc.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2023-12-07T20:24:37-05:00",
+        "accession_no": "0001790565-23-000014",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000179056523000014/xslF345X05/edgardoc.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2023-12-07T20:16:27-05:00",
+        "accession_no": "0001771340-23-000011",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134023000011/xslF345X05/edgardoc.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2023-12-01T18:38:00-05:00",
+        "accession_no": "0001771340-23-000010",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134023000010/xslF345X05/edgardoc.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2023-10-31T18:48:19-04:00",
+        "accession_no": "0001790565-23-000013",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000179056523000013/xslF345X05/edgardoc.xml"
+      },
+      {
+        "form_type": "10-Q",
+        "filing_date": "2023-10-20T18:41:03-04:00",
+        "accession_no": "0001628280-23-034847",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 1.48,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828023034847/tsla-20230930.htm"
+      },
+      {
+        "form_type": "8-K",
+        "filing_date": "2023-10-18T16:15:00-04:00",
+        "accession_no": "0001628280-23-034588",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.03,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828023034588/tsla-20231018.htm"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2023-10-11T19:08:16-04:00",
+        "accession_no": "0001771340-23-000009",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134023000009/xslF345X05/edgardoc.xml"
+      },
+      {
+        "form_type": "8-K/A",
+        "filing_date": "2023-10-10T16:03:28-04:00",
+        "accession_no": "0000950170-23-052618",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.06,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000095017023052618/tsla-20230516.htm"
+      },
+      {
+        "form_type": "8-K",
+        "filing_date": "2023-10-02T09:05:38-04:00",
+        "accession_no": "0000950170-23-050938",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.05,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000095017023050938/tsla-20231002.htm"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2023-09-29T18:49:18-04:00",
+        "accession_no": "0001790565-23-000012",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000179056523000012/xslF345X05/edgardoc.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2023-09-07T19:39:15-04:00",
+        "accession_no": "0001771340-23-000008",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000177134023000008/xslF345X05/edgardoc.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2023-09-07T19:32:12-04:00",
+        "accession_no": "0001972928-23-000008",
+        "company_name": "Tesla, Inc.",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1318605/000197292823000008/xslF345X05/edgardoc.xml"
+      }
+    ]
+  },
+  "indexing_stats": {
+    "total_documents": 100,
+    "total_chunks": 8483,
+    "embedding_time": 0.0,
+    "indexing_time": 0.0,
+    "index_size_mb": 12.426312446594238,
+    "documents_processed": [
+      {
+        "form_type": "4",
+        "accession_no": "0001104659-25-073753",
+        "chunks_created": 6,
+        "original_size_kb": 16.1201171875
+      },
+      {
+        "form_type": "8-K",
+        "accession_no": "0001104659-25-073263",
+        "chunks_created": 21,
+        "original_size_kb": 47.9267578125
+      },
+      {
+        "form_type": "10-Q",
+        "accession_no": "0001628280-25-035806",
+        "chunks_created": 586,
+        "original_size_kb": 1482.86328125
+      },
+      {
+        "form_type": "8-K",
+        "accession_no": "0001628280-25-035738",
+        "chunks_created": 11,
+        "original_size_kb": 26.431640625
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001104659-25-068165",
+        "chunks_created": 7,
+        "original_size_kb": 17.19921875
+      },
+      {
+        "form_type": "8-K",
+        "accession_no": "0001628280-25-034692",
+        "chunks_created": 10,
+        "original_size_kb": 23.7021484375
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001104659-25-066775",
+        "chunks_created": 10,
+        "original_size_kb": 27.87109375
+      },
+      {
+        "form_type": "8-K",
+        "accession_no": "0001628280-25-033842",
+        "chunks_created": 11,
+        "original_size_kb": 26.27734375
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001972928-25-000003",
+        "chunks_created": 7,
+        "original_size_kb": 17.5185546875
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001104659-25-057932",
+        "chunks_created": 7,
+        "original_size_kb": 18.2314453125
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001104659-25-056561",
+        "chunks_created": 11,
+        "original_size_kb": 31.775390625
+      },
+      {
+        "form_type": "3",
+        "accession_no": "0001771340-25-000012",
+        "chunks_created": 4,
+        "original_size_kb": 11.4482421875
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001104659-25-054372",
+        "chunks_created": 13,
+        "original_size_kb": 38.169921875
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001104659-25-054371",
+        "chunks_created": 12,
+        "original_size_kb": 34.689453125
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001771340-25-000009",
+        "chunks_created": 7,
+        "original_size_kb": 18.458984375
+      },
+      {
+        "form_type": "8-K",
+        "accession_no": "0001104659-25-050072",
+        "chunks_created": 12,
+        "original_size_kb": 27.126953125
+      },
+      {
+        "form_type": "8-K",
+        "accession_no": "0001628280-25-026148",
+        "chunks_created": 12,
+        "original_size_kb": 27.8876953125
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001771340-25-000008",
+        "chunks_created": 7,
+        "original_size_kb": 17.8837890625
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001104659-25-046296",
+        "chunks_created": 9,
+        "original_size_kb": 23.986328125
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001771340-25-000007",
+        "chunks_created": 9,
+        "original_size_kb": 26.8828125
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001104659-25-043639",
+        "chunks_created": 6,
+        "original_size_kb": 17.6240234375
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001104659-25-043638",
+        "chunks_created": 6,
+        "original_size_kb": 16.150390625
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001104659-25-043637",
+        "chunks_created": 6,
+        "original_size_kb": 16.150390625
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001104659-25-043636",
+        "chunks_created": 6,
+        "original_size_kb": 16.171875
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001104659-25-043635",
+        "chunks_created": 8,
+        "original_size_kb": 20.8759765625
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001104659-25-043625",
+        "chunks_created": 10,
+        "original_size_kb": 27.5126953125
+      },
+      {
+        "form_type": "10-K/A",
+        "accession_no": "0001104659-25-042659",
+        "chunks_created": 339,
+        "original_size_kb": 854.404296875
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001771340-25-000006",
+        "chunks_created": 6,
+        "original_size_kb": 15.49609375
+      },
+      {
+        "form_type": "10-Q",
+        "accession_no": "0001628280-25-018911",
+        "chunks_created": 463,
+        "original_size_kb": 1197.119140625
+      },
+      {
+        "form_type": "8-K",
+        "accession_no": "0001628280-25-018851",
+        "chunks_created": 11,
+        "original_size_kb": 26.7763671875
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001771340-25-000005",
+        "chunks_created": 7,
+        "original_size_kb": 17.8857421875
+      },
+      {
+        "form_type": "8-K",
+        "accession_no": "0001628280-25-016070",
+        "chunks_created": 11,
+        "original_size_kb": 26.2783203125
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001771340-25-000004",
+        "chunks_created": 7,
+        "original_size_kb": 20.5751953125
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001771340-25-000003",
+        "chunks_created": 7,
+        "original_size_kb": 17.7998046875
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001104659-25-021101",
+        "chunks_created": 11,
+        "original_size_kb": 33.26171875
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001104659-25-021023",
+        "chunks_created": 10,
+        "original_size_kb": 29.8916015625
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001494731-25-000001",
+        "chunks_created": 6,
+        "original_size_kb": 16.408203125
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001771340-25-000002",
+        "chunks_created": 10,
+        "original_size_kb": 29.6064453125
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0000950170-25-014794",
+        "chunks_created": 12,
+        "original_size_kb": 33.634765625
+      },
+      {
+        "form_type": "10-K",
+        "accession_no": "0001628280-25-003063",
+        "chunks_created": 962,
+        "original_size_kb": 2535.6044921875
+      },
+      {
+        "form_type": "8-K",
+        "accession_no": "0001628280-25-002993",
+        "chunks_created": 11,
+        "original_size_kb": 27.572265625
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001771340-25-000001",
+        "chunks_created": 12,
+        "original_size_kb": 33.2412109375
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0000950170-25-003585",
+        "chunks_created": 15,
+        "original_size_kb": 43.1435546875
+      },
+      {
+        "form_type": "8-K",
+        "accession_no": "0001628280-25-000007",
+        "chunks_created": 11,
+        "original_size_kb": 27.1962890625
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0000950170-24-141705",
+        "chunks_created": 6,
+        "original_size_kb": 15.39453125
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001494731-24-000002",
+        "chunks_created": 5,
+        "original_size_kb": 14.90625
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001771340-24-000009",
+        "chunks_created": 7,
+        "original_size_kb": 17.38671875
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0000950170-24-134264",
+        "chunks_created": 10,
+        "original_size_kb": 28.0341796875
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001771340-24-000008",
+        "chunks_created": 9,
+        "original_size_kb": 24.7490234375
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0000950170-24-133415",
+        "chunks_created": 9,
+        "original_size_kb": 24.8525390625
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0000950170-24-128931",
+        "chunks_created": 10,
+        "original_size_kb": 29.5146484375
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001771340-24-000007",
+        "chunks_created": 8,
+        "original_size_kb": 21.4375
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0000950170-24-126580",
+        "chunks_created": 15,
+        "original_size_kb": 43.4404296875
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001494731-24-000001",
+        "chunks_created": 9,
+        "original_size_kb": 25.33203125
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001771340-24-000006",
+        "chunks_created": 8,
+        "original_size_kb": 21.3798828125
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001771340-24-000005",
+        "chunks_created": 7,
+        "original_size_kb": 17.45703125
+      },
+      {
+        "form_type": "10-Q",
+        "accession_no": "0001628280-24-043486",
+        "chunks_created": 574,
+        "original_size_kb": 1467.451171875
+      },
+      {
+        "form_type": "8-K",
+        "accession_no": "0001628280-24-043432",
+        "chunks_created": 11,
+        "original_size_kb": 26.7783203125
+      },
+      {
+        "form_type": "8-K",
+        "accession_no": "0001628280-24-041816",
+        "chunks_created": 14,
+        "original_size_kb": 33.6416015625
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001771340-24-000004",
+        "chunks_created": 7,
+        "original_size_kb": 17.6904296875
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001972928-24-000003",
+        "chunks_created": 7,
+        "original_size_kb": 17.375
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0000950170-24-087441",
+        "chunks_created": 11,
+        "original_size_kb": 29.9208984375
+      },
+      {
+        "form_type": "10-Q",
+        "accession_no": "0001628280-24-032662",
+        "chunks_created": 571,
+        "original_size_kb": 1453.0693359375
+      },
+      {
+        "form_type": "8-K",
+        "accession_no": "0001628280-24-032603",
+        "chunks_created": 11,
+        "original_size_kb": 26.044921875
+      },
+      {
+        "form_type": "8-K",
+        "accession_no": "0001628280-24-030714",
+        "chunks_created": 14,
+        "original_size_kb": 33.279296875
+      },
+      {
+        "form_type": "8-K",
+        "accession_no": "0001104659-24-071439",
+        "chunks_created": 28,
+        "original_size_kb": 63.7294921875
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001972928-24-000002",
+        "chunks_created": 7,
+        "original_size_kb": 17.3837890625
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001771340-24-000003",
+        "chunks_created": 7,
+        "original_size_kb": 16.2021484375
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0000950170-24-054842",
+        "chunks_created": 9,
+        "original_size_kb": 24.8134765625
+      },
+      {
+        "form_type": "DEF 14A",
+        "accession_no": "0001104659-24-053333",
+        "chunks_created": 2066,
+        "original_size_kb": 5505.6650390625
+      },
+      {
+        "form_type": "10-Q",
+        "accession_no": "0001628280-24-017503",
+        "chunks_created": 447,
+        "original_size_kb": 1151.4130859375
+      },
+      {
+        "form_type": "8-K",
+        "accession_no": "0000950170-24-046895",
+        "chunks_created": 18,
+        "original_size_kb": 43.830078125
+      },
+      {
+        "form_type": "8-K",
+        "accession_no": "0000950170-24-044588",
+        "chunks_created": 17,
+        "original_size_kb": 42.6865234375
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001790565-24-000003",
+        "chunks_created": 7,
+        "original_size_kb": 17.2822265625
+      },
+      {
+        "form_type": "8-K",
+        "accession_no": "0000950170-24-040274",
+        "chunks_created": 19,
+        "original_size_kb": 47.21875
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001771340-24-000002",
+        "chunks_created": 9,
+        "original_size_kb": 25.3916015625
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001972928-24-000001",
+        "chunks_created": 7,
+        "original_size_kb": 17.6181640625
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001790565-24-000002",
+        "chunks_created": 7,
+        "original_size_kb": 17.283203125
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001771340-24-000001",
+        "chunks_created": 9,
+        "original_size_kb": 23.6494140625
+      },
+      {
+        "form_type": "SC 13G/A",
+        "accession_no": "0001193125-24-036110",
+        "chunks_created": 17,
+        "original_size_kb": 39.265625
+      },
+      {
+        "form_type": "SC 13G/A",
+        "accession_no": "0001104659-24-020124",
+        "chunks_created": 4,
+        "original_size_kb": 11.146484375
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001790565-24-000001",
+        "chunks_created": 5,
+        "original_size_kb": 14.94921875
+      },
+      {
+        "form_type": "SC 13G/A",
+        "accession_no": "0001086364-24-005595",
+        "chunks_created": 3,
+        "original_size_kb": 11.724609375
+      },
+      {
+        "form_type": "10-K",
+        "accession_no": "0001628280-24-002390",
+        "chunks_created": 992,
+        "original_size_kb": 2610.103515625
+      },
+      {
+        "form_type": "8-K",
+        "accession_no": "0000950170-24-007073",
+        "chunks_created": 18,
+        "original_size_kb": 43.775390625
+      },
+      {
+        "form_type": "8-K",
+        "accession_no": "0000950170-24-000282",
+        "chunks_created": 20,
+        "original_size_kb": 46.7080078125
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001771340-23-000012",
+        "chunks_created": 7,
+        "original_size_kb": 17.34765625
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001972928-23-000009",
+        "chunks_created": 7,
+        "original_size_kb": 17.2734375
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001790565-23-000014",
+        "chunks_created": 7,
+        "original_size_kb": 17.275390625
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001771340-23-000011",
+        "chunks_created": 6,
+        "original_size_kb": 17.2587890625
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001771340-23-000010",
+        "chunks_created": 7,
+        "original_size_kb": 17.345703125
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001790565-23-000013",
+        "chunks_created": 7,
+        "original_size_kb": 17.169921875
+      },
+      {
+        "form_type": "10-Q",
+        "accession_no": "0001628280-23-034847",
+        "chunks_created": 594,
+        "original_size_kb": 1516.814453125
+      },
+      {
+        "form_type": "8-K",
+        "accession_no": "0001628280-23-034588",
+        "chunks_created": 11,
+        "original_size_kb": 27.40234375
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001771340-23-000009",
+        "chunks_created": 7,
+        "original_size_kb": 17.3486328125
+      },
+      {
+        "form_type": "8-K/A",
+        "accession_no": "0000950170-23-052618",
+        "chunks_created": 22,
+        "original_size_kb": 57.1357421875
+      },
+      {
+        "form_type": "8-K",
+        "accession_no": "0000950170-23-050938",
+        "chunks_created": 23,
+        "original_size_kb": 55.92578125
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001790565-23-000012",
+        "chunks_created": 7,
+        "original_size_kb": 17.169921875
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001771340-23-000008",
+        "chunks_created": 7,
+        "original_size_kb": 21.03515625
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001972928-23-000008",
+        "chunks_created": 7,
+        "original_size_kb": 17.275390625
+      }
+    ],
+    "embedding_provider": "local",
+    "embedding_model": "fast",
+    "embedding_cost_estimate": 0.0,
+    "embedding_dimension": 384
+  },
+  "index_version": "3.0"
+}

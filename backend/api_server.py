@@ -747,18 +747,44 @@ async def run_comprehensive_analysis(analysis_id: str, ticker: str, company_name
             }
         })
         
-        # Use local embeddings everywhere to avoid OpenAI costs
-        # Local embeddings are FREE and work well on Railway with sentence-transformers
-        embedding_provider = "local"
+        # Determine embedding strategy based on available dependencies
         is_railway = os.getenv("RAILWAY_ENVIRONMENT") is not None
         
-        logger.info(f"🧠 Using embedding provider: {embedding_provider} (Railway: {is_railway})")
-        results = await runner.run_comprehensive_analysis(
-            ticker=ticker, 
-            company_name=company_name,
-            verbose=True,
-            embedding_provider=embedding_provider
-        )
+        # Check if we have ML dependencies for local embeddings
+        try:
+            import sentence_transformers
+            import faiss
+            embedding_provider = "local"
+            skip_heavy_analysis = False
+            logger.info("🧠 Using local embeddings (sentence-transformers available)")
+        except ImportError:
+            # Ultra-minimal deployment - skip heavy analysis to avoid OpenAI embedding costs
+            embedding_provider = "local"  # Still set to local, but skip heavy analysis
+            skip_heavy_analysis = True
+            logger.info("⚡ Ultra-minimal mode: Skipping heavy analysis (no ML dependencies)")
+        
+        logger.info(f"🔧 Embedding strategy: {embedding_provider}, Skip heavy: {skip_heavy_analysis} (Railway: {is_railway})")
+        
+        # For ultra-minimal deployment, always run basic analysis
+        # Skip SEC document processing to avoid embedding dependencies
+        if skip_heavy_analysis:
+            logger.info("⚡ Running ultra-minimal analysis (no SEC document processing)")
+            # Run comprehensive analysis but it will gracefully handle missing ML deps
+            results = await runner.run_comprehensive_analysis(
+                ticker=ticker, 
+                company_name=company_name,
+                verbose=True,
+                embedding_provider=embedding_provider,
+                force_rebuild_index=False  # Don't try to build indexes without ML
+            )
+        else:
+            # Full analysis with local embeddings and SEC documents
+            results = await runner.run_comprehensive_analysis(
+                ticker=ticker, 
+                company_name=company_name,
+                verbose=True,
+                embedding_provider=embedding_provider
+            )
         
         # Complete the analysis
         state = await get_analysis_state(analysis_id)

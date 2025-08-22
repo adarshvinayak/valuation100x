@@ -44,3 +44,4 @@ def setup_clean_progress():
 
 # Auto-setup when imported
 setup_clean_progress()
+

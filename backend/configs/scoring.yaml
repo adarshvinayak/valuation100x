@@ -1,0 +1,344 @@
+# Stock Research Scoring Configuration
+
+# Sector-specific WACC ranges (%)
+sector_wacc:
+  technology: [8.0, 12.0]  # AAPL, MSFT, NVDA
+  consumer_staples: [6.0, 9.0]  # KO, PG
+  industrials: [7.0, 10.0]  # CAT
+  healthcare: [7.5, 10.5]  # UNH
+  consumer_discretionary: [8.5, 12.5]  # AMZN
+  energy: [9.0, 13.0]  # XOM, CVX
+  financials: [8.0, 11.0]  # JPM, GS
+  default: [8.0, 11.0]
+
+# Terminal growth rate ranges (%)
+terminal_growth:
+  conservative: 2.0
+  base: 2.5
+  optimistic: 3.0
+
+# DCF scenario weights
+dcf_scenarios:
+  bear: 0.25
+  base: 0.50
+  bull: 0.25
+
+# Scoring weights (must sum to 1.0)
+scoring_weights:
+  valuation: 0.40      # DCF, multiples, reverse DCF
+  quality: 0.25        # Financial strength, ratios
+  sentiment: 0.20      # Earnings calls, news sentiment
+  technicals: 0.15     # Price momentum, volatility
+
+# Quality metrics thresholds
+quality_thresholds:
+  roe_excellent: 0.20    # ROE > 20%
+  roe_good: 0.15         # ROE > 15%
+  debt_to_equity_low: 0.30  # D/E < 30%
+  debt_to_equity_high: 1.00 # D/E > 100%
+  current_ratio_good: 1.50  # Current ratio > 1.5
+  profit_margin_excellent: 0.20  # Net margin > 20%
+  profit_margin_good: 0.10       # Net margin > 10%
+
+# Technical indicators thresholds
+technical_thresholds:
+  rsi_oversold: 30
+  rsi_overbought: 70
+  volatility_high: 0.30  # 30% annualized
+  momentum_strong: 0.10  # 10% monthly return
+
+# Sentiment thresholds
+sentiment_thresholds:
+  very_positive: 0.6
+  positive: 0.2
+  negative: -0.2
+  very_negative: -0.6
+
+# Cache settings
+cache:
+  ttl_hours: 24
+  max_size_mb: 500
+
+# Rate limits (requests per minute)
+rate_limits:
+  sec_api: 10
+  fmp: 300
+  alpha_vantage: 5
+  polygon: 50
+  bloomberg: 100
+
+# ===============================
+# DAMODARAN STORY-DRIVEN VALUATION FRAMEWORK
+# ===============================
+
+# Company Life Cycle Classifications
+life_cycle_stages:
+  young_growth:
+    characteristics: ["high_growth", "low_margins", "heavy_reinvestment", "negative_cash_flow"]
+    revenue_growth_range: [0.20, 1.00]  # 20-100% growth
+    margin_progression: [0.05, 0.15]    # 5-15% margins
+    reinvestment_rate: [0.80, 1.20]     # 80-120% of revenues
+    valuation_approach: "revenue_multiples"
+    
+  growth:
+    characteristics: ["moderate_growth", "improving_margins", "significant_reinvestment"]
+    revenue_growth_range: [0.10, 0.30]  # 10-30% growth
+    margin_progression: [0.10, 0.25]    # 10-25% margins
+    reinvestment_rate: [0.30, 0.60]     # 30-60% of revenues
+    valuation_approach: "growth_dcf"
+    
+  mature:
+    characteristics: ["low_growth", "stable_margins", "moderate_reinvestment"]
+    revenue_growth_range: [0.02, 0.08]  # 2-8% growth
+    margin_progression: [0.15, 0.30]    # 15-30% margins
+    reinvestment_rate: [0.20, 0.40]     # 20-40% of revenues
+    valuation_approach: "traditional_dcf"
+    
+  decline:
+    characteristics: ["negative_growth", "declining_margins", "minimal_reinvestment"]
+    revenue_growth_range: [-0.10, 0.02] # -10% to 2% growth
+    margin_progression: [0.05, 0.20]    # 5-20% margins
+    reinvestment_rate: [0.00, 0.20]     # 0-20% of revenues
+    valuation_approach: "liquidation_value"
+
+# Business Model Classifications
+business_models:
+  asset_heavy:
+    sectors: ["industrials", "energy", "utilities", "materials"]
+    capital_intensity: [0.15, 0.40]     # 15-40% capex/sales
+    asset_turnover: [0.5, 1.5]          # 0.5-1.5x
+    working_capital_intensity: [0.10, 0.25]
+    cyclicality: "high"
+    
+  asset_light:
+    sectors: ["technology", "software", "services", "consulting"]
+    capital_intensity: [0.02, 0.10]     # 2-10% capex/sales
+    asset_turnover: [2.0, 8.0]          # 2-8x
+    working_capital_intensity: [-0.05, 0.10]
+    cyclicality: "low"
+    
+  hybrid:
+    sectors: ["healthcare", "consumer_discretionary", "telecommunications"]
+    capital_intensity: [0.08, 0.20]     # 8-20% capex/sales
+    asset_turnover: [1.0, 3.0]          # 1-3x
+    working_capital_intensity: [0.05, 0.15]
+    cyclicality: "medium"
+
+# Damodaran Sector-Specific Analysis Framework
+damodaran_sectors:
+  technology:
+    value_drivers:
+      - "R&D efficiency and innovation pipeline"
+      - "Platform network effects and ecosystem"
+      - "Customer switching costs and retention"
+      - "Scalability and operating leverage"
+    risk_factors:
+      - "Technology disruption and obsolescence"
+      - "Regulatory and antitrust scrutiny"
+      - "Talent retention and competition"
+      - "Competitive moat sustainability"
+    accounting_adjustments:
+      - "R&D capitalization vs expensing"
+      - "Stock-based compensation add-back"
+      - "Deferred revenue recognition"
+    terminal_characteristics:
+      mature_growth: 0.03
+      mature_roic: 0.15
+      mature_reinvestment: 0.20
+    key_metrics: ["R&D/Sales", "Sales per employee", "Customer acquisition cost"]
+    
+  consumer_staples:
+    value_drivers:
+      - "Brand strength and pricing power"
+      - "Distribution channel control"
+      - "Cost management and supply chain"
+      - "Geographic expansion opportunities"
+    risk_factors:
+      - "Input cost inflation pressure"
+      - "Private label competition"
+      - "Changing consumer preferences"
+      - "Regulatory and health concerns"
+    accounting_adjustments:
+      - "Inventory valuation methods"
+      - "Marketing spend capitalization"
+      - "Channel inventory management"
+    terminal_characteristics:
+      mature_growth: 0.025
+      mature_roic: 0.12
+      mature_reinvestment: 0.25
+    key_metrics: ["Brand value", "Market share", "Gross margin stability"]
+    
+  healthcare:
+    value_drivers:
+      - "Drug pipeline strength and diversity"
+      - "Patent protection duration"
+      - "Regulatory approval success rate"
+      - "Pricing power sustainability"
+    risk_factors:
+      - "Patent cliff exposure"
+      - "Regulatory and approval risks"
+      - "Healthcare reform impact"
+      - "Competitive biosimilar threats"
+    accounting_adjustments:
+      - "R&D expensing vs success probability"
+      - "Milestone payment recognition"
+      - "Inventory obsolescence reserves"
+    terminal_characteristics:
+      mature_growth: 0.04
+      mature_roic: 0.18
+      mature_reinvestment: 0.35
+    key_metrics: ["Pipeline value", "Patent expiry timeline", "R&D ROI"]
+    
+  financials:
+    value_drivers:
+      - "Net interest margin expansion"
+      - "Fee income diversification"
+      - "Credit quality management"
+      - "Operational efficiency gains"
+    risk_factors:
+      - "Interest rate sensitivity"
+      - "Credit cycle exposure"
+      - "Regulatory capital requirements"
+      - "Fintech competitive pressure"
+    accounting_adjustments:
+      - "Loan loss provision adequacy"
+      - "Mark-to-market volatility"
+      - "Off-balance sheet exposures"
+    terminal_characteristics:
+      mature_growth: 0.05
+      mature_roic: 0.10
+      mature_reinvestment: 0.30
+    key_metrics: ["ROE", "Tier 1 capital ratio", "Efficiency ratio"]
+    
+  energy:
+    value_drivers:
+      - "Reserve quality and replacement"
+      - "Production cost efficiency"
+      - "Downstream integration benefits"
+      - "Geographic diversification"
+    risk_factors:
+      - "Commodity price volatility"
+      - "Environmental regulations"
+      - "Transition to renewable energy"
+      - "Geopolitical risks"
+    accounting_adjustments:
+      - "Depletion and depreciation methods"
+      - "Exploration cost capitalization"
+      - "Derivative mark-to-market"
+    terminal_characteristics:
+      mature_growth: 0.02
+      mature_roic: 0.08
+      mature_reinvestment: 0.40
+    key_metrics: ["Reserve life", "Finding costs", "Decline rates"]
+    
+  industrials:
+    value_drivers:
+      - "Operational leverage benefits"
+      - "Infrastructure spending exposure"
+      - "Technology adoption efficiency"
+      - "Global market penetration"
+    risk_factors:
+      - "Economic cycle sensitivity"
+      - "Supply chain disruption"
+      - "Labor cost inflation"
+      - "Trade policy impacts"
+    accounting_adjustments:
+      - "Contract revenue recognition"
+      - "Inventory cycle adjustments"
+      - "Warranty reserve adequacy"
+    terminal_characteristics:
+      mature_growth: 0.035
+      mature_roic: 0.12
+      mature_reinvestment: 0.30
+    key_metrics: ["Order backlog", "Capacity utilization", "Price realization"]
+
+# Story Development Framework
+story_framework:
+  three_part_test:
+    possible: "Can this story actually happen given market dynamics?"
+    plausible: "Is it reasonable given competitive landscape?"
+    probable: "Is there evidence supporting this outcome?"
+    
+  story_elements:
+    core_business: "What business is this company really in?"
+    competitive_advantage: "What makes this company different/better?"
+    growth_drivers: "What will drive future growth?"
+    key_risks: "What could derail this story?"
+    end_game: "What does this company look like in 10 years?"
+    
+  validation_criteria:
+    market_size_consistency: true
+    competitive_positioning_realistic: true
+    resource_allocation_aligned: true
+    financial_projections_supportable: true
+
+# Scenario Analysis Framework
+scenario_framework:
+  bear_case:
+    probability: 0.25
+    revenue_growth_multiplier: 0.7  # 70% of base case
+    margin_compression: 0.1         # 10pp margin compression
+    multiple_compression: 0.8       # 20% multiple compression
+    
+  base_case:
+    probability: 0.50
+    revenue_growth_multiplier: 1.0  # Base assumptions
+    margin_stability: 0.0           # No margin change
+    multiple_stability: 1.0         # Current multiples
+    
+  bull_case:
+    probability: 0.25
+    revenue_growth_multiplier: 1.3  # 130% of base case
+    margin_expansion: 0.05          # 5pp margin expansion
+    multiple_expansion: 1.2         # 20% multiple expansion
+
+# Risk Assessment Framework
+risk_assessment:
+  thesis_killers:
+    max_scenarios: 3
+    timeframe_months: 24
+    impact_threshold: 0.30  # 30% value destruction
+    
+  early_warning_indicators:
+    financial: ["Revenue deceleration", "Margin compression", "Cash flow decline"]
+    operational: ["Market share loss", "Customer churn", "Competitive pressure"]
+    strategic: ["Management changes", "Strategy shifts", "Capital allocation"]
+    
+  margin_of_safety:
+    buy_threshold: 0.30      # 30% undervalued
+    hold_range: [-0.20, 0.20]  # ±20% fair value
+    sell_threshold: -0.20    # 20% overvalued
+
+# Investment Decision Framework
+decision_framework:
+  buy_criteria:
+    min_upside: 0.30           # 30% minimum upside
+    stress_test_survival: true  # Must survive stress tests
+    catalyst_timeline: 24      # Months for value recognition
+    
+  hold_criteria:
+    fair_value_range: [-0.20, 0.20]  # ±20% of intrinsic value
+    story_integrity: true              # Story remains intact
+    
+  sell_criteria:
+    overvaluation_threshold: -0.20    # 20% overvalued
+    story_breakdown: true             # Fundamental thesis change
+    better_opportunities: true        # Relative attractiveness
+
+# 10-Year DCF Model Parameters
+dcf_model:
+  projection_years: 10
+  terminal_value_method: "perpetual_growth"
+  working_capital_assumptions:
+    technology: [-0.02, 0.05]      # -2% to 5% of sales
+    consumer_staples: [0.08, 0.15] # 8-15% of sales
+    industrials: [0.10, 0.20]      # 10-20% of sales
+    
+  tax_rate_assumptions:
+    marginal_rate: 0.25  # Use marginal, not effective
+    international_adjustment: true
+    
+  terminal_value_checks:
+    max_terminal_multiple: 25  # EV/EBITDA
+    min_terminal_roic: 0.08    # 8% minimum ROIC
+    terminal_growth_gdp_check: true

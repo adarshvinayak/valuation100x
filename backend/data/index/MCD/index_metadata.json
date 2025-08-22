@@ -1,0 +1,2268 @@
+{
+  "ticker": "MCD",
+  "created_at": "2025-08-22T18:33:27.330180",
+  "indexing_method": "enhanced_sec_integration_v2",
+  "embedding_provider": "local",
+  "embedding_model": "fast",
+  "embedding_dimension": 384,
+  "chunk_size": 1200,
+  "chunk_overlap": 200,
+  "vector_store": "faiss",
+  "sec_documents": {
+    "processing_summary": {
+      "total_found": 100,
+      "downloaded": 100,
+      "cached": 0,
+      "failed": 0,
+      "total_size_mb": 10.834487915039062,
+      "processing_time": 35.821294
+    },
+    "document_count": 100,
+    "total_size_mb": 10.83,
+    "date_range": {
+      "earliest": "2024-08-29T17:04:58-04:00",
+      "latest": "2025-08-20T15:54:46-04:00"
+    },
+    "documents_by_type": {
+      "4": [
+        {
+          "accession_no": "0001567619-25-000424",
+          "filing_date": "2025-08-20T15:54:46-04:00",
+          "period_end_date": "2025-08-20",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000424/xslF345X05/form4.xml",
+          "size_kb": 17.2,
+          "document_id": "57ec62984c2f2ac83a9d576eac6adc84"
+        },
+        {
+          "accession_no": "0001567619-25-000421",
+          "filing_date": "2025-08-19T20:55:27-04:00",
+          "period_end_date": "2025-08-19",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000421/xslF345X05/form4.xml",
+          "size_kb": 14.8,
+          "document_id": "300218a5fb5e5d2162d5f77173998119"
+        },
+        {
+          "accession_no": "0000950103-25-010247",
+          "filing_date": "2025-08-13T16:11:58-04:00",
+          "period_end_date": "2025-08-11",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000095010325010247/xslF345X05/ownership.xml",
+          "size_kb": 18.9,
+          "document_id": "a08f892a63e4d977ecd8a6cde569525f"
+        },
+        {
+          "accession_no": "0000950103-25-010210",
+          "filing_date": "2025-08-12T19:52:37-04:00",
+          "period_end_date": "2025-08-07",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000095010325010210/xslF345X05/ownership.xml",
+          "size_kb": 18.9,
+          "document_id": "a29b9d61b4a20936898e561e2cf3e62a"
+        },
+        {
+          "accession_no": "0001567619-25-000381",
+          "filing_date": "2025-08-06T16:43:20-04:00",
+          "period_end_date": "2025-08-06",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000381/xslF345X05/form4.xml",
+          "size_kb": 16.3,
+          "document_id": "63c8c4e507fd54f613ec8e343d9977ed"
+        },
+        {
+          "accession_no": "0001567619-25-000379",
+          "filing_date": "2025-08-04T15:06:52-04:00",
+          "period_end_date": "2025-08-01",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000379/xslF345X05/form4.xml",
+          "size_kb": 14.8,
+          "document_id": "866bdb90c51792083b3d466783ff0547"
+        },
+        {
+          "accession_no": "0001567619-25-000375",
+          "filing_date": "2025-07-23T15:08:08-04:00",
+          "period_end_date": "2025-07-23",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000375/xslF345X05/form4.xml",
+          "size_kb": 14.8,
+          "document_id": "891048aedcf6046d96cd456cabd5a470"
+        },
+        {
+          "accession_no": "0001567619-25-000368",
+          "filing_date": "2025-07-10T18:23:00-04:00",
+          "period_end_date": "2025-07-10",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000368/xslF345X05/form4.xml",
+          "size_kb": 14.8,
+          "document_id": "41ab8aa4a7f7125d09181cd8af0df956"
+        },
+        {
+          "accession_no": "0001567619-25-000360",
+          "filing_date": "2025-07-01T15:10:24-04:00",
+          "period_end_date": "2025-06-30",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000360/xslF345X05/form4.xml",
+          "size_kb": 16.0,
+          "document_id": "a9db9f09f39f06da011cfcdc9bf98ce4"
+        },
+        {
+          "accession_no": "0001567619-25-000358",
+          "filing_date": "2025-07-01T15:06:12-04:00",
+          "period_end_date": "2025-06-30",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000358/xslF345X05/form4.xml",
+          "size_kb": 16.0,
+          "document_id": "d89b19341a59928553a1cac958f8a58a"
+        },
+        {
+          "accession_no": "0001567619-25-000356",
+          "filing_date": "2025-07-01T15:01:53-04:00",
+          "period_end_date": "2025-06-30",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000356/xslF345X05/form4.xml",
+          "size_kb": 16.5,
+          "document_id": "e9fe14dcc0831dee659f61b0c9c0b58c"
+        },
+        {
+          "accession_no": "0001567619-25-000354",
+          "filing_date": "2025-07-01T14:58:06-04:00",
+          "period_end_date": "2025-06-30",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000354/xslF345X05/form4.xml",
+          "size_kb": 16.0,
+          "document_id": "8f9529e8c310dddfe7270654668251b8"
+        },
+        {
+          "accession_no": "0001567619-25-000344",
+          "filing_date": "2025-06-23T16:41:34-04:00",
+          "period_end_date": "2025-06-23",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000344/xslF345X05/form4.xml",
+          "size_kb": 14.8,
+          "document_id": "ec916e74c6abe416b1b29dcd4792e33c"
+        },
+        {
+          "accession_no": "0001567619-25-000334",
+          "filing_date": "2025-05-23T14:05:11-04:00",
+          "period_end_date": "2025-05-23",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000334/xslF345X05/form4.xml",
+          "size_kb": 14.8,
+          "document_id": "ab7e0672238a0823d8be38f0180e9143"
+        },
+        {
+          "accession_no": "0001567619-25-000320",
+          "filing_date": "2025-05-22T15:43:20-04:00",
+          "period_end_date": "2025-05-20",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000320/xslF345X05/form4.xml",
+          "size_kb": 17.0,
+          "document_id": "937b9b28cdf1394e6eb774a31214a6b0"
+        },
+        {
+          "accession_no": "0001567619-25-000288",
+          "filing_date": "2025-05-09T12:58:39-04:00",
+          "period_end_date": "2025-05-07",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000288/xslF345X05/form4.xml",
+          "size_kb": 17.1,
+          "document_id": "2799a40d924bfee389d47c653a7d2c72"
+        },
+        {
+          "accession_no": "0001567619-25-000275",
+          "filing_date": "2025-04-23T16:32:30-04:00",
+          "period_end_date": "2025-04-23",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000275/xslF345X05/form4.xml",
+          "size_kb": 14.8,
+          "document_id": "4707b5f092f7342972e62419c4b26359"
+        },
+        {
+          "accession_no": "0001567619-25-000264",
+          "filing_date": "2025-04-02T16:56:17-04:00",
+          "period_end_date": "2025-03-31",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000264/xslF345X05/form4.xml",
+          "size_kb": 16.0,
+          "document_id": "e766f125ab77b1f71cfc3132df06c0a5"
+        },
+        {
+          "accession_no": "0001567619-25-000262",
+          "filing_date": "2025-04-02T16:54:07-04:00",
+          "period_end_date": "2025-03-31",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000262/xslF345X05/form4.xml",
+          "size_kb": 16.0,
+          "document_id": "ce77dbbdd8a7830dfd4a5760a9dbcf6d"
+        },
+        {
+          "accession_no": "0001567619-25-000260",
+          "filing_date": "2025-04-02T16:40:23-04:00",
+          "period_end_date": "2025-03-31",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000260/xslF345X05/form4.xml",
+          "size_kb": 16.5,
+          "document_id": "b4e7f94260990078c4a4aa1e7a6e3a72"
+        },
+        {
+          "accession_no": "0001567619-25-000258",
+          "filing_date": "2025-04-02T16:38:13-04:00",
+          "period_end_date": "2025-03-31",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000258/xslF345X05/form4.xml",
+          "size_kb": 16.0,
+          "document_id": "257179a3ae7503776f6d23d6e7f1805c"
+        },
+        {
+          "accession_no": "0001567619-25-000238",
+          "filing_date": "2025-03-24T16:39:27-04:00",
+          "period_end_date": "2025-03-24",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000238/xslF345X05/form4.xml",
+          "size_kb": 14.8,
+          "document_id": "56d16edb0984d6e1b6dbb8f13e8f12be"
+        },
+        {
+          "accession_no": "0001567619-25-000209",
+          "filing_date": "2025-02-28T16:33:29-05:00",
+          "period_end_date": "2025-02-27",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000209/xslF345X05/form4.xml",
+          "size_kb": 14.8,
+          "document_id": "e881ec131aa0afbfe5ce0003910a498f"
+        },
+        {
+          "accession_no": "0001567619-25-000206",
+          "filing_date": "2025-02-25T17:07:15-05:00",
+          "period_end_date": "2025-02-24",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000206/xslF345X05/form4.xml",
+          "size_kb": 20.3,
+          "document_id": "e3341d9849c919d19368bbd99605deb8"
+        },
+        {
+          "accession_no": "0001567619-25-000204",
+          "filing_date": "2025-02-25T17:01:15-05:00",
+          "period_end_date": "2025-02-24",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000204/xslF345X05/form4.xml",
+          "size_kb": 14.8,
+          "document_id": "1a6b76f4cda3e2ee787c066532c90c35"
+        },
+        {
+          "accession_no": "0001567619-25-000201",
+          "filing_date": "2025-02-21T17:37:30-05:00",
+          "period_end_date": "2025-02-21",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000201/xslF345X05/form4.xml",
+          "size_kb": 17.6,
+          "document_id": "99b4fe3e04e13d5fb4698c00a8bfbfbf"
+        },
+        {
+          "accession_no": "0001567619-25-000199",
+          "filing_date": "2025-02-21T17:32:09-05:00",
+          "period_end_date": "2025-02-21",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000199/xslF345X05/form4.xml",
+          "size_kb": 14.8,
+          "document_id": "78de1cf4487aa16e9115cba5637d87a4"
+        },
+        {
+          "accession_no": "0001567619-25-000197",
+          "filing_date": "2025-02-19T18:38:04-05:00",
+          "period_end_date": "2025-02-14",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000197/xslF345X05/form4.xml",
+          "size_kb": 18.8,
+          "document_id": "ea948aa7c197040a2cb5e347a8ed2eb8"
+        },
+        {
+          "accession_no": "0001567619-25-000195",
+          "filing_date": "2025-02-19T18:36:36-05:00",
+          "period_end_date": "2025-02-14",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000195/xslF345X05/form4.xml",
+          "size_kb": 18.8,
+          "document_id": "1a8cc3a0eb95f1b1eae0a33d263c1847"
+        },
+        {
+          "accession_no": "0001567619-25-000193",
+          "filing_date": "2025-02-19T18:35:03-05:00",
+          "period_end_date": "2025-02-14",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000193/xslF345X05/form4.xml",
+          "size_kb": 20.2,
+          "document_id": "48c99023c92ec743ce3988141aed3715"
+        },
+        {
+          "accession_no": "0001567619-25-000191",
+          "filing_date": "2025-02-19T18:33:08-05:00",
+          "period_end_date": "2025-02-14",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000191/xslF345X05/form4.xml",
+          "size_kb": 20.3,
+          "document_id": "5987bb6bf7a8a93e5803acbd723eb7d7"
+        },
+        {
+          "accession_no": "0001567619-25-000189",
+          "filing_date": "2025-02-19T18:30:47-05:00",
+          "period_end_date": "2025-02-14",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000189/xslF345X05/form4.xml",
+          "size_kb": 21.1,
+          "document_id": "ed7c9ec982844466e79bc48462929ef7"
+        },
+        {
+          "accession_no": "0001567619-25-000187",
+          "filing_date": "2025-02-19T18:28:00-05:00",
+          "period_end_date": "2025-02-14",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000187/xslF345X05/form4.xml",
+          "size_kb": 27.0,
+          "document_id": "3c5b2e8e3e5789099addd9058cdd7898"
+        },
+        {
+          "accession_no": "0001567619-25-000185",
+          "filing_date": "2025-02-19T18:25:08-05:00",
+          "period_end_date": "2025-02-14",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000185/xslF345X05/form4.xml",
+          "size_kb": 18.8,
+          "document_id": "e68cd3819fec457d06d534e1f933a033"
+        },
+        {
+          "accession_no": "0001567619-25-000183",
+          "filing_date": "2025-02-19T18:23:12-05:00",
+          "period_end_date": "2025-02-14",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000183/xslF345X05/form4.xml",
+          "size_kb": 22.6,
+          "document_id": "ee2bd3a5f1ba3a34f19a28e0591c44bd"
+        },
+        {
+          "accession_no": "0001567619-25-000180",
+          "filing_date": "2025-02-19T18:01:02-05:00",
+          "period_end_date": "2025-02-14",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000180/xslF345X05/form4.xml",
+          "size_kb": 19.0,
+          "document_id": "51fcf49bd08d3471eb82cb51f8e55a0d"
+        },
+        {
+          "accession_no": "0001567619-25-000178",
+          "filing_date": "2025-02-14T16:33:33-05:00",
+          "period_end_date": "2025-02-12",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000178/xslF345X05/form4.xml",
+          "size_kb": 17.5,
+          "document_id": "826585f75f7515196ab2c2a945635390"
+        },
+        {
+          "accession_no": "0001567619-25-000177",
+          "filing_date": "2025-02-14T16:33:00-05:00",
+          "period_end_date": "2025-02-12",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000177/xslF345X05/form4.xml",
+          "size_kb": 17.6,
+          "document_id": "ced5eb0ed8d07a071cca87ac6e1aac7e"
+        },
+        {
+          "accession_no": "0001567619-25-000176",
+          "filing_date": "2025-02-14T16:32:07-05:00",
+          "period_end_date": "2025-02-12",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000176/xslF345X05/form4.xml",
+          "size_kb": 15.8,
+          "document_id": "1641b7deffd6df57cc582b388720fad4"
+        },
+        {
+          "accession_no": "0001567619-25-000175",
+          "filing_date": "2025-02-14T16:31:40-05:00",
+          "period_end_date": "2025-02-12",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000175/xslF345X05/form4.xml",
+          "size_kb": 19.0,
+          "document_id": "65d4e91630493d175ebf7593f68b699e"
+        },
+        {
+          "accession_no": "0001567619-25-000174",
+          "filing_date": "2025-02-14T16:31:15-05:00",
+          "period_end_date": "2025-02-12",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000174/xslF345X05/form4.xml",
+          "size_kb": 19.9,
+          "document_id": "7a3fa030f320ec09f904ce06ccf3e6f3"
+        },
+        {
+          "accession_no": "0001567619-25-000173",
+          "filing_date": "2025-02-14T16:30:53-05:00",
+          "period_end_date": "2025-02-12",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000173/xslF345X05/form4.xml",
+          "size_kb": 19.1,
+          "document_id": "12e393dc14a7cedf46b5277bb1c869d9"
+        },
+        {
+          "accession_no": "0001567619-25-000172",
+          "filing_date": "2025-02-14T16:30:19-05:00",
+          "period_end_date": "2025-02-12",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000172/xslF345X05/form4.xml",
+          "size_kb": 18.7,
+          "document_id": "ef39202e3699d70a94cb0e2033710e5c"
+        },
+        {
+          "accession_no": "0001567619-25-000171",
+          "filing_date": "2025-02-14T16:29:44-05:00",
+          "period_end_date": "2025-02-12",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000171/xslF345X05/form4.xml",
+          "size_kb": 17.6,
+          "document_id": "30bea7ea61eade04b7cf00cd09cf6caf"
+        },
+        {
+          "accession_no": "0001567619-25-000170",
+          "filing_date": "2025-02-14T16:29:11-05:00",
+          "period_end_date": "2025-02-12",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000170/xslF345X05/form4.xml",
+          "size_kb": 15.3,
+          "document_id": "4086e33a59bf3bd0908c4636e9a19e6a"
+        },
+        {
+          "accession_no": "0001567619-25-000169",
+          "filing_date": "2025-02-14T16:28:30-05:00",
+          "period_end_date": "2025-02-12",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000169/xslF345X05/form4.xml",
+          "size_kb": 17.6,
+          "document_id": "86addd844caabe55084eba685e75bf54"
+        },
+        {
+          "accession_no": "0001567619-25-000168",
+          "filing_date": "2025-02-14T16:27:56-05:00",
+          "period_end_date": "2022-11-03",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000168/xslF345X05/form4.xml",
+          "size_kb": 17.3,
+          "document_id": "758f4b8cd9afc1db442b4ccaefa8b6a3"
+        },
+        {
+          "accession_no": "0001567619-25-000167",
+          "filing_date": "2025-02-14T16:27:03-05:00",
+          "period_end_date": "2025-02-12",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000167/xslF345X05/form4.xml",
+          "size_kb": 17.6,
+          "document_id": "83e0a8954389c8ef855bb2800baf31f5"
+        },
+        {
+          "accession_no": "0001567619-25-000166",
+          "filing_date": "2025-02-14T16:25:17-05:00",
+          "period_end_date": "2025-02-12",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000166/xslF345X05/form4.xml",
+          "size_kb": 17.7,
+          "document_id": "dc7ce2018982e0ebf5e4b6f14a305e50"
+        },
+        {
+          "accession_no": "0001567619-25-000165",
+          "filing_date": "2025-02-14T16:23:25-05:00",
+          "period_end_date": "2025-02-12",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000165/xslF345X05/form4.xml",
+          "size_kb": 21.1,
+          "document_id": "8999f88974e2450c159095243035b39a"
+        },
+        {
+          "accession_no": "0001567619-25-000151",
+          "filing_date": "2025-02-13T15:09:01-05:00",
+          "period_end_date": "2025-02-11",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000151/xslF345X05/form4.xml",
+          "size_kb": 16.7,
+          "document_id": "e461f53be0f315d813d2b639aa83c82f"
+        },
+        {
+          "accession_no": "0001567619-25-000036",
+          "filing_date": "2025-01-24T16:08:34-05:00",
+          "period_end_date": "2025-01-23",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000036/xslF345X05/form4.xml",
+          "size_kb": 14.8,
+          "document_id": "863575dce64e8b16948c36c7b3d8f5fa"
+        },
+        {
+          "accession_no": "0001567619-25-000026",
+          "filing_date": "2025-01-03T18:14:16-05:00",
+          "period_end_date": "2025-01-02",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000026/xslF345X05/form4.xml",
+          "size_kb": 19.0,
+          "document_id": "bfb161f1da3d47759323626e85e5e592"
+        },
+        {
+          "accession_no": "0001567619-25-000024",
+          "filing_date": "2025-01-03T18:02:34-05:00",
+          "period_end_date": "2024-12-31",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000024/xslF345X05/form4.xml",
+          "size_kb": 16.4,
+          "document_id": "d97f862801e8e5b0e633523172157e33"
+        },
+        {
+          "accession_no": "0001567619-25-000022",
+          "filing_date": "2025-01-03T17:59:33-05:00",
+          "period_end_date": "2024-12-31",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000022/xslF345X05/form4.xml",
+          "size_kb": 16.0,
+          "document_id": "8c2ea9020880fa71ddfdf0ed3f4dee62"
+        },
+        {
+          "accession_no": "0001567619-25-000020",
+          "filing_date": "2025-01-03T17:56:16-05:00",
+          "period_end_date": "2024-12-31",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000020/xslF345X05/form4.xml",
+          "size_kb": 16.0,
+          "document_id": "d96f4456d365149544611de7ffab3543"
+        },
+        {
+          "accession_no": "0001567619-25-000018",
+          "filing_date": "2025-01-03T17:53:32-05:00",
+          "period_end_date": "2024-12-31",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000018/xslF345X05/form4.xml",
+          "size_kb": 16.0,
+          "document_id": "a07a8abe1fdedd9d8faf25f733677ab1"
+        },
+        {
+          "accession_no": "0001567619-25-000016",
+          "filing_date": "2025-01-03T17:49:08-05:00",
+          "period_end_date": "2024-12-31",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000016/xslF345X05/form4.xml",
+          "size_kb": 16.4,
+          "document_id": "5481fcd3b5cbda56371c62972be3aaea"
+        },
+        {
+          "accession_no": "0001567619-25-000014",
+          "filing_date": "2025-01-03T17:45:47-05:00",
+          "period_end_date": "2024-12-31",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000014/xslF345X05/form4.xml",
+          "size_kb": 16.5,
+          "document_id": "5c1a211fe6a31ef15ba05140fee7f1c9"
+        },
+        {
+          "accession_no": "0001567619-25-000012",
+          "filing_date": "2025-01-03T17:35:38-05:00",
+          "period_end_date": "2024-12-31",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000012/xslF345X05/form4.xml",
+          "size_kb": 16.5,
+          "document_id": "58233a3f3c8dc4dd88bb86acc32ca88d"
+        },
+        {
+          "accession_no": "0001567619-25-000010",
+          "filing_date": "2025-01-03T17:31:47-05:00",
+          "period_end_date": "2024-12-31",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000010/xslF345X05/form4.xml",
+          "size_kb": 16.4,
+          "document_id": "08a8c4b1feae723e180b4e26b871cc95"
+        },
+        {
+          "accession_no": "0001567619-25-000008",
+          "filing_date": "2025-01-03T17:27:12-05:00",
+          "period_end_date": "2024-12-31",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000008/xslF345X05/form4.xml",
+          "size_kb": 16.0,
+          "document_id": "075490f82d73dad3b9a56ce21476f9a4"
+        },
+        {
+          "accession_no": "0001567619-25-000006",
+          "filing_date": "2025-01-03T17:14:51-05:00",
+          "period_end_date": "2024-12-31",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000006/xslF345X05/form4.xml",
+          "size_kb": 16.0,
+          "document_id": "1566114ab89e0d499c41331a43044a85"
+        },
+        {
+          "accession_no": "0001567619-25-000003",
+          "filing_date": "2025-01-03T17:03:58-05:00",
+          "period_end_date": "2024-12-31",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000003/xslF345X05/form4.xml",
+          "size_kb": 16.4,
+          "document_id": "96a1276490e4a19547b9082817bf66d0"
+        },
+        {
+          "accession_no": "0001567619-24-000427",
+          "filing_date": "2024-12-31T19:57:29-05:00",
+          "period_end_date": "2024-12-30",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761924000427/xslF345X05/form4.xml",
+          "size_kb": 16.3,
+          "document_id": "7d7470787ff5bc5182fbca2b002d5aa6"
+        },
+        {
+          "accession_no": "0000063908-24-000158",
+          "filing_date": "2024-12-23T19:50:12-05:00",
+          "period_end_date": "2024-12-23",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000158/xslF345X05/form4.xml",
+          "size_kb": 15.3,
+          "document_id": "589e6f478290d532db80c3b18e569164"
+        },
+        {
+          "accession_no": "0000063908-24-000157",
+          "filing_date": "2024-11-26T16:08:19-05:00",
+          "period_end_date": "2024-11-25",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000157/xslF345X05/form4.xml",
+          "size_kb": 14.8,
+          "document_id": "ad7b0c8226a24f08136579821ce07867"
+        },
+        {
+          "accession_no": "0000063908-24-000154",
+          "filing_date": "2024-11-05T16:59:55-05:00",
+          "period_end_date": "2024-11-01",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000154/xslF345X05/form4.xml",
+          "size_kb": 19.0,
+          "document_id": "7007219b405692e98cf78bfee1e126de"
+        },
+        {
+          "accession_no": "0000063908-24-000149",
+          "filing_date": "2024-10-25T15:19:47-04:00",
+          "period_end_date": "2024-10-23",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000149/xslF345X05/form4.xml",
+          "size_kb": 14.8,
+          "document_id": "e496065b51c39da0ac8ce00c8fa91150"
+        },
+        {
+          "accession_no": "0000063908-24-000148",
+          "filing_date": "2024-10-15T16:55:09-04:00",
+          "period_end_date": "2024-10-14",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000148/xslF345X05/form4.xml",
+          "size_kb": 16.6,
+          "document_id": "da36c37b33ca37fcd7440dce108d1710"
+        },
+        {
+          "accession_no": "0000063908-24-000143",
+          "filing_date": "2024-10-01T16:42:35-04:00",
+          "period_end_date": "2024-09-30",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000143/xslF345X05/form4.xml",
+          "size_kb": 16.4,
+          "document_id": "1d9ee67f6b91b02dfb9ffd92ab08b039"
+        },
+        {
+          "accession_no": "0000063908-24-000142",
+          "filing_date": "2024-10-01T16:40:12-04:00",
+          "period_end_date": "2024-09-30",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000142/xslF345X05/form4.xml",
+          "size_kb": 16.0,
+          "document_id": "6ec654942bf1383cc9f7e91ef7561254"
+        },
+        {
+          "accession_no": "0000063908-24-000141",
+          "filing_date": "2024-10-01T16:38:29-04:00",
+          "period_end_date": "2024-09-30",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000141/xslF345X05/form4.xml",
+          "size_kb": 16.0,
+          "document_id": "092dd68b8dc6d6f9625ff97ca8438a8f"
+        },
+        {
+          "accession_no": "0000063908-24-000140",
+          "filing_date": "2024-09-27T16:20:38-04:00",
+          "period_end_date": "2024-09-27",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000140/xslF345X05/form4.xml",
+          "size_kb": 18.1,
+          "document_id": "0fb87c79dbd8572ecca7a35c28c22bb5"
+        },
+        {
+          "accession_no": "0000063908-24-000139",
+          "filing_date": "2024-09-25T16:35:21-04:00",
+          "period_end_date": "2024-09-23",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000139/xslF345X05/form4.xml",
+          "size_kb": 17.3,
+          "document_id": "d5159a4d5221474f327c6e59880ef2a6"
+        },
+        {
+          "accession_no": "0000063908-24-000132",
+          "filing_date": "2024-09-24T17:04:24-04:00",
+          "period_end_date": "2024-09-23",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000132/xslF345X05/form4.xml",
+          "size_kb": 17.2,
+          "document_id": "030942a1015cc92b4e4006cab6250bf2"
+        },
+        {
+          "accession_no": "0000063908-24-000131",
+          "filing_date": "2024-09-24T17:01:47-04:00",
+          "period_end_date": "2024-09-23",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000131/xslF345X05/form4.xml",
+          "size_kb": 15.3,
+          "document_id": "1e2807d3473e67992fcc249c702f4637"
+        },
+        {
+          "accession_no": "0000063908-24-000130",
+          "filing_date": "2024-09-18T16:38:47-04:00",
+          "period_end_date": "2024-09-16",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000130/xslF345X05/form4.xml",
+          "size_kb": 16.8,
+          "document_id": "fd2ae5baade2d594e159dd905ee8970e"
+        },
+        {
+          "accession_no": "0000063908-24-000129",
+          "filing_date": "2024-09-18T16:37:01-04:00",
+          "period_end_date": "2024-09-16",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000129/xslF345X05/form4.xml",
+          "size_kb": 16.8,
+          "document_id": "26e01e15d2b06c02477f6b4458190a71"
+        },
+        {
+          "accession_no": "0000063908-24-000128",
+          "filing_date": "2024-09-03T17:04:28-04:00",
+          "period_end_date": "2024-09-03",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000128/xslF345X05/form4.xml",
+          "size_kb": 19.0,
+          "document_id": "022e63341d84db6b73fc1f53af63142b"
+        },
+        {
+          "accession_no": "0000063908-24-000127",
+          "filing_date": "2024-09-03T16:52:50-04:00",
+          "period_end_date": "2024-08-31",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000127/xslF345X05/form4.xml",
+          "size_kb": 18.8,
+          "document_id": "fe6dd8cdcaee9e81c2c1894683311e39"
+        }
+      ],
+      "10-Q": [
+        {
+          "accession_no": "0000063908-25-000039",
+          "filing_date": "2025-08-06T12:17:04-04:00",
+          "period_end_date": "2025-06-30",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390825000039/mcd-20250630.htm",
+          "size_kb": 1523.7,
+          "document_id": "bf9f3f483b941dc61aae3b971d594ff5"
+        },
+        {
+          "accession_no": "0000063908-25-000025",
+          "filing_date": "2025-05-12T13:15:39-04:00",
+          "period_end_date": "2025-03-31",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390825000025/mcd-20250331.htm",
+          "size_kb": 1107.7,
+          "document_id": "ceba5ae721ab77f005267cd9127861a5"
+        },
+        {
+          "accession_no": "0000063908-24-000156",
+          "filing_date": "2024-11-07T12:44:41-05:00",
+          "period_end_date": "2024-09-30",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000156/mcd-20240930.htm",
+          "size_kb": 1526.2,
+          "document_id": "021e943cd44a4e7dd940ddbfa433221b"
+        }
+      ],
+      "8-K": [
+        {
+          "accession_no": "0000063908-25-000036",
+          "filing_date": "2025-08-06T07:02:02-04:00",
+          "period_end_date": "2025-08-06",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390825000036/mcd-20250806.htm",
+          "size_kb": 34.3,
+          "document_id": "7a248c15959decb05e1fcba83bc0aa17"
+        },
+        {
+          "accession_no": "0000063908-25-000029",
+          "filing_date": "2025-05-23T13:50:07-04:00",
+          "period_end_date": "2025-05-20",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390825000029/mcd-20250520.htm",
+          "size_kb": 59.5,
+          "document_id": "0072a5933cffafd960fb446d84609b26"
+        },
+        {
+          "accession_no": "0000063908-25-000021",
+          "filing_date": "2025-05-01T07:02:38-04:00",
+          "period_end_date": "2025-05-01",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390825000021/mcd-20250501.htm",
+          "size_kb": 35.0,
+          "document_id": "96da2716eed0856c14935a9f6e43103e"
+        },
+        {
+          "accession_no": "0000063908-25-000017",
+          "filing_date": "2025-03-11T16:16:41-04:00",
+          "period_end_date": "2025-03-10",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390825000017/mcd-20250310.htm",
+          "size_kb": 28.1,
+          "document_id": "10c5ea4dddfe38d19bf345e7c7c9be94"
+        },
+        {
+          "accession_no": "0000063908-25-000014",
+          "filing_date": "2025-03-04T14:57:47-05:00",
+          "period_end_date": "2025-03-03",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390825000014/mcd-20250303.htm",
+          "size_kb": 31.8,
+          "document_id": "4d6c0f9076087109e39427a7c9d6c196"
+        },
+        {
+          "accession_no": "0000063908-25-000009",
+          "filing_date": "2025-02-14T16:32:53-05:00",
+          "period_end_date": "2025-02-12",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390825000009/mcd-20250212.htm",
+          "size_kb": 38.0,
+          "document_id": "17a4818c08b497edd454c2456796f3d9"
+        },
+        {
+          "accession_no": "0000063908-25-000006",
+          "filing_date": "2025-02-10T07:02:05-05:00",
+          "period_end_date": "2025-02-10",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390825000006/mcd-20250210.htm",
+          "size_kb": 34.7,
+          "document_id": "4f3680951fa6791d4e3c55d8b0bed429"
+        },
+        {
+          "accession_no": "0000063908-25-000003",
+          "filing_date": "2025-01-17T16:44:06-05:00",
+          "period_end_date": "2025-01-13",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390825000003/mcd-20250113.htm",
+          "size_kb": 27.0,
+          "document_id": "5e054ebb1470573e17fd95d8bbfd02df"
+        },
+        {
+          "accession_no": "0000063908-24-000152",
+          "filing_date": "2024-10-29T07:04:29-04:00",
+          "period_end_date": "2024-10-29",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000152/mcd-20241029.htm",
+          "size_kb": 33.3,
+          "document_id": "150c9f7869dea22f664bc367fdf06e15"
+        }
+      ],
+      "3": [
+        {
+          "accession_no": "0001567619-25-000371",
+          "filing_date": "2025-07-17T09:51:38-04:00",
+          "period_end_date": "2025-06-01",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000371/xslF345X02/form3.xml",
+          "size_kb": 18.2,
+          "document_id": "df918064ade8e464f0a154d440dadb2e"
+        },
+        {
+          "accession_no": "0000063908-24-000147",
+          "filing_date": "2024-10-01T16:53:02-04:00",
+          "period_end_date": "2024-10-01",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000147/xslF345X02/form3.xml",
+          "size_kb": 12.1,
+          "document_id": "56e39a111fdfc21edd0cb47980c22a64"
+        },
+        {
+          "accession_no": "0000063908-24-000126",
+          "filing_date": "2024-08-29T17:04:58-04:00",
+          "period_end_date": "2024-08-19",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000126/xslF345X02/form3.xml",
+          "size_kb": 18.4,
+          "document_id": "05c4ad9ad93f3e79e94c0206af1aa801"
+        }
+      ],
+      "11-K": [
+        {
+          "accession_no": "0001104659-25-059906",
+          "filing_date": "2025-06-16T16:34:06-04:00",
+          "period_end_date": "2024-12-31",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000110465925059906/tm2517752d1_11k.htm",
+          "size_kb": 207.4,
+          "document_id": "008d047b560f4864a58a2a346f79f838"
+        }
+      ],
+      "DEF 14A": [
+        {
+          "accession_no": "0001558370-25-004544",
+          "filing_date": "2025-04-07T15:30:44-04:00",
+          "period_end_date": "2025-05-20",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000155837025004544/mcd-20250520xdef14a.htm",
+          "size_kb": 2832.5,
+          "document_id": "8a30229d3c649d0ce43f69cf6b8075a8"
+        }
+      ],
+      "10-K": [
+        {
+          "accession_no": "0000063908-25-000012",
+          "filing_date": "2025-02-25T13:19:01-05:00",
+          "period_end_date": "2024-12-31",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390825000012/mcd-20241231.htm",
+          "size_kb": 2127.0,
+          "document_id": "74bd62e928ed3d9b7bfc32b2fbf6a1db"
+        }
+      ],
+      "3/A": [
+        {
+          "accession_no": "0001567619-25-000032",
+          "filing_date": "2025-01-17T16:18:57-05:00",
+          "period_end_date": "2023-02-01",
+          "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000032/xslF345X02/form3a.xml",
+          "size_kb": 11.9,
+          "document_id": "be06ec35dab5f8ea76d9195d733203ee"
+        }
+      ]
+    },
+    "coverage_quality": {
+      "essential_coverage": 1.0,
+      "important_coverage": 0.3333333333333333,
+      "total_score": 0.7999999999999999,
+      "missing_essential": [],
+      "recent_coverage": true
+    },
+    "document_list": [
+      {
+        "form_type": "4",
+        "filing_date": "2025-08-20T15:54:46-04:00",
+        "accession_no": "0001567619-25-000424",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000424/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-08-19T20:55:27-04:00",
+        "accession_no": "0001567619-25-000421",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.01,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000421/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-08-13T16:11:58-04:00",
+        "accession_no": "0000950103-25-010247",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000095010325010247/xslF345X05/ownership.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-08-12T19:52:37-04:00",
+        "accession_no": "0000950103-25-010210",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000095010325010210/xslF345X05/ownership.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-08-06T16:43:20-04:00",
+        "accession_no": "0001567619-25-000381",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000381/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "10-Q",
+        "filing_date": "2025-08-06T12:17:04-04:00",
+        "accession_no": "0000063908-25-000039",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 1.49,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390825000039/mcd-20250630.htm"
+      },
+      {
+        "form_type": "8-K",
+        "filing_date": "2025-08-06T07:02:02-04:00",
+        "accession_no": "0000063908-25-000036",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.03,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390825000036/mcd-20250806.htm"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-08-04T15:06:52-04:00",
+        "accession_no": "0001567619-25-000379",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.01,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000379/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-07-23T15:08:08-04:00",
+        "accession_no": "0001567619-25-000375",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.01,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000375/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "3",
+        "filing_date": "2025-07-17T09:51:38-04:00",
+        "accession_no": "0001567619-25-000371",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000371/xslF345X02/form3.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-07-10T18:23:00-04:00",
+        "accession_no": "0001567619-25-000368",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.01,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000368/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-07-01T15:10:24-04:00",
+        "accession_no": "0001567619-25-000360",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000360/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-07-01T15:06:12-04:00",
+        "accession_no": "0001567619-25-000358",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000358/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-07-01T15:01:53-04:00",
+        "accession_no": "0001567619-25-000356",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000356/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-07-01T14:58:06-04:00",
+        "accession_no": "0001567619-25-000354",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000354/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-06-23T16:41:34-04:00",
+        "accession_no": "0001567619-25-000344",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.01,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000344/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "11-K",
+        "filing_date": "2025-06-16T16:34:06-04:00",
+        "accession_no": "0001104659-25-059906",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.2,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000110465925059906/tm2517752d1_11k.htm"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-05-23T14:05:11-04:00",
+        "accession_no": "0001567619-25-000334",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.01,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000334/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "8-K",
+        "filing_date": "2025-05-23T13:50:07-04:00",
+        "accession_no": "0000063908-25-000029",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.06,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390825000029/mcd-20250520.htm"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-05-22T15:43:20-04:00",
+        "accession_no": "0001567619-25-000320",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000320/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "10-Q",
+        "filing_date": "2025-05-12T13:15:39-04:00",
+        "accession_no": "0000063908-25-000025",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 1.08,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390825000025/mcd-20250331.htm"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-05-09T12:58:39-04:00",
+        "accession_no": "0001567619-25-000288",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000288/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "8-K",
+        "filing_date": "2025-05-01T07:02:38-04:00",
+        "accession_no": "0000063908-25-000021",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.03,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390825000021/mcd-20250501.htm"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-04-23T16:32:30-04:00",
+        "accession_no": "0001567619-25-000275",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.01,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000275/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "DEF 14A",
+        "filing_date": "2025-04-07T15:30:44-04:00",
+        "accession_no": "0001558370-25-004544",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 2.77,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000155837025004544/mcd-20250520xdef14a.htm"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-04-02T16:56:17-04:00",
+        "accession_no": "0001567619-25-000264",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000264/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-04-02T16:54:07-04:00",
+        "accession_no": "0001567619-25-000262",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000262/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-04-02T16:40:23-04:00",
+        "accession_no": "0001567619-25-000260",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000260/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-04-02T16:38:13-04:00",
+        "accession_no": "0001567619-25-000258",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000258/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-03-24T16:39:27-04:00",
+        "accession_no": "0001567619-25-000238",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.01,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000238/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "8-K",
+        "filing_date": "2025-03-11T16:16:41-04:00",
+        "accession_no": "0000063908-25-000017",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.03,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390825000017/mcd-20250310.htm"
+      },
+      {
+        "form_type": "8-K",
+        "filing_date": "2025-03-04T14:57:47-05:00",
+        "accession_no": "0000063908-25-000014",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.03,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390825000014/mcd-20250303.htm"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-02-28T16:33:29-05:00",
+        "accession_no": "0001567619-25-000209",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.01,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000209/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-02-25T17:07:15-05:00",
+        "accession_no": "0001567619-25-000206",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000206/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-02-25T17:01:15-05:00",
+        "accession_no": "0001567619-25-000204",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.01,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000204/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "10-K",
+        "filing_date": "2025-02-25T13:19:01-05:00",
+        "accession_no": "0000063908-25-000012",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 2.08,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390825000012/mcd-20241231.htm"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-02-21T17:37:30-05:00",
+        "accession_no": "0001567619-25-000201",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000201/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-02-21T17:32:09-05:00",
+        "accession_no": "0001567619-25-000199",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.01,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000199/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-02-19T18:38:04-05:00",
+        "accession_no": "0001567619-25-000197",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000197/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-02-19T18:36:36-05:00",
+        "accession_no": "0001567619-25-000195",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000195/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-02-19T18:35:03-05:00",
+        "accession_no": "0001567619-25-000193",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000193/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-02-19T18:33:08-05:00",
+        "accession_no": "0001567619-25-000191",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000191/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-02-19T18:30:47-05:00",
+        "accession_no": "0001567619-25-000189",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000189/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-02-19T18:28:00-05:00",
+        "accession_no": "0001567619-25-000187",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.03,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000187/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-02-19T18:25:08-05:00",
+        "accession_no": "0001567619-25-000185",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000185/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-02-19T18:23:12-05:00",
+        "accession_no": "0001567619-25-000183",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000183/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-02-19T18:01:02-05:00",
+        "accession_no": "0001567619-25-000180",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000180/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-02-14T16:33:33-05:00",
+        "accession_no": "0001567619-25-000178",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000178/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-02-14T16:33:00-05:00",
+        "accession_no": "0001567619-25-000177",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000177/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "8-K",
+        "filing_date": "2025-02-14T16:32:53-05:00",
+        "accession_no": "0000063908-25-000009",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.04,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390825000009/mcd-20250212.htm"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-02-14T16:32:07-05:00",
+        "accession_no": "0001567619-25-000176",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000176/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-02-14T16:31:40-05:00",
+        "accession_no": "0001567619-25-000175",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000175/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-02-14T16:31:15-05:00",
+        "accession_no": "0001567619-25-000174",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000174/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-02-14T16:30:53-05:00",
+        "accession_no": "0001567619-25-000173",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000173/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-02-14T16:30:19-05:00",
+        "accession_no": "0001567619-25-000172",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000172/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-02-14T16:29:44-05:00",
+        "accession_no": "0001567619-25-000171",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000171/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-02-14T16:29:11-05:00",
+        "accession_no": "0001567619-25-000170",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.01,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000170/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-02-14T16:28:30-05:00",
+        "accession_no": "0001567619-25-000169",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000169/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-02-14T16:27:56-05:00",
+        "accession_no": "0001567619-25-000168",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000168/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-02-14T16:27:03-05:00",
+        "accession_no": "0001567619-25-000167",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000167/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-02-14T16:25:17-05:00",
+        "accession_no": "0001567619-25-000166",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000166/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-02-14T16:23:25-05:00",
+        "accession_no": "0001567619-25-000165",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000165/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-02-13T15:09:01-05:00",
+        "accession_no": "0001567619-25-000151",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000151/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "8-K",
+        "filing_date": "2025-02-10T07:02:05-05:00",
+        "accession_no": "0000063908-25-000006",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.03,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390825000006/mcd-20250210.htm"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-01-24T16:08:34-05:00",
+        "accession_no": "0001567619-25-000036",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.01,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000036/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "8-K",
+        "filing_date": "2025-01-17T16:44:06-05:00",
+        "accession_no": "0000063908-25-000003",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.03,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390825000003/mcd-20250113.htm"
+      },
+      {
+        "form_type": "3/A",
+        "filing_date": "2025-01-17T16:18:57-05:00",
+        "accession_no": "0001567619-25-000032",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.01,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000032/xslF345X02/form3a.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-01-03T18:14:16-05:00",
+        "accession_no": "0001567619-25-000026",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000026/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-01-03T18:02:34-05:00",
+        "accession_no": "0001567619-25-000024",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000024/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-01-03T17:59:33-05:00",
+        "accession_no": "0001567619-25-000022",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000022/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-01-03T17:56:16-05:00",
+        "accession_no": "0001567619-25-000020",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000020/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-01-03T17:53:32-05:00",
+        "accession_no": "0001567619-25-000018",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000018/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-01-03T17:49:08-05:00",
+        "accession_no": "0001567619-25-000016",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000016/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-01-03T17:45:47-05:00",
+        "accession_no": "0001567619-25-000014",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000014/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-01-03T17:35:38-05:00",
+        "accession_no": "0001567619-25-000012",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000012/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-01-03T17:31:47-05:00",
+        "accession_no": "0001567619-25-000010",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000010/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-01-03T17:27:12-05:00",
+        "accession_no": "0001567619-25-000008",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000008/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-01-03T17:14:51-05:00",
+        "accession_no": "0001567619-25-000006",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000006/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-01-03T17:03:58-05:00",
+        "accession_no": "0001567619-25-000003",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761925000003/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-12-31T19:57:29-05:00",
+        "accession_no": "0001567619-24-000427",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000156761924000427/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-12-23T19:50:12-05:00",
+        "accession_no": "0000063908-24-000158",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.01,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000158/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-11-26T16:08:19-05:00",
+        "accession_no": "0000063908-24-000157",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.01,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000157/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "10-Q",
+        "filing_date": "2024-11-07T12:44:41-05:00",
+        "accession_no": "0000063908-24-000156",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 1.49,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000156/mcd-20240930.htm"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-11-05T16:59:55-05:00",
+        "accession_no": "0000063908-24-000154",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000154/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "8-K",
+        "filing_date": "2024-10-29T07:04:29-04:00",
+        "accession_no": "0000063908-24-000152",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.03,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000152/mcd-20241029.htm"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-10-25T15:19:47-04:00",
+        "accession_no": "0000063908-24-000149",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.01,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000149/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-10-15T16:55:09-04:00",
+        "accession_no": "0000063908-24-000148",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000148/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "3",
+        "filing_date": "2024-10-01T16:53:02-04:00",
+        "accession_no": "0000063908-24-000147",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.01,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000147/xslF345X02/form3.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-10-01T16:42:35-04:00",
+        "accession_no": "0000063908-24-000143",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000143/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-10-01T16:40:12-04:00",
+        "accession_no": "0000063908-24-000142",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000142/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-10-01T16:38:29-04:00",
+        "accession_no": "0000063908-24-000141",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000141/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-09-27T16:20:38-04:00",
+        "accession_no": "0000063908-24-000140",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000140/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-09-25T16:35:21-04:00",
+        "accession_no": "0000063908-24-000139",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000139/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-09-24T17:04:24-04:00",
+        "accession_no": "0000063908-24-000132",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000132/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-09-24T17:01:47-04:00",
+        "accession_no": "0000063908-24-000131",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.01,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000131/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-09-18T16:38:47-04:00",
+        "accession_no": "0000063908-24-000130",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000130/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-09-18T16:37:01-04:00",
+        "accession_no": "0000063908-24-000129",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000129/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-09-03T17:04:28-04:00",
+        "accession_no": "0000063908-24-000128",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000128/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2024-09-03T16:52:50-04:00",
+        "accession_no": "0000063908-24-000127",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000127/xslF345X05/form4.xml"
+      },
+      {
+        "form_type": "3",
+        "filing_date": "2024-08-29T17:04:58-04:00",
+        "accession_no": "0000063908-24-000126",
+        "company_name": "MCDONALDS CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000126/xslF345X02/form3.xml"
+      }
+    ]
+  },
+  "indexing_stats": {
+    "total_documents": 100,
+    "total_chunks": 4390,
+    "embedding_time": 0.0,
+    "indexing_time": 0.0,
+    "index_size_mb": 6.430706977844238,
+    "documents_processed": [
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000424",
+        "chunks_created": 7,
+        "original_size_kb": 17.2470703125
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000421",
+        "chunks_created": 5,
+        "original_size_kb": 14.7998046875
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0000950103-25-010247",
+        "chunks_created": 7,
+        "original_size_kb": 18.88671875
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0000950103-25-010210",
+        "chunks_created": 7,
+        "original_size_kb": 18.8857421875
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000381",
+        "chunks_created": 6,
+        "original_size_kb": 16.283203125
+      },
+      {
+        "form_type": "10-Q",
+        "accession_no": "0000063908-25-000039",
+        "chunks_created": 599,
+        "original_size_kb": 1523.7041015625
+      },
+      {
+        "form_type": "8-K",
+        "accession_no": "0000063908-25-000036",
+        "chunks_created": 14,
+        "original_size_kb": 34.302734375
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000379",
+        "chunks_created": 5,
+        "original_size_kb": 14.82421875
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000375",
+        "chunks_created": 5,
+        "original_size_kb": 14.83203125
+      },
+      {
+        "form_type": "3",
+        "accession_no": "0001567619-25-000371",
+        "chunks_created": 6,
+        "original_size_kb": 18.1865234375
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000368",
+        "chunks_created": 5,
+        "original_size_kb": 14.82421875
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000360",
+        "chunks_created": 6,
+        "original_size_kb": 16.0283203125
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000358",
+        "chunks_created": 6,
+        "original_size_kb": 16.0341796875
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000356",
+        "chunks_created": 6,
+        "original_size_kb": 16.45703125
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000354",
+        "chunks_created": 6,
+        "original_size_kb": 16.029296875
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000344",
+        "chunks_created": 5,
+        "original_size_kb": 14.830078125
+      },
+      {
+        "form_type": "11-K",
+        "accession_no": "0001104659-25-059906",
+        "chunks_created": 80,
+        "original_size_kb": 207.4033203125
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000334",
+        "chunks_created": 5,
+        "original_size_kb": 14.830078125
+      },
+      {
+        "form_type": "8-K",
+        "accession_no": "0000063908-25-000029",
+        "chunks_created": 24,
+        "original_size_kb": 59.5185546875
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000320",
+        "chunks_created": 6,
+        "original_size_kb": 17.0439453125
+      },
+      {
+        "form_type": "10-Q",
+        "accession_no": "0000063908-25-000025",
+        "chunks_created": 418,
+        "original_size_kb": 1107.70703125
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000288",
+        "chunks_created": 6,
+        "original_size_kb": 17.0986328125
+      },
+      {
+        "form_type": "8-K",
+        "accession_no": "0000063908-25-000021",
+        "chunks_created": 14,
+        "original_size_kb": 34.9736328125
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000275",
+        "chunks_created": 5,
+        "original_size_kb": 14.8291015625
+      },
+      {
+        "form_type": "DEF 14A",
+        "accession_no": "0001558370-25-004544",
+        "chunks_created": 1216,
+        "original_size_kb": 2832.49609375
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000264",
+        "chunks_created": 6,
+        "original_size_kb": 16.0263671875
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000262",
+        "chunks_created": 6,
+        "original_size_kb": 16.0322265625
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000260",
+        "chunks_created": 6,
+        "original_size_kb": 16.455078125
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000258",
+        "chunks_created": 6,
+        "original_size_kb": 16.029296875
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000238",
+        "chunks_created": 5,
+        "original_size_kb": 14.8291015625
+      },
+      {
+        "form_type": "8-K",
+        "accession_no": "0000063908-25-000017",
+        "chunks_created": 11,
+        "original_size_kb": 28.1005859375
+      },
+      {
+        "form_type": "8-K",
+        "accession_no": "0000063908-25-000014",
+        "chunks_created": 13,
+        "original_size_kb": 31.78125
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000209",
+        "chunks_created": 5,
+        "original_size_kb": 14.8037109375
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000206",
+        "chunks_created": 7,
+        "original_size_kb": 20.2822265625
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000204",
+        "chunks_created": 5,
+        "original_size_kb": 14.8271484375
+      },
+      {
+        "form_type": "10-K",
+        "accession_no": "0000063908-25-000012",
+        "chunks_created": 831,
+        "original_size_kb": 2126.9501953125
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000201",
+        "chunks_created": 7,
+        "original_size_kb": 17.640625
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000199",
+        "chunks_created": 5,
+        "original_size_kb": 14.802734375
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000197",
+        "chunks_created": 7,
+        "original_size_kb": 18.796875
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000195",
+        "chunks_created": 7,
+        "original_size_kb": 18.76953125
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000193",
+        "chunks_created": 7,
+        "original_size_kb": 20.232421875
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000191",
+        "chunks_created": 7,
+        "original_size_kb": 20.275390625
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000189",
+        "chunks_created": 8,
+        "original_size_kb": 21.1279296875
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000187",
+        "chunks_created": 10,
+        "original_size_kb": 27.0
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000185",
+        "chunks_created": 7,
+        "original_size_kb": 18.7998046875
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000183",
+        "chunks_created": 8,
+        "original_size_kb": 22.58984375
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000180",
+        "chunks_created": 7,
+        "original_size_kb": 19.02734375
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000178",
+        "chunks_created": 7,
+        "original_size_kb": 17.5439453125
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000177",
+        "chunks_created": 7,
+        "original_size_kb": 17.580078125
+      },
+      {
+        "form_type": "8-K",
+        "accession_no": "0000063908-25-000009",
+        "chunks_created": 15,
+        "original_size_kb": 38.025390625
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000176",
+        "chunks_created": 6,
+        "original_size_kb": 15.8037109375
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000175",
+        "chunks_created": 7,
+        "original_size_kb": 19.0087890625
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000174",
+        "chunks_created": 7,
+        "original_size_kb": 19.9306640625
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000173",
+        "chunks_created": 7,
+        "original_size_kb": 19.05078125
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000172",
+        "chunks_created": 7,
+        "original_size_kb": 18.7177734375
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000171",
+        "chunks_created": 7,
+        "original_size_kb": 17.560546875
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000170",
+        "chunks_created": 6,
+        "original_size_kb": 15.3125
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000169",
+        "chunks_created": 7,
+        "original_size_kb": 17.576171875
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000168",
+        "chunks_created": 6,
+        "original_size_kb": 17.2734375
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000167",
+        "chunks_created": 7,
+        "original_size_kb": 17.5634765625
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000166",
+        "chunks_created": 7,
+        "original_size_kb": 17.7080078125
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000165",
+        "chunks_created": 8,
+        "original_size_kb": 21.1171875
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000151",
+        "chunks_created": 6,
+        "original_size_kb": 16.7412109375
+      },
+      {
+        "form_type": "8-K",
+        "accession_no": "0000063908-25-000006",
+        "chunks_created": 14,
+        "original_size_kb": 34.689453125
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000036",
+        "chunks_created": 5,
+        "original_size_kb": 14.798828125
+      },
+      {
+        "form_type": "8-K",
+        "accession_no": "0000063908-25-000003",
+        "chunks_created": 11,
+        "original_size_kb": 27.0419921875
+      },
+      {
+        "form_type": "3/A",
+        "accession_no": "0001567619-25-000032",
+        "chunks_created": 4,
+        "original_size_kb": 11.9345703125
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000026",
+        "chunks_created": 7,
+        "original_size_kb": 18.9833984375
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000024",
+        "chunks_created": 6,
+        "original_size_kb": 16.4130859375
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000022",
+        "chunks_created": 6,
+        "original_size_kb": 16.015625
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000020",
+        "chunks_created": 6,
+        "original_size_kb": 16.0146484375
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000018",
+        "chunks_created": 6,
+        "original_size_kb": 16.0224609375
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000016",
+        "chunks_created": 6,
+        "original_size_kb": 16.4150390625
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000014",
+        "chunks_created": 6,
+        "original_size_kb": 16.451171875
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000012",
+        "chunks_created": 6,
+        "original_size_kb": 16.46875
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000010",
+        "chunks_created": 6,
+        "original_size_kb": 16.421875
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000008",
+        "chunks_created": 6,
+        "original_size_kb": 16.025390625
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000006",
+        "chunks_created": 6,
+        "original_size_kb": 16.0166015625
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-25-000003",
+        "chunks_created": 6,
+        "original_size_kb": 16.4150390625
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001567619-24-000427",
+        "chunks_created": 6,
+        "original_size_kb": 16.3125
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0000063908-24-000158",
+        "chunks_created": 5,
+        "original_size_kb": 15.275390625
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0000063908-24-000157",
+        "chunks_created": 5,
+        "original_size_kb": 14.826171875
+      },
+      {
+        "form_type": "10-Q",
+        "accession_no": "0000063908-24-000156",
+        "chunks_created": 590,
+        "original_size_kb": 1526.2158203125
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0000063908-24-000154",
+        "chunks_created": 7,
+        "original_size_kb": 18.9873046875
+      },
+      {
+        "form_type": "8-K",
+        "accession_no": "0000063908-24-000152",
+        "chunks_created": 13,
+        "original_size_kb": 33.3388671875
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0000063908-24-000149",
+        "chunks_created": 5,
+        "original_size_kb": 14.828125
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0000063908-24-000148",
+        "chunks_created": 6,
+        "original_size_kb": 16.61328125
+      },
+      {
+        "form_type": "3",
+        "accession_no": "0000063908-24-000147",
+        "chunks_created": 4,
+        "original_size_kb": 12.06640625
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0000063908-24-000143",
+        "chunks_created": 6,
+        "original_size_kb": 16.4326171875
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0000063908-24-000142",
+        "chunks_created": 6,
+        "original_size_kb": 16.025390625
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0000063908-24-000141",
+        "chunks_created": 6,
+        "original_size_kb": 16.02734375
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0000063908-24-000140",
+        "chunks_created": 7,
+        "original_size_kb": 18.087890625
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0000063908-24-000139",
+        "chunks_created": 6,
+        "original_size_kb": 17.349609375
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0000063908-24-000132",
+        "chunks_created": 7,
+        "original_size_kb": 17.2470703125
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0000063908-24-000131",
+        "chunks_created": 5,
+        "original_size_kb": 15.27734375
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0000063908-24-000130",
+        "chunks_created": 6,
+        "original_size_kb": 16.7568359375
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0000063908-24-000129",
+        "chunks_created": 6,
+        "original_size_kb": 16.8037109375
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0000063908-24-000128",
+        "chunks_created": 7,
+        "original_size_kb": 18.9892578125
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0000063908-24-000127",
+        "chunks_created": 7,
+        "original_size_kb": 18.751953125
+      },
+      {
+        "form_type": "3",
+        "accession_no": "0000063908-24-000126",
+        "chunks_created": 6,
+        "original_size_kb": 18.42578125
+      }
+    ],
+    "embedding_provider": "local",
+    "embedding_model": "fast",
+    "embedding_cost_estimate": 0.0,
+    "embedding_dimension": 384
+  },
+  "index_version": "3.0"
+}

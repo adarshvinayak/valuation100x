@@ -1,0 +1,34 @@
+# Ultra-Conservative Railway Dockerfile
+# No ML dependencies, core functionality only
+FROM python:3.11-slim
+
+# Environment variables
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONPATH="/app" \
+    PIP_NO_CACHE_DIR=1
+
+# Install only curl for health checks
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl && \
+    rm -rf /var/lib/apt/lists/*
+
+# Set work directory
+WORKDIR /app
+
+# Copy and install core requirements only
+COPY requirements.ultra-minimal.txt .
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir -r requirements.ultra-minimal.txt
+
+# Copy application code
+COPY . .
+
+# Create directories
+RUN mkdir -p data/outputs logs
+
+# Expose port
+EXPOSE $PORT
+
+# Run the application
+CMD ["sh", "-c", "uvicorn api_server:app --host 0.0.0.0 --port ${PORT:-8000}"]
