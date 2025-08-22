@@ -20,7 +20,14 @@ from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect, Back
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import BaseModel, Field
-import redis.asyncio as redis
+
+# Redis is optional - only import if available
+try:
+    import redis.asyncio as redis
+    REDIS_AVAILABLE = True
+except ImportError:
+    REDIS_AVAILABLE = False
+    redis = None
 
 # Import your existing analysis components
 from run_enhanced_analysis import EnhancedAnalysisRunner
@@ -52,14 +59,18 @@ async def lifespan(app: FastAPI):
         logger.error(f"❌ Supabase initialization failed: {e}")
         # Continue without Supabase - will fallback to local storage
     
-    # Initialize Redis for caching and session management
-    redis_url = os.getenv("REDIS_URL", "redis://localhost:6379")
-    try:
-        redis_client = await redis.from_url(redis_url, decode_responses=True)
-        await redis_client.ping()
-        logger.info("✅ Redis connection established")
-    except Exception as e:
-        logger.info(f"🔄 Redis not available ({redis_url}). Using in-memory storage (normal for Railway free tier).")
+    # Initialize Redis for caching and session management (optional)
+    if REDIS_AVAILABLE:
+        redis_url = os.getenv("REDIS_URL", "redis://localhost:6379")
+        try:
+            redis_client = await redis.from_url(redis_url, decode_responses=True)
+            await redis_client.ping()
+            logger.info("✅ Redis connection established")
+        except Exception as e:
+            logger.info(f"🔄 Redis not available ({redis_url}). Using in-memory storage (normal for Railway free tier).")
+            redis_client = None
+    else:
+        logger.info("🔄 Redis module not installed. Using in-memory storage (normal for Railway free tier).")
         redis_client = None
     
     yield
@@ -747,16 +758,13 @@ async def run_comprehensive_analysis(analysis_id: str, ticker: str, company_name
             }
         })
         
-        # Run the actual analysis with heavy ML dependencies on Railway
-        is_railway = os.getenv("RAILWAY_ENVIRONMENT") is not None
-        embedding_provider = "openai" if is_railway else "local"
-        
-        logger.info(f"🧠 Using embedding provider: {embedding_provider} (Railway: {is_railway})")
+        # Run the actual analysis with FREE local ML (no OpenAI credits)
+        logger.info(f"🆓 Using FREE local analysis (no OpenAI credits used)")
         results = await runner.run_comprehensive_analysis(
             ticker=ticker, 
             company_name=company_name,
             verbose=True,
-            embedding_provider=embedding_provider
+            embedding_provider="local"  # Always use local, never OpenAI
         )
         
         # Complete the analysis
