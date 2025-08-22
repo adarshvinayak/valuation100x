@@ -399,9 +399,13 @@ async def start_comprehensive_analysis(
     # Check if analysis is already running for this ticker
     existing_analysis = None
     for analysis_id, task in analysis_tasks.items():
-        if task.get("ticker") == request.ticker and task.get("status") == "running":
+        if task.get("ticker") == request.ticker.upper() and task.get("status") == "running":
             existing_analysis = analysis_id
+            logger.info(f"Found existing analysis for {request.ticker}: {analysis_id}")
             break
+    
+    if not existing_analysis:
+        logger.info(f"No existing analysis found for {request.ticker}, creating new one")
     
     # If analysis already running, return existing analysis ID for recovery
     if existing_analysis:
@@ -421,9 +425,10 @@ async def start_comprehensive_analysis(
     analysis_id = str(uuid.uuid4())
     
     # Initialize analysis state
+    ticker_normalized = request.ticker.upper()
     analysis_state = {
         "analysis_id": analysis_id,
-        "ticker": request.ticker,
+        "ticker": ticker_normalized,
         "company_name": request.company_name or validation.company_name,
         "status": "running",
         "progress": 0,
@@ -437,11 +442,22 @@ async def start_comprehensive_analysis(
         "results": None
     }
     
+    logger.info(f"📝 Created analysis state for {ticker_normalized} (ID: {analysis_id})")
+    
     # Store initial state
     await store_analysis_state(analysis_id, analysis_state)
     
-    # Start analysis in background
-    background_tasks.add_task(run_comprehensive_analysis, analysis_id, request.ticker, request.company_name)
+    # Add to analysis tasks tracking
+    analysis_tasks[analysis_id] = {
+        "ticker": ticker_normalized,
+        "status": "running",
+        "started_at": datetime.utcnow()
+    }
+    logger.info(f"📋 Added {ticker_normalized} to analysis_tasks tracking (ID: {analysis_id})")
+    
+    # Start analysis in background  
+    logger.info(f"🔄 Starting background task for {ticker_normalized} (ID: {analysis_id})")
+    background_tasks.add_task(run_comprehensive_analysis, analysis_id, ticker_normalized, request.company_name)
     
     return AnalysisResponse(
         analysis_id=analysis_id,
@@ -639,7 +655,8 @@ async def run_comprehensive_analysis(analysis_id: str, ticker: str, company_name
     """Run the comprehensive analysis and update progress via WebSocket"""
     
     try:
-        logger.info(f"Starting comprehensive analysis for {ticker} (ID: {analysis_id})")
+        logger.info(f"🚀 Starting comprehensive analysis for {ticker.upper()} (ID: {analysis_id})")
+        logger.info(f"📊 Analysis parameters: ticker={ticker}, company_name={company_name}, analysis_id={analysis_id}")
         
         # Initialize the analysis runner
         runner = EnhancedAnalysisRunner()
