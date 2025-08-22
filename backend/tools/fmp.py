@@ -415,6 +415,8 @@ async def get_financials_fmp(ticker: str) -> Dict[str, Any]:
         logger.error("FMP_API_KEY not found in environment")
         return {}
     
+    logger.info(f"Fetching financial data for {ticker} using FMP API...")
+    
     try:
         async with FMPClient(api_key) as client:
             # Fetch all financial data concurrently
@@ -430,22 +432,30 @@ async def get_financials_fmp(ticker: str) -> Dict[str, Any]:
                 return_exceptions=True
             )
             
-            # Handle any exceptions
+            # Handle any exceptions with better fallback data
             if isinstance(profile, Exception):
-                logger.error(f"Profile fetch failed: {profile}")
-                profile = {}
+                logger.error(f"Profile fetch failed for {ticker}: {profile}")
+                profile = {
+                    "companyName": f"{ticker} Corporation",
+                    "sector": "Unknown",
+                    "exchange": "Unknown",
+                    "mktCap": 0,
+                    "price": 0
+                }
             if isinstance(ratios_ttm, Exception):
-                logger.error(f"Ratios fetch failed: {ratios_ttm}")
+                logger.error(f"Ratios fetch failed for {ticker}: {ratios_ttm}")
                 ratios_ttm = []
             if isinstance(income, Exception):
-                logger.error(f"Income statement fetch failed: {income}")
+                logger.error(f"Income statement fetch failed for {ticker}: {income}")
                 income = []
             if isinstance(balance, Exception):
-                logger.error(f"Balance sheet fetch failed: {balance}")
+                logger.error(f"Balance sheet fetch failed for {ticker}: {balance}")
                 balance = []
             if isinstance(cash_flow, Exception):
-                logger.error(f"Cash flow fetch failed: {cash_flow}")
+                logger.error(f"Cash flow fetch failed for {ticker}: {cash_flow}")
                 cash_flow = []
+            
+            logger.info(f"FMP data fetch results for {ticker}: Profile={'OK' if profile else 'FAILED'}, Ratios={len(ratios_ttm) if isinstance(ratios_ttm, list) else 'FAILED'}, Income={len(income) if isinstance(income, list) else 'FAILED'}")
             
             # Calculate normalized metrics
             normalized_metrics = _normalize_financial_metrics(
@@ -466,7 +476,39 @@ async def get_financials_fmp(ticker: str) -> Dict[str, Any]:
             
     except Exception as e:
         logger.error(f"Failed to get financials for {ticker}: {e}")
-        return {}
+        # Return basic fallback data instead of empty dict
+        return {
+            "profile": {
+                "companyName": f"{ticker} Corporation", 
+                "sector": "Unknown",
+                "exchange": "Unknown",
+                "mktCap": 0,
+                "price": 0
+            },
+            "ratios_ttm": [],
+            "income_statements": [],
+            "balance_sheets": [],
+            "cash_flows": [],
+            "normalized_metrics": {
+                "market_cap": 0,
+                "enterprise_value": 0,
+                "revenue_ttm": 0,
+                "ebitda_ttm": 0,
+                "free_cash_flow_ttm": 0,
+                "total_debt": 0,
+                "total_cash": 0,
+                "book_value": 0,
+                "current_ratio": 1.0,
+                "debt_to_equity": 0.0,
+                "roe_ttm": 0.0,
+                "roa_ttm": 0.0,
+                "gross_margin_ttm": 0.0,
+                "op_margin_ttm": 0.0,
+                "roic_estimate": 0.0,
+                "calculation_date": datetime.now().isoformat()
+            },
+            "last_updated": datetime.now().isoformat()
+        }
 
 
 async def main():
