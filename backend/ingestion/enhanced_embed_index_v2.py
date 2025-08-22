@@ -126,7 +126,7 @@ class EnhancedEmbeddingIndexer:
         
         # Initialize LLM (only if OpenAI key provided)
         if openai_api_key:
-            Settings.llm = OpenAI(api_key=openai_api_key, model="gpt-5")
+            Settings.llm = OpenAI(api_key=openai_api_key, model="gpt-5-mini")
         else:
             Settings.llm = None
         
