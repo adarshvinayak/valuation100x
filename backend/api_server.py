@@ -336,7 +336,8 @@ async def health_check():
             "external_apis": {
                 "fmp": "healthy",
                 "alpha_vantage": "healthy",
-                "sec_api": "healthy"
+                "sec_api": "healthy",
+                "valueinvesting_io": "healthy"
             }
         },
         active_analyses=len(analysis_tasks),
@@ -490,7 +491,7 @@ async def get_analysis_results(analysis_id: str):
         "results": state.get("results", {}),
         "metadata": {
             "analysis_duration": f"{(state['completed_at'] - state['started_at']).total_seconds() / 60:.1f} minutes",
-            "data_sources": ["SEC-API", "FMP", "Alpha Vantage", "Polygon"],
+            "data_sources": ["SEC-API", "FMP", "Alpha Vantage", "ValueInvesting.io"],
             "model_versions": {
                 "damodaran_framework": "v2.0",
                 "sentiment_model": "FinBERT-v1.1"
