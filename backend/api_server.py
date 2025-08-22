@@ -33,6 +33,9 @@ logger = logging.getLogger(__name__)
 
 # Global variables
 analysis_tasks: Dict[str, Dict[str, Any]] = {}
+
+# Request tracking to debug multiple calls
+incoming_requests: Dict[str, List[str]] = {}
 websocket_connections: Dict[str, List[WebSocket]] = {}
 redis_client = None
 
@@ -387,6 +390,30 @@ async def start_comprehensive_analysis(
     background_tasks: BackgroundTasks
 ):
     """Start a comprehensive analysis for a stock ticker"""
+    
+    # Log incoming request details
+    logger.info(f"🔥 INCOMING ANALYSIS REQUEST: ticker={request.ticker}, company_name={request.company_name}")
+    logger.info(f"🔥 REQUEST TIMESTAMP: {datetime.utcnow().isoformat()}")
+    
+    # Track incoming requests to detect duplicates
+    ticker_upper = request.ticker.upper()
+    current_time = datetime.utcnow().isoformat()
+    
+    if ticker_upper not in incoming_requests:
+        incoming_requests[ticker_upper] = []
+    incoming_requests[ticker_upper].append(current_time)
+    
+    # Log request pattern to detect multiple calls
+    if len(incoming_requests[ticker_upper]) > 1:
+        logger.warning(f"🚨 MULTIPLE REQUESTS for {ticker_upper}:")
+        for i, timestamp in enumerate(incoming_requests[ticker_upper]):
+            logger.warning(f"   Request #{i+1}: {timestamp}")
+    else:
+        logger.info(f"✅ First request for {ticker_upper}")
+    
+    # Log current state of all tracked requests
+    logger.info(f"📋 ALL TRACKED REQUESTS: {dict(incoming_requests)}")
+    logger.info(f"📋 TOTAL UNIQUE TICKERS REQUESTED: {len(incoming_requests)}")
     
     # Validate ticker first
     validation = await validate_ticker(request.ticker)
