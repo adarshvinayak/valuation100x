@@ -372,9 +372,9 @@ async def recover_analysis(analysis_id: str):
             ticker=state.get("ticker"),
             company_name=state.get("company_name"),
             status=state.get("status", "unknown"),
-            message=f"Recovered analysis for {state.get('ticker')}",
-            estimated_completion_time=5 if state.get("status") == "running" else 0,
-            websocket_url=f"/api/analysis/{analysis_id}/ws"
+            estimated_duration="5 minutes" if state.get("status") == "running" else "0 minutes",
+            websocket_url=f"/api/analysis/{analysis_id}/ws",
+            created_at=state.get("started_at", datetime.utcnow())
         )
         
     except Exception as e:
@@ -454,9 +454,9 @@ async def start_comprehensive_analysis(
                 ticker=request.ticker,
                 company_name=existing_state.get("company_name"),
                 status="running",
-                message=f"Reconnected to existing analysis for {request.ticker}",
-                estimated_completion_time=5,  # Will be updated via WebSocket
-                websocket_url=f"/api/analysis/{existing_analysis}/ws"
+                estimated_duration="5 minutes",  # Will be updated via WebSocket
+                websocket_url=f"/api/analysis/{existing_analysis}/ws",
+                created_at=existing_state.get("started_at", datetime.utcnow())
             )
     
     # Generate analysis ID
@@ -531,8 +531,8 @@ async def get_analysis_status(analysis_id: str):
         current_step=state["current_step"],
         current_component=state.get("current_component"),
         estimated_completion=estimated_completion,
-        steps_completed=state["steps_completed"],
-        steps_remaining=state["steps_remaining"],
+        steps_completed=state.get("steps_completed", []),
+        steps_remaining=state.get("steps_remaining", []),
         error=state.get("error"),
         started_at=state["started_at"],
         completed_at=state.get("completed_at")
@@ -749,8 +749,14 @@ async def run_comprehensive_analysis(analysis_id: str, ticker: str, company_name
             if state["status"] == "cancelled":
                 return
                 
+            if "steps_completed" not in state:
+                state["steps_completed"] = []
+            if "steps_remaining" not in state:
+                state["steps_remaining"] = [s["id"] for s in ANALYSIS_STEPS]
+                
             state["steps_completed"].append(step["id"])
-            state["steps_remaining"].remove(step["id"])
+            if step["id"] in state["steps_remaining"]:
+                state["steps_remaining"].remove(step["id"])
             await store_analysis_state(analysis_id, state)
             
             # Send step completion
