@@ -415,6 +415,17 @@ async def start_comprehensive_analysis(
     logger.info(f"📋 ALL TRACKED REQUESTS: {dict(incoming_requests)}")
     logger.info(f"📋 TOTAL UNIQUE TICKERS REQUESTED: {len(incoming_requests)}")
     
+    # TEMPORARY FIX: Block unwanted AAPL calls (remove this once frontend is fixed)
+    if ticker_upper == "AAPL" and len(incoming_requests) > 1:
+        # Check if this is an unwanted AAPL call (not the first/only request)
+        other_tickers = [t for t in incoming_requests.keys() if t != "AAPL"]
+        if other_tickers:
+            logger.warning(f"🚫 BLOCKING unwanted AAPL call - user requested {other_tickers[0]}")
+            raise HTTPException(
+                status_code=400,
+                detail=f"Analysis already running for {other_tickers[0]}. Please wait for completion."
+            )
+    
     # Validate ticker first
     validation = await validate_ticker(request.ticker)
     if not validation.is_valid:
