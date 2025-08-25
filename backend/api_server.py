@@ -401,7 +401,7 @@ async def store_analysis_state(analysis_id: str, state: dict):
                 'session_id': state.get('session_id'),
                 'results_json': state,
                 'processing_time_seconds': None,
-                'created_at': state.get('started_at', datetime.utcnow()).isoformat(),
+                'created_at': state.get('started_at', datetime.utcnow()).isoformat() if isinstance(state.get('started_at'), datetime) else str(state.get('started_at', datetime.utcnow().isoformat())),
                 'updated_at': datetime.utcnow().isoformat()
             }
             
@@ -719,7 +719,8 @@ async def get_analysis_status(analysis_id: str):
     # Calculate estimated completion
     estimated_completion = None
     if state["status"] == "running" and state["progress"] > 0:
-        elapsed = (datetime.utcnow() - datetime.fromisoformat(state["started_at"].replace('Z', '+00:00'))).total_seconds()
+        started_at = state["started_at"] if isinstance(state["started_at"], datetime) else datetime.fromisoformat(state["started_at"].replace('Z', '+00:00'))
+        elapsed = (datetime.utcnow() - started_at).total_seconds()
         total_estimated = elapsed / (state["progress"] / 100)
         remaining = total_estimated - elapsed
         estimated_completion = datetime.utcnow() + timedelta(seconds=remaining)
@@ -751,8 +752,10 @@ async def cleanup_stuck_sessions():
         # Check if analysis is stuck (running for more than 30 minutes)
         if task_info.get("status") == "running":
             started_at = task_info.get("started_at")
-            if started_at and (current_time - started_at).total_seconds() > 1800:  # 30 minutes
-                logger.warning(f"🧹 Found stuck analysis session: {analysis_id} (running for {(current_time - started_at).total_seconds() / 60:.1f} minutes)")
+            if started_at:
+                started_at_dt = started_at if isinstance(started_at, datetime) else datetime.fromisoformat(started_at.replace('Z', '+00:00'))
+                if (current_time - started_at_dt).total_seconds() > 1800:  # 30 minutes
+                    logger.warning(f"🧹 Found stuck analysis session: {analysis_id} (running for {(current_time - started_at_dt).total_seconds() / 60:.1f} minutes)")
                 
                 # Update state to reflect cleanup
                 state = await get_analysis_state(analysis_id)
@@ -767,7 +770,7 @@ async def cleanup_stuck_sessions():
                 cleaned_sessions.append({
                     "analysis_id": analysis_id,
                     "ticker": task_info.get("ticker"),
-                    "stuck_duration_minutes": (current_time - started_at).total_seconds() / 60
+                    "stuck_duration_minutes": (current_time - started_at_dt).total_seconds() / 60
                 })
                 
                 logger.info(f"🧹 Cleaned up stuck session: {analysis_id}")
