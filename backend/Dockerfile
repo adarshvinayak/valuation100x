@@ -63,12 +63,11 @@ COPY --chown=app:app . .
 # Switch to non-root user
 USER app
 
-# Expose port
-EXPOSE $PORT
+# Expose port (Railway sets PORT dynamically)
+EXPOSE 8000
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:${PORT:-8000}/api/health || exit 1
+# Health check (Railway manages healthcheck externally, removing internal healthcheck)
+# HEALTHCHECK removed - Railway handles this via external calls
 
 # Run the application
-CMD ["sh", "-c", "uvicorn api_server:app --host 0.0.0.0 --port ${PORT:-8000} --workers 1"]
+CMD ["python", "api_server.py"]
