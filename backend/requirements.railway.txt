@@ -8,6 +8,9 @@ pydantic>=2.0.0
 python-multipart>=0.0.5
 aiofiles>=23.0.0
 
+# Redis (essential for caching and sessions)
+redis>=4.5.0
+
 # OpenAI (essential for embeddings)
 openai>=1.0.0
 
@@ -37,8 +40,6 @@ yfinance>=0.2.0
 python-dotenv>=1.0.0
 tenacity>=8.0.0
 pyyaml>=6.0.0
-redis>=4.5.0
-
 # Database & Storage
 supabase>=2.3.0
 
