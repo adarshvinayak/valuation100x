@@ -594,10 +594,17 @@ async def start_comprehensive_analysis(
     logger.info(f"🔥 INCOMING ANALYSIS REQUEST: ticker={request.ticker}, company_name={request.company_name}")
     logger.info(f"🔥 REQUEST TIMESTAMP: {datetime.utcnow().isoformat()}")
     
-    # Track incoming requests to detect duplicates
+    # Check rate limiting and concurrency BEFORE adding to tracking
     ticker_upper = request.ticker.upper()
     current_time = datetime.utcnow().isoformat()
     
+    # Check if request is allowed (rate limiting and concurrency)
+    is_allowed, error_message, retry_after = is_ticker_request_allowed(request.ticker, incoming_requests)
+    if not is_allowed:
+        logger.warning(f"🚫 Request blocked for {ticker_upper}: {error_message}")
+        return create_rate_limit_response(error_message, retry_after)
+    
+    # NOW track the incoming request (after validation)
     if ticker_upper not in incoming_requests:
         incoming_requests[ticker_upper] = []
     incoming_requests[ticker_upper].append(current_time)
@@ -613,12 +620,6 @@ async def start_comprehensive_analysis(
     # Log current state of all tracked requests
     logger.info(f"📋 ALL TRACKED REQUESTS: {dict(incoming_requests)}")
     logger.info(f"📋 TOTAL UNIQUE TICKERS REQUESTED: {len(incoming_requests)}")
-    
-    # Check if request is allowed (rate limiting and concurrency)
-    is_allowed, error_message, retry_after = is_ticker_request_allowed(request.ticker, incoming_requests)
-    if not is_allowed:
-        logger.warning(f"🚫 Request blocked for {ticker_upper}: {error_message}")
-        return create_rate_limit_response(error_message, retry_after)
     
     # Validate ticker first
     validation = await validate_ticker(request.ticker)
