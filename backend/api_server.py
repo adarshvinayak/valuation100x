@@ -80,22 +80,30 @@ async def lifespan(app: FastAPI):
     else:
         logger.info("🔄 Supabase not available. Using local storage.")
     
-    # Initialize Redis for caching and session management with timeout (never fail startup)
+    # Initialize Redis for caching and session management (optimized for Railway)
     if REDIS_AVAILABLE and redis:
         redis_url = os.getenv("REDIS_URL", "redis://localhost:6379")
+        logger.info(f"🔧 Attempting Redis connection to: {redis_url.split('@')[0]}@***")
         try:
-            # Add timeout to prevent hanging with shorter timeouts
+            # Optimized connection settings for Railway
             redis_client = await asyncio.wait_for(
-                redis.from_url(redis_url, decode_responses=True, socket_timeout=3.0, socket_connect_timeout=3.0), 
-                timeout=8.0
+                redis.from_url(
+                    redis_url, 
+                    decode_responses=True, 
+                    socket_timeout=5.0, 
+                    socket_connect_timeout=10.0,
+                    retry_on_timeout=True,
+                    health_check_interval=30
+                ), 
+                timeout=15.0
             )
-            await asyncio.wait_for(redis_client.ping(), timeout=3.0)
-            logger.info("✅ Redis connection established")
+            await asyncio.wait_for(redis_client.ping(), timeout=5.0)
+            logger.info("✅ Redis connection established successfully")
         except asyncio.TimeoutError:
-            logger.info("🔄 Redis connection timed out. Using in-memory storage.")
+            logger.warning("🔄 Redis connection timed out. Using in-memory storage.")
             redis_client = None
         except Exception as e:
-            logger.info(f"🔄 Redis not available ({redis_url}): {e}. Using in-memory storage.")
+            logger.warning(f"🔄 Redis connection failed: {str(e)[:100]}. Using in-memory storage.")
             redis_client = None
     else:
         logger.info("🔄 Redis library not available. Using in-memory storage.")
@@ -125,10 +133,10 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# CORS middleware for frontend - Updated for Lovable integration
+# CORS middleware for frontend - Updated for Railway healthcheck and Lovable integration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins - can be restricted later for production
+    allow_origins=["*"],  # Allow all origins including Railway healthcheck hostname
     allow_credentials=False,  # Set to False when using allow_origins=["*"]
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
@@ -388,13 +396,31 @@ async def root():
 
 @app.get("/health", tags=["System"])
 async def simple_health():
-    """Ultra-simple health check endpoint - always returns 200 for Railway"""
+    """Railway healthcheck endpoint - requires Redis to be active"""
     try:
-        return {"status": "healthy", "timestamp": datetime.utcnow().isoformat()}
+        # Check if Redis is connected and responsive
+        if redis_client is None:
+            logger.error("Health check failed: Redis not connected")
+            raise HTTPException(status_code=503, detail="Redis not available")
+        
+        # Test Redis connection
+        try:
+            await asyncio.wait_for(redis_client.ping(), timeout=2.0)
+        except Exception as e:
+            logger.error(f"Health check failed: Redis ping failed: {e}")
+            raise HTTPException(status_code=503, detail="Redis ping failed")
+        
+        return {
+            "status": "healthy", 
+            "timestamp": datetime.utcnow().isoformat(),
+            "redis": "connected",
+            "service": "valuation100x"
+        }
+    except HTTPException:
+        raise
     except Exception as e:
-        # Even if something goes wrong, return 200 for Railway healthcheck
-        logger.warning(f"Health check warning: {e}")
-        return {"status": "healthy", "timestamp": "unknown", "warning": str(e)}
+        logger.error(f"Health check failed: {e}")
+        raise HTTPException(status_code=503, detail=f"Service unavailable: {str(e)}")
 
 @app.get("/api/health", response_model=SystemHealth, tags=["System"])
 async def health_check():
@@ -1062,8 +1088,9 @@ async def run_comprehensive_analysis(analysis_id: str, ticker: str, company_name
             })
 
 if __name__ == "__main__":
-    # Railway provides PORT environment variable
+    # Railway provides PORT environment variable - this is critical for healthchecks
     port = int(os.getenv("PORT", 8000))
+    logger.info(f"🚀 Starting server on port {port} (Railway PORT: {os.getenv('PORT', 'not set')})")
     
     # Detect environment (Railway sets RAILWAY_ENVIRONMENT)
     is_production = os.getenv("RAILWAY_ENVIRONMENT") == "production"
@@ -1074,6 +1101,7 @@ if __name__ == "__main__":
         port=port,
         reload=not is_production,  # No reload in production
         workers=1,  # Single worker for Railway
-        log_level="info"
+        log_level="info",
+        timeout_keep_alive=60  # Keep connections alive longer
     )
 
