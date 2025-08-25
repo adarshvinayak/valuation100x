@@ -81,10 +81,15 @@ async def lifespan(app: FastAPI):
         logger.info("🔄 Supabase not available. Using local storage.")
     
     # Initialize Redis for caching and session management (optimized for Railway)
+    logger.info(f"🔧 Redis initialization starting... REDIS_AVAILABLE={REDIS_AVAILABLE}, redis module={redis is not None}")
+    
     if REDIS_AVAILABLE and redis:
         redis_url = os.getenv("REDIS_URL", "redis://localhost:6379")
-        logger.info(f"🔧 Attempting Redis connection to: {redis_url.split('@')[0]}@***")
+        logger.info(f"🔧 Attempting Redis connection to: {redis_url.split('@')[0] if '@' in redis_url else 'localhost'}@[REDACTED]")
+        logger.info(f"🔧 Redis URL from environment: {'SET' if os.getenv('REDIS_URL') else 'NOT SET'}")
+        
         try:
+            logger.info("🔧 Creating Redis client with optimized settings...")
             # Optimized connection settings for Railway
             redis_client = await asyncio.wait_for(
                 redis.from_url(
@@ -97,17 +102,21 @@ async def lifespan(app: FastAPI):
                 ), 
                 timeout=15.0
             )
+            logger.info("🔧 Redis client created, testing connection...")
             await asyncio.wait_for(redis_client.ping(), timeout=5.0)
             logger.info("✅ Redis connection established successfully")
         except asyncio.TimeoutError:
             logger.warning("🔄 Redis connection timed out. Using in-memory storage.")
             redis_client = None
         except Exception as e:
-            logger.warning(f"🔄 Redis connection failed: {str(e)[:100]}. Using in-memory storage.")
+            logger.warning(f"🔄 Redis connection failed: {type(e).__name__}: {str(e)}. Using in-memory storage.")
             redis_client = None
     else:
-        logger.info("🔄 Redis library not available. Using in-memory storage.")
+        reason = "Redis library not available" if not REDIS_AVAILABLE else "Redis module is None"
+        logger.info(f"🔄 {reason}. Using in-memory storage.")
         redis_client = None
+    
+    logger.info(f"🔧 Redis initialization complete. Client: {'CONNECTED' if redis_client else 'NOT CONNECTED'}")
     
     yield
     
@@ -394,7 +403,7 @@ async def root():
         "status": "healthy"
     }
 
-@app.get("/health", tags=["System"])
+@app.get("/health", tags=["System"], status_code=200)
 async def simple_health():
     """Railway healthcheck endpoint - temporarily allow without Redis for deployment"""
     try:
@@ -464,19 +473,19 @@ async def health_check():
     except Exception as e:
         logger.warning(f"Health check error: {e}")
         # Still return healthy status for Railway deployment
-        return SystemHealth(
-            status="healthy",
-            timestamp=datetime.utcnow(),
-            version="1.0.0",
-            services={
-                "api_server": "healthy",
+    return SystemHealth(
+        status="healthy",
+        timestamp=datetime.utcnow(),
+        version="1.0.0",
+        services={
+            "api_server": "healthy",
                 "redis": "error",
                 "supabase": "error", 
-                "in_memory_storage": "healthy"
-            },
+            "in_memory_storage": "healthy"
+        },
             active_analyses=0,
-            queue_size=0
-        )
+        queue_size=0
+    )
 
 @app.get("/api/validate/ticker/{ticker}", response_model=TickerValidation, tags=["Validation"])
 async def validate_ticker_endpoint(ticker: str):
@@ -735,8 +744,8 @@ async def cancel_analysis(analysis_id: str):
         async def cleanup_cancelled_analysis():
             await asyncio.sleep(120)  # 2 minutes
             if analysis_id in analysis_tasks and analysis_tasks[analysis_id].get("status") == "cancelled":
-                del analysis_tasks[analysis_id]
-                logger.info(f"🧹 Cleaned up cancelled analysis from memory: {analysis_id}")
+        del analysis_tasks[analysis_id]
+        logger.info(f"🧹 Cleaned up cancelled analysis from memory: {analysis_id}")
         
         asyncio.create_task(cleanup_cancelled_analysis())
     
