@@ -439,7 +439,13 @@ async def get_analysis_state(analysis_id: str) -> Optional[dict]:
         try:
             data = await redis_client.get(f"analysis:{analysis_id}")
             if data:
-                return json.loads(data)
+                state = json.loads(data)
+                # Convert datetime strings back to datetime objects
+                if 'started_at' in state and isinstance(state['started_at'], str):
+                    state['started_at'] = datetime.fromisoformat(state['started_at'].replace('Z', '+00:00'))
+                if 'completed_at' in state and isinstance(state['completed_at'], str):
+                    state['completed_at'] = datetime.fromisoformat(state['completed_at'].replace('Z', '+00:00'))
+                return state
         except Exception as e:
             logger.error(f"Redis retrieval error: {e}")
     
@@ -840,14 +846,14 @@ async def get_analysis_results(analysis_id: str):
         "status": state["status"],
         "results": state.get("results", {}),
         "metadata": {
-            "analysis_duration": f"{(state['completed_at'] - state['started_at']).total_seconds() / 60:.1f} minutes",
+            "analysis_duration": f"{(state['completed_at'] - state['started_at']).total_seconds() / 60:.1f} minutes" if state.get('completed_at') and state.get('started_at') and isinstance(state['completed_at'], datetime) and isinstance(state['started_at'], datetime) else "N/A",
             "data_sources": ["SEC-API", "FMP", "Alpha Vantage", "ValueInvesting.io"],
             "model_versions": {
                 "damodaran_framework": "v2.0",
                 "sentiment_model": "FinBERT-v1.1"
             }
         },
-        "completed_at": state["completed_at"]
+        "completed_at": state["completed_at"].isoformat() if isinstance(state["completed_at"], datetime) else str(state["completed_at"]) if state.get("completed_at") else None
     }
 
 @app.get("/api/reports/{analysis_id}/markdown", tags=["Reports"])
@@ -1108,12 +1114,12 @@ async def run_comprehensive_analysis(analysis_id: str, ticker: str, company_name
             "analysis_id": analysis_id,
             "data": {
                 "status": "completed",
-                "total_duration": f"{(state['completed_at'] - state['started_at']).total_seconds() / 60:.1f} minutes",
+                "total_duration": f"{(state['completed_at'] - state['started_at']).total_seconds() / 60:.1f} minutes" if isinstance(state['completed_at'], datetime) and isinstance(state['started_at'], datetime) else "N/A",
                 "investment_score": state["results"]["investment_score"],
                 "recommendation": state["results"]["recommendation"],
                 "results_available": True,
                 "report_ready": True,
-                "completed_at": state["completed_at"].isoformat()
+                "completed_at": state["completed_at"].isoformat() if isinstance(state["completed_at"], datetime) else str(state["completed_at"])
             }
         })
         
