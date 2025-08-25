@@ -17,6 +17,7 @@ from contextlib import asynccontextmanager
 
 import uvicorn
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect, BackgroundTasks, Depends
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import BaseModel, Field
@@ -251,7 +252,57 @@ ANALYSIS_STEPS = [
 DEFAULT_PORT = 3000
 DEFAULT_HOST = "0.0.0.0"
 
+# Request deduplication configuration
+REQUEST_COOLDOWN_SECONDS = int(os.getenv("REQUEST_COOLDOWN_SECONDS", "300"))  # 5 minutes default
+MAX_CONCURRENT_ANALYSES = int(os.getenv("MAX_CONCURRENT_ANALYSES", "3"))     # Maximum concurrent analyses
+
 # Helper Functions
+def create_service_unavailable_response(detail: str) -> JSONResponse:
+    """Create a 503 Service Unavailable response"""
+    return JSONResponse(
+        status_code=503,
+        content={"detail": detail, "error": "Service Unavailable"}
+    )
+
+def create_rate_limit_response(detail: str, retry_after: int = None) -> JSONResponse:
+    """Create a 429 Too Many Requests response with optional Retry-After header"""
+    headers = {"Retry-After": str(retry_after)} if retry_after else {}
+    return JSONResponse(
+        status_code=429,
+        content={"detail": detail, "error": "Too Many Requests"},
+        headers=headers
+    )
+
+def is_ticker_request_allowed(ticker: str, incoming_requests: Dict) -> tuple[bool, str, int]:
+    """
+    Check if a ticker request is allowed based on rate limiting and concurrency rules.
+    
+    Returns:
+        tuple: (is_allowed, error_message, retry_after_seconds)
+    """
+    ticker_upper = ticker.upper()
+    current_time = datetime.utcnow()
+    
+    # Check if ticker was recently requested (cooldown period)
+    if ticker_upper in incoming_requests:
+        last_requests = incoming_requests[ticker_upper]
+        if last_requests:
+            latest_request = datetime.fromisoformat(last_requests[-1])
+            time_since_last = (current_time - latest_request).total_seconds()
+            
+            if time_since_last < REQUEST_COOLDOWN_SECONDS:
+                remaining_cooldown = int(REQUEST_COOLDOWN_SECONDS - time_since_last)
+                return False, f"Rate limit exceeded for {ticker_upper}. Please wait before requesting analysis again.", remaining_cooldown
+    
+    # Check concurrent analysis limit
+    active_analyses = len([task for task in analysis_tasks.values() 
+                          if task.get("status") in ["running", "pending"]])
+    
+    if active_analyses >= MAX_CONCURRENT_ANALYSES:
+        return False, f"Maximum concurrent analyses ({MAX_CONCURRENT_ANALYSES}) reached. Please wait for completion.", 60
+    
+    return True, "", 0
+
 async def validate_ticker(ticker: str) -> TickerValidation:
     """Validate ticker symbol and get company information"""
     try:
@@ -558,16 +609,11 @@ async def start_comprehensive_analysis(
     logger.info(f"📋 ALL TRACKED REQUESTS: {dict(incoming_requests)}")
     logger.info(f"📋 TOTAL UNIQUE TICKERS REQUESTED: {len(incoming_requests)}")
     
-    # TEMPORARY FIX: Block unwanted AAPL calls (remove this once frontend is fixed)
-    if ticker_upper == "AAPL" and len(incoming_requests) > 1:
-        # Check if this is an unwanted AAPL call (not the first/only request)
-        other_tickers = [t for t in incoming_requests.keys() if t != "AAPL"]
-        if other_tickers:
-            logger.warning(f"🚫 BLOCKING unwanted AAPL call - user requested {other_tickers[0]}")
-            raise HTTPException(
-                status_code=400,
-                detail=f"Analysis already running for {other_tickers[0]}. Please wait for completion."
-            )
+    # Check if request is allowed (rate limiting and concurrency)
+    is_allowed, error_message, retry_after = is_ticker_request_allowed(request.ticker, incoming_requests)
+    if not is_allowed:
+        logger.warning(f"🚫 Request blocked for {ticker_upper}: {error_message}")
+        return create_rate_limit_response(error_message, retry_after)
     
     # Validate ticker first
     validation = await validate_ticker(request.ticker)
@@ -901,7 +947,7 @@ async def run_comprehensive_analysis(analysis_id: str, ticker: str, company_name
             runner = EnhancedAnalysisRunner()
         except ImportError as e:
             logger.error(f"Enhanced analysis runner not available: {e}")
-            raise HTTPException(status_code=503, detail="Analysis service temporarily unavailable")
+            return create_service_unavailable_response("Analysis service temporarily unavailable")
         
         # Update progress through steps
         for i, step in enumerate(ANALYSIS_STEPS):
