@@ -247,6 +247,10 @@ ANALYSIS_STEPS = [
     {"id": "report_generation", "name": "Report Generation", "duration": 30}
 ]
 
+# Server configuration constants
+DEFAULT_PORT = 3000
+DEFAULT_HOST = "0.0.0.0"
+
 # Helper Functions
 async def validate_ticker(ticker: str) -> TickerValidation:
     """Validate ticker symbol and get company information"""
@@ -744,8 +748,8 @@ async def cancel_analysis(analysis_id: str):
         async def cleanup_cancelled_analysis():
             await asyncio.sleep(120)  # 2 minutes
             if analysis_id in analysis_tasks and analysis_tasks[analysis_id].get("status") == "cancelled":
-        del analysis_tasks[analysis_id]
-        logger.info(f"🧹 Cleaned up cancelled analysis from memory: {analysis_id}")
+                del analysis_tasks[analysis_id]
+                logger.info(f"🧹 Cleaned up cancelled analysis from memory: {analysis_id}")
         
         asyncio.create_task(cleanup_cancelled_analysis())
     
@@ -1105,16 +1109,20 @@ async def run_comprehensive_analysis(analysis_id: str, ticker: str, company_name
             })
 
 if __name__ == "__main__":
-    # Railway provides PORT environment variable - this is critical for healthchecks
-    port = int(os.getenv("PORT", 8000))
-    logger.info(f"🚀 Starting server on port {port} (Railway PORT: {os.getenv('PORT', 'not set')})")
+    # Port configuration with environment variables
+    # Railway provides PORT, but allow custom configuration via APP_PORT
+    port = int(os.getenv("PORT", os.getenv("APP_PORT", DEFAULT_PORT)))
+    host = os.getenv("APP_HOST", DEFAULT_HOST)
+    
+    logger.info(f"🚀 Starting server on {host}:{port}")
+    logger.info(f"📍 Configuration: Railway PORT={os.getenv('PORT', 'not set')}, APP_PORT={os.getenv('APP_PORT', 'not set')}, DEFAULT={DEFAULT_PORT}")
     
     # Detect environment (Railway sets RAILWAY_ENVIRONMENT)
     is_production = os.getenv("RAILWAY_ENVIRONMENT") == "production"
     
     uvicorn.run(
         "api_server:app",
-        host="0.0.0.0",
+        host=host,
         port=port,
         reload=not is_production,  # No reload in production
         workers=1,  # Single worker for Railway
