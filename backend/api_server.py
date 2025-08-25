@@ -87,28 +87,26 @@ async def lifespan(app: FastAPI):
     if REDIS_AVAILABLE and redis:
         redis_url = os.getenv("REDIS_URL", "redis://localhost:6379")
         
-        # Railway fix: Add IPv6 dual stack support for redis.railway.internal
+        # Railway fix: IPv6 support for redis.railway.internal
         # Based on Railway docs: https://docs.railway.com/reference/errors/enotfound-redis-railway-internal
-        if "redis.railway.internal" in redis_url and "?family=" not in redis_url:
-            redis_url += "?family=0"
-            logger.info("🔧 Added IPv6 dual stack support for Railway Redis")
+        # Note: family parameter not supported in current redis client version
             
         logger.info(f"🔧 Attempting Redis connection to: {redis_url.split('@')[0] if '@' in redis_url else 'localhost'}@[REDACTED]")
         logger.info(f"🔧 Redis URL from environment: {'SET' if os.getenv('REDIS_URL') else 'NOT SET'}")
         
         try:
             logger.info("🔧 Creating Redis client with optimized settings...")
-            # Optimized connection settings for Railway
+            # Optimized connection settings for Railway IPv6 network
             redis_client = await asyncio.wait_for(
                 redis.from_url(
                     redis_url, 
                     decode_responses=True, 
-                    socket_timeout=5.0, 
-                    socket_connect_timeout=10.0,
+                    socket_timeout=10.0, 
+                    socket_connect_timeout=15.0,
                     retry_on_timeout=True,
-                    health_check_interval=30
+                    health_check_interval=60
                 ), 
-                timeout=15.0
+                timeout=20.0
             )
             logger.info("🔧 Redis client created, testing connection...")
             await asyncio.wait_for(redis_client.ping(), timeout=5.0)
