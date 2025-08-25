@@ -25,9 +25,11 @@ WORKDIR /app
 # Copy optimized requirements from backend directory
 COPY backend/requirements.railway.txt .
 
-# Install Python dependencies with optimization
+# Install Python dependencies with optimization and force Redis
 RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirements.railway.txt
+    pip install --no-cache-dir redis>=4.5.0 && \
+    pip install --no-cache-dir -r requirements.railway.txt && \
+    python -c "import redis; print('✅ Redis installed successfully')"
 
 # Production stage
 FROM python:3.11-slim
