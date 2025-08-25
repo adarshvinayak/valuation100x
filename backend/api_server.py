@@ -538,6 +538,46 @@ async def get_analysis_status(analysis_id: str):
         completed_at=state.get("completed_at")
     )
 
+@app.post("/api/system/cleanup-sessions", tags=["System"])
+async def cleanup_stuck_sessions():
+    """Administrative endpoint to clean up stuck analysis sessions"""
+    
+    cleaned_sessions = []
+    current_time = datetime.utcnow()
+    
+    # Find and clean up stuck sessions in analysis_tasks
+    for analysis_id, task_info in list(analysis_tasks.items()):
+        # Check if analysis is stuck (running for more than 30 minutes)
+        if task_info.get("status") == "running":
+            started_at = task_info.get("started_at")
+            if started_at and (current_time - started_at).total_seconds() > 1800:  # 30 minutes
+                logger.warning(f"🧹 Found stuck analysis session: {analysis_id} (running for {(current_time - started_at).total_seconds() / 60:.1f} minutes)")
+                
+                # Update state to reflect cleanup
+                state = await get_analysis_state(analysis_id)
+                if state:
+                    state["status"] = "cleaned_up"
+                    state["completed_at"] = current_time
+                    state["error"] = "Session cleaned up - analysis was stuck"
+                    await store_analysis_state(analysis_id, state)
+                
+                # Remove from memory
+                del analysis_tasks[analysis_id]
+                cleaned_sessions.append({
+                    "analysis_id": analysis_id,
+                    "ticker": task_info.get("ticker"),
+                    "stuck_duration_minutes": (current_time - started_at).total_seconds() / 60
+                })
+                
+                logger.info(f"🧹 Cleaned up stuck session: {analysis_id}")
+    
+    return {
+        "message": f"Cleaned up {len(cleaned_sessions)} stuck analysis sessions",
+        "cleaned_sessions": cleaned_sessions,
+        "remaining_active_sessions": len([t for t in analysis_tasks.values() if t.get("status") == "running"]),
+        "timestamp": current_time.isoformat()
+    }
+
 @app.delete("/api/analysis/{analysis_id}/cancel", tags=["Analysis"])
 async def cancel_analysis(analysis_id: str):
     """Cancel a running comprehensive analysis"""
@@ -553,6 +593,16 @@ async def cancel_analysis(analysis_id: str):
     state["status"] = "cancelled"
     state["completed_at"] = datetime.utcnow()
     await store_analysis_state(analysis_id, state)
+    
+    # CRITICAL: Update analysis_tasks to reflect cancellation and clean up
+    if analysis_id in analysis_tasks:
+        analysis_tasks[analysis_id]["status"] = "cancelled"
+        analysis_tasks[analysis_id]["completed_at"] = state["completed_at"]
+        logger.info(f"🧹 Updated analysis_tasks status to cancelled for analysis {analysis_id}")
+        
+        # Clean up cancelled analysis from memory immediately
+        del analysis_tasks[analysis_id]
+        logger.info(f"🧹 Cleaned up cancelled analysis from memory: {analysis_id}")
     
     # Notify WebSocket clients
     await manager.send_to_analysis(analysis_id, {
@@ -816,6 +866,22 @@ async def run_comprehensive_analysis(analysis_id: str, ticker: str, company_name
         
         await store_analysis_state(analysis_id, state)
         
+        # CRITICAL: Update analysis_tasks to reflect completion and clean up
+        if analysis_id in analysis_tasks:
+            analysis_tasks[analysis_id]["status"] = "completed"
+            analysis_tasks[analysis_id]["completed_at"] = state["completed_at"]
+            logger.info(f"🧹 Updated analysis_tasks status to completed for {ticker} (ID: {analysis_id})")
+            
+            # Clean up completed analysis from memory after 5 minutes
+            # This prevents the "still running" issue for future requests
+            async def cleanup_completed_analysis():
+                await asyncio.sleep(300)  # 5 minutes
+                if analysis_id in analysis_tasks and analysis_tasks[analysis_id].get("status") == "completed":
+                    del analysis_tasks[analysis_id]
+                    logger.info(f"🧹 Cleaned up completed analysis from memory: {analysis_id}")
+            
+            asyncio.create_task(cleanup_completed_analysis())
+        
         # Send completion notification
         await manager.send_to_analysis(analysis_id, {
             "type": "analysis_completed",
@@ -843,6 +909,22 @@ async def run_comprehensive_analysis(analysis_id: str, ticker: str, company_name
             state["error"] = str(e)
             state["completed_at"] = datetime.utcnow()
             await store_analysis_state(analysis_id, state)
+            
+            # CRITICAL: Update analysis_tasks to reflect failure and clean up
+            if analysis_id in analysis_tasks:
+                analysis_tasks[analysis_id]["status"] = "failed"
+                analysis_tasks[analysis_id]["completed_at"] = state["completed_at"]
+                analysis_tasks[analysis_id]["error"] = str(e)
+                logger.info(f"🧹 Updated analysis_tasks status to failed for {ticker} (ID: {analysis_id})")
+                
+                # Clean up failed analysis from memory after 2 minutes
+                async def cleanup_failed_analysis():
+                    await asyncio.sleep(120)  # 2 minutes
+                    if analysis_id in analysis_tasks and analysis_tasks[analysis_id].get("status") == "failed":
+                        del analysis_tasks[analysis_id]
+                        logger.info(f"🧹 Cleaned up failed analysis from memory: {analysis_id}")
+                
+                asyncio.create_task(cleanup_failed_analysis())
             
             # Send error notification
             await manager.send_to_analysis(analysis_id, {
