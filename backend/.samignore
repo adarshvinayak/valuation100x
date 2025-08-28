@@ -1,0 +1,45 @@
+# Files and directories to ignore during SAM build
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.git
+.mypy_cache
+.pytest_cache
+.hypothesis
+
+# Railway specific files
+Dockerfile
+requirements.railway.txt
+railway.json
+docker-compose.yml
+
+# Development files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Data directories (too large for Lambda)
+data/filings_raw/
+data/cache/
+logs/*.log
+models/embeddings/
+
+# Environment files (will be set as Lambda env vars)
+.env
+.env.local
+
+
