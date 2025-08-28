@@ -42,14 +42,20 @@ class SupabaseManager:
                  supabase_key: Optional[str] = None):
         
         if not SUPABASE_AVAILABLE:
-            raise RuntimeError("Supabase client not available. Install with: pip install supabase")
+            logger.warning("Supabase client not available. Manager will be non-functional.")
+            self.client = None
+            self.initialized = False
+            return
         
         # Get credentials from environment or parameters
         self.supabase_url = supabase_url or os.getenv("SUPABASE_URL")
         self.supabase_key = supabase_key or os.getenv("SUPABASE_ANON_KEY")
         
         if not self.supabase_url or not self.supabase_key:
-            raise ValueError("SUPABASE_URL and SUPABASE_ANON_KEY environment variables are required")
+            logger.warning("SUPABASE_URL and SUPABASE_ANON_KEY environment variables not found. Manager will be non-functional.")
+            self.client = None
+            self.initialized = False
+            return
         
         self.client: Optional[Client] = None
         self.initialized = False
@@ -449,26 +455,41 @@ class SupabaseManager:
             logger.info("🔌 Supabase client disconnected")
 
 
-# Global instance
-supabase_manager = SupabaseManager()
+# Global instance - only create if Supabase is available
+if SUPABASE_AVAILABLE:
+    try:
+        supabase_manager = SupabaseManager()
+    except Exception as e:
+        logger.warning(f"Failed to create SupabaseManager: {e}")
+        supabase_manager = None
+else:
+    supabase_manager = None
 
 
 async def initialize_supabase() -> bool:
     """Initialize the global Supabase manager"""
-    return await supabase_manager.initialize()
+    if supabase_manager:
+        return await supabase_manager.initialize()
+    return False
 
 
 # Convenience functions
 async def store_analysis(analysis_data: Dict[str, Any]) -> str:
     """Store analysis result"""
-    return await supabase_manager.store_analysis_result(analysis_data)
+    if supabase_manager:
+        return await supabase_manager.store_analysis_result(analysis_data)
+    raise RuntimeError("Supabase manager not available")
 
 
 async def get_analysis(analysis_id: str) -> Optional[Dict[str, Any]]:
     """Get analysis result by ID"""
-    return await supabase_manager.get_analysis_result(analysis_id)
+    if supabase_manager:
+        return await supabase_manager.get_analysis_result(analysis_id)
+    return None
 
 
 async def upload_report(ticker: str, analysis_id: str, content: str, report_type: str = 'markdown') -> Optional[str]:
     """Upload analysis report"""
-    return await supabase_manager.upload_analysis_report(ticker, analysis_id, content, report_type)
+    if supabase_manager:
+        return await supabase_manager.upload_analysis_report(ticker, analysis_id, content, report_type)
+    return None

@@ -87,30 +87,40 @@ class FMPClient:
     async def get_company_profile(self, ticker: str) -> Dict[str, Any]:
         """Get company profile information"""
         try:
-            data = await self._make_request(f"profile/{ticker}")
+            # Use the new working quote endpoint instead of deprecated profile
+            data = await self._make_request(f"quote/{ticker}")
             
             if not data or not isinstance(data, list) or len(data) == 0:
                 return {}
             
-            profile = data[0]
+            quote = data[0]
             
-            # Normalize the response
+            # Normalize the response to match expected format (quote endpoint has different field names)
             return {
                 "ticker": ticker,
-                "company_name": profile.get("companyName", ""),
-                "sector": profile.get("sector", ""),
-                "industry": profile.get("industry", ""),
-                "market_cap": profile.get("mktCap", 0),
-                "price": profile.get("price", 0),
-                "beta": profile.get("beta", 0),
-                "country": profile.get("country", ""),
-                "exchange": profile.get("exchange", ""),
-                "currency": profile.get("currency", "USD"),
-                "description": profile.get("description", ""),
-                "website": profile.get("website", ""),
-                "ipo_date": profile.get("ipoDate", ""),
-                "full_time_employees": profile.get("fullTimeEmployees", 0),
-                "last_updated": datetime.now().isoformat()
+                "company_name": quote.get("name", ""),  # Changed from companyName to name
+                "sector": "Unknown",  # Not available in quote endpoint
+                "industry": "Unknown",  # Not available in quote endpoint  
+                "market_cap": quote.get("marketCap", 0),  # Same field name
+                "price": quote.get("price", 0),  # Same field name
+                "beta": 0,  # Not available in quote endpoint
+                "country": "Unknown",  # Not available in quote endpoint
+                "exchange": quote.get("exchange", ""),  # Same field name
+                "currency": "USD",  # Default assumption
+                "description": "",  # Not available in quote endpoint
+                "website": "",  # Not available in quote endpoint
+                "ipo_date": "",  # Not available in quote endpoint
+                "full_time_employees": 0,  # Not available in quote endpoint
+                "last_updated": datetime.now().isoformat(),
+                # Additional data available from quote endpoint
+                "current_price": quote.get("price", 0),
+                "day_low": quote.get("dayLow", 0),
+                "day_high": quote.get("dayHigh", 0),
+                "year_low": quote.get("yearLow", 0),
+                "year_high": quote.get("yearHigh", 0),
+                "volume": quote.get("volume", 0),
+                "pe_ratio": quote.get("pe", 0),
+                "eps": quote.get("eps", 0)
             }
             
         except Exception as e:
