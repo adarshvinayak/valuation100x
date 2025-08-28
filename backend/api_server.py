@@ -558,6 +558,33 @@ async def validate_ticker_endpoint(ticker: str):
     """Validate a stock ticker and get company information"""
     return await validate_ticker(ticker)
 
+@app.get("/api/debug/fmp-test/{ticker}", tags=["Debug"])
+async def debug_fmp_test(ticker: str):
+    """Debug endpoint to test FMP API integration"""
+    try:
+        from tools.fmp import FMPClient
+        api_key = os.getenv("FMP_API_KEY")
+        
+        if not api_key:
+            return {"error": "FMP_API_KEY not found", "env_vars": list(os.environ.keys())}
+        
+        async with FMPClient(api_key) as client:
+            profile = await client.get_company_profile(ticker)
+            return {
+                "ticker": ticker,
+                "api_key_present": bool(api_key),
+                "api_key_length": len(api_key) if api_key else 0,
+                "profile": profile,
+                "success": True
+            }
+    except Exception as e:
+        return {
+            "ticker": ticker,
+            "error": str(e),
+            "error_type": type(e).__name__,
+            "success": False
+        }
+
 @app.get("/api/analysis/{analysis_id}/recover", response_model=AnalysisResponse, tags=["Analysis"])
 async def recover_analysis(analysis_id: str):
     """Recover an existing analysis for page refresh/reconnection"""
