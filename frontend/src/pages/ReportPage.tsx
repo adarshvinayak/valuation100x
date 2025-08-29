@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft, Download, Copy, Printer, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { API_ENDPOINTS } from "@/config/api";
 import ReactMarkdown from "react-markdown";
 
 interface ReportData {
@@ -29,9 +30,7 @@ const ReportPage = () => {
 
     try {
       setIsLoading(true);
-      const response = await fetch(
-        `https://valuation100x-production.up.railway.app/api/reports/${analysisId}/markdown`
-      );
+      const response = await fetch(API_ENDPOINTS.REPORT_MARKDOWN(analysisId));
 
       if (!response.ok) {
         throw new Error(`Failed to fetch report: ${response.status}`);
@@ -52,131 +51,6 @@ const ReportPage = () => {
     } catch (err) {
       console.error('Error fetching report:', err);
       setError(err instanceof Error ? err.message : 'Failed to load report');
-      
-      // Mock data for demo purposes
-      setReportData({
-        markdown_content: `# Apple Inc. (AAPL) - Investment Analysis Report
-
-## Executive Summary
-
-Apple Inc. represents a compelling investment opportunity with significant upside potential. Our comprehensive analysis indicates a **BUY** recommendation with high confidence based on strong fundamentals, market position, and growth prospects.
-
-### Key Metrics
-- **Investment Score**: 8.5/10
-- **Recommendation**: BUY
-- **Fair Value**: $185.00
-- **Current Price**: $150.25
-- **Upside Potential**: +23.1%
-- **Confidence Level**: 87%
-
-## Investment Thesis
-
-Apple continues to demonstrate exceptional financial performance and strategic positioning. The company's ecosystem approach, brand loyalty, and innovation pipeline support our bullish outlook.
-
-### Key Strengths
-
-1. **Dominant Market Position**
-   - Leading smartphone market share in premium segment
-   - Strong ecosystem lock-in effect
-   - Brand loyalty unmatched in tech sector
-
-2. **Financial Excellence**
-   - Consistent revenue growth of 8-12% annually
-   - Operating margins above 25%
-   - Strong cash generation and balance sheet
-
-3. **Innovation Pipeline**
-   - Vision Pro represents new product category
-   - AI integration across product lineup
-   - Services segment showing strong growth
-
-4. **Capital Allocation**
-   - Shareholder-friendly dividend policy
-   - Aggressive share buyback program
-   - Strategic acquisitions and R&D investment
-
-### Key Risks
-
-1. **Market Saturation**
-   - Smartphone market maturity in developed countries
-   - Longer upgrade cycles for devices
-
-2. **Geopolitical Risks**
-   - China supply chain dependencies
-   - Regulatory scrutiny in multiple markets
-
-3. **Competition**
-   - Android ecosystem competition
-   - Emerging AI competitors
-
-## Financial Analysis
-
-### Revenue Streams
-- iPhone: 52% of total revenue
-- Services: 22% and growing
-- Mac: 11%
-- iPad: 8%
-- Wearables: 7%
-
-### Profitability Metrics
-- Gross Margin: 44.1%
-- Operating Margin: 25.3%
-- Net Margin: 23.5%
-- ROE: 63.2%
-
-## Valuation Analysis
-
-### DCF Model
-Our discounted cash flow model suggests a fair value of $185 per share, representing 23.1% upside from current levels.
-
-**Key Assumptions:**
-- Revenue CAGR: 6.5% (2024-2028)
-- Terminal Growth Rate: 2.5%
-- Discount Rate: 9.2%
-
-### Peer Comparison
-Apple trades at premium multiples justified by superior:
-- Profit margins
-- Return on capital
-- Brand strength
-- Ecosystem effects
-
-## Scenario Analysis
-
-### Bull Case ($210 target)
-- Successful Vision Pro adoption
-- AI services monetization
-- Market share gains in emerging markets
-- Multiple expansion to historical levels
-
-### Base Case ($185 target)
-- Steady iPhone replacement cycles
-- Services growth continuation
-- Margin stability
-- Current market conditions
-
-### Bear Case ($135 target)
-- iPhone demand deterioration
-- Increased competition pressure
-- Regulatory headwinds
-- Economic downturn impact
-
-## Conclusion
-
-Apple Inc. represents a high-quality investment with attractive risk-adjusted returns. The company's strong competitive position, financial performance, and growth prospects support our BUY recommendation.
-
-### Investment Recommendation: **BUY**
-### Price Target: **$185.00**
-### Risk Rating: **Moderate**
-
----
-
-*This analysis is for informational purposes only and does not constitute financial advice. Please consult with a qualified financial advisor before making investment decisions.*
-
-*Report generated on ${new Date().toLocaleDateString()}*`,
-        ticker: "DEMO",
-        company_name: "Demo Company"
-      });
     } finally {
       setIsLoading(false);
     }
@@ -188,7 +62,7 @@ Apple Inc. represents a high-quality investment with attractive risk-adjusted re
     try {
       setIsGeneratingPdf(true);
       const response = await fetch(
-        `https://valuation100x-production.up.railway.app/api/reports/${analysisId}/pdf`,
+        API_ENDPOINTS.REPORT_PDF(analysisId),
         {
           method: 'POST',
           headers: {

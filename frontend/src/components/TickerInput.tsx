@@ -24,60 +24,16 @@ export const TickerInput = ({
   const [isStartingAnalysis, setIsStartingAnalysis] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
-  const mockPreview = (symbol: string): CompanyPreview => {
-    const mockData: Record<string, CompanyPreview> = {
-      "TSLA": {
-        symbol: "TSLA",
-        name: "Tesla, Inc.",
-        sector: "Consumer Discretionary",
-        price: "$248.42"
-      },
-      "AAPL": {
-        symbol: "AAPL",
-        name: "Apple Inc.",
-        sector: "Technology",
-        price: "$192.53"
-      },
-      "MSFT": {
-        symbol: "MSFT",
-        name: "Microsoft Corporation",
-        sector: "Technology",
-        price: "$421.78"
-      },
-      "GOOGL": {
-        symbol: "GOOGL",
-        name: "Alphabet Inc.",
-        sector: "Communication Services",
-        price: "$141.52"
-      },
-      "NVDA": {
-        symbol: "NVDA",
-        name: "NVIDIA Corporation",
-        sector: "Technology",
-        price: "$462.89"
-      },
-      "MCD": {
-        symbol: "MCD",
-        name: "McDonald's Corporation",
-        sector: "Consumer Discretionary",
-        price: "$232.56"
-      }
-    };
-    return mockData[symbol] || {
-      symbol,
-      name: `${symbol} Corporation`,
-      sector: "Unknown",
-      price: "$0.00"
-    };
-  };
+
   const handleTickerChange = async (value: string) => {
     const upperValue = value.toUpperCase();
     setTicker(upperValue);
-    if (upperValue.length >= 2) {
+    
+    if (upperValue.length >= 1) {
       setIsValidating(true);
       
       try {
-        // Try to get real data from API
+        // Get real data from Lambda API for any US stock
         const response = await fetch(API_ENDPOINTS.VALIDATE_TICKER(upperValue));
         const data = await response.json();
         
@@ -86,16 +42,17 @@ export const TickerInput = ({
             symbol: upperValue,
             name: data.company_name,
             sector: data.sector || "Unknown",
-            price: data.market_cap ? `$${(data.market_cap / 1000000000).toFixed(1)}B` : "N/A"
+            price: data.current_price ? `$${data.current_price.toFixed(2)}` : 
+                   data.market_cap ? `$${(data.market_cap / 1000000000).toFixed(1)}B MC` : "N/A"
           });
         } else {
-          // Fallback to mock data
-          setPreview(mockPreview(upperValue));
+          // Clear preview if ticker is not valid
+          setPreview(null);
         }
       } catch (error) {
         console.error('Error fetching ticker data:', error);
-        // Fallback to mock data on error
-        setPreview(mockPreview(upperValue));
+        // Clear preview on error
+        setPreview(null);
       } finally {
         setIsValidating(false);
       }
@@ -110,9 +67,7 @@ export const TickerInput = ({
       return data.is_valid;
     } catch (error) {
       console.error('Validation API error:', error);
-      // Fallback to mock validation for known tickers
-      const knownTickers = ["TSLA", "AAPL", "MSFT", "GOOGL", "NVDA", "MCD"];
-      return knownTickers.includes(tickerSymbol);
+      return false;
     }
   };
 
@@ -182,7 +137,7 @@ export const TickerInput = ({
           
           <h1 className="text-3xl font-bold text-center">Enter Stock Ticker</h1>
         </div>
-        <p className="text-lg text-muted-foreground">Get institutional-grade stock valuation reports in 15 minutes</p>
+        <p className="text-lg text-muted-foreground">Get institutional-grade valuation reports for any US stock in 15 minutes</p>
       </div>
 
       {/* Input Section */}
@@ -191,7 +146,7 @@ export const TickerInput = ({
           <div className="space-y-2">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-              <Input id="ticker" value={ticker} onChange={e => handleTickerChange(e.target.value)} placeholder="e.g., TSLA, AAPL, MSFT" className="pl-10 h-14 text-lg border-2 transition-smooth focus:border-primary" autoComplete="off" />
+              <Input id="ticker" value={ticker} onChange={e => handleTickerChange(e.target.value)} placeholder="Enter any US stock symbol (e.g., AAPL, GOOGL, AMD, etc.)" className="pl-10 h-14 text-lg border-2 transition-smooth focus:border-primary" autoComplete="off" />
             </div>
           </div>
 
@@ -225,14 +180,15 @@ export const TickerInput = ({
         </div>
       </Card>
 
-      {/* Popular Stocks */}
+      {/* Example Stocks */}
       <div className="text-center space-y-3">
-        <p className="text-sm text-muted-foreground">Popular stocks to research:</p>
+        <p className="text-sm text-muted-foreground">Try any US stock symbol (e.g., AAPL, GOOGL, TSLA, AMD, NVDA, AMZN, META, etc.)</p>
         <div className="flex flex-wrap justify-center gap-2">
-          {["TSLA", "AAPL", "MSFT", "GOOGL", "NVDA", "MCD"].map(symbol => <Button key={symbol} variant="outline" size="sm" onClick={() => handleTickerChange(symbol)} className="transition-smooth hover:bg-accent">
+          {["AAPL", "GOOGL", "TSLA", "MSFT", "NVDA", "AMZN", "META", "JPM", "JNJ", "UNH"].map(symbol => <Button key={symbol} variant="outline" size="sm" onClick={() => handleTickerChange(symbol)} className="transition-smooth hover:bg-accent">
               {symbol}
             </Button>)}
         </div>
+        <p className="text-xs text-muted-foreground mt-2">Supports 5,000+ US stocks across all sectors</p>
       </div>
     </div>;
 };

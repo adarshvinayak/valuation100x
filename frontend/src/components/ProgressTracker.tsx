@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Clock, CheckCircle, Loader2, FileText, Calculator, Brain, TrendingUp, AlertCircle, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { API_ENDPOINTS } from "@/config/api";
 
 interface AnalysisStep {
   id: string;
@@ -109,7 +110,7 @@ export const ProgressTracker = ({ ticker, onComplete }: ProgressTrackerProps) =>
   useEffect(() => {
     const startAnalysis = async () => {
       try {
-        const response = await fetch('https://valuation100x-production.up.railway.app/api/analysis/comprehensive/start', {
+        const response = await fetch(API_ENDPOINTS.START_ANALYSIS, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -156,7 +157,7 @@ export const ProgressTracker = ({ ticker, onComplete }: ProgressTrackerProps) =>
   }, [ticker, toast]);
 
   const connectWebSocket = (id: string) => {
-    const wsUrl = `wss://valuation100x-production.up.railway.app/ws/analysis/${id}`;
+    const wsUrl = API_ENDPOINTS.WEBSOCKET_ANALYSIS(id);
     
     try {
       wsRef.current = new WebSocket(wsUrl);
@@ -279,7 +280,7 @@ export const ProgressTracker = ({ ticker, onComplete }: ProgressTrackerProps) =>
     
     try {
       // Get final results
-      const resultsResponse = await fetch(`https://valuation100x-production.up.railway.app/api/analysis/${analysisId}/results`);
+      const resultsResponse = await fetch(API_ENDPOINTS.ANALYSIS_RESULTS(analysisId));
       const results = await resultsResponse.json();
       onComplete(results);
     } catch (error) {
@@ -311,7 +312,7 @@ export const ProgressTracker = ({ ticker, onComplete }: ProgressTrackerProps) =>
     setIsCancelling(true);
     
     try {
-      const response = await fetch(`https://valuation100x-production.up.railway.app/api/analysis/${analysisId}/cancel`, {
+      const response = await fetch(API_ENDPOINTS.CANCEL_ANALYSIS(analysisId), {
         method: 'DELETE'
       });
       
