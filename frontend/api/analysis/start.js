@@ -29,8 +29,7 @@ export default async function handler(req, res) {
     
     // Try multiple backend URLs
     const backendUrls = [
-      'https://qkw44e47tsqq7ol6k6bf6n6iem0vjqzh.lambda-url.us-east-1.on.aws',
-      // Add API Gateway URL here if available
+      'https://i5xlj4nhie.execute-api.us-east-1.amazonaws.com',
     ];
     
     const requestBody = {

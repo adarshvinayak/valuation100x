@@ -26,28 +26,14 @@ export default async function handler(req, res) {
     return;
   }
 
-  // GUARANTEED SUCCESS VALIDATION - This endpoint NEVER fails
-  console.log('🎯 GUARANTEED VALIDATION for ticker:', ticker);
-  
-  // Always prepare a fallback response first
-  const fallbackResponse = {
-    ticker: ticker,
-    is_valid: true,
-    company_name: `${ticker} Corporation`,
-    sector: 'Unknown',
-    market_cap: null,
-    current_price: null,
-    last_updated: new Date().toISOString(),
-    fallback: true,
-    source: 'vercel_fallback'
-  };
-  
-  // Try to get real data, but don't fail if backend is down
   try {
-    console.log('Attempting backend validation for:', ticker);
+    console.log('Validating ticker:', ticker);
     
-    const lambdaUrl = 'https://qkw44e47tsqq7ol6k6bf6n6iem0vjqzh.lambda-url.us-east-1.on.aws';
-    const targetUrl = `${lambdaUrl}/api/validate/ticker/${ticker}`;
+    // Use correct API Gateway URL
+    const apiGatewayUrl = 'https://i5xlj4nhie.execute-api.us-east-1.amazonaws.com';
+    const targetUrl = `${apiGatewayUrl}/api/validate/ticker/${ticker}`;
+    
+    console.log('Calling API Gateway:', targetUrl);
     
     const response = await fetch(targetUrl, {
       method: 'GET',
@@ -55,20 +41,25 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json',
         'User-Agent': 'Vercel-Proxy/1.0',
       },
-      timeout: 5000, // 5 second timeout
     });
     
-    if (response.ok) {
-      const data = await response.json();
-      console.log('✅ Backend validation successful:', data.company_name);
-      return res.status(200).json({...data, source: 'lambda_backend'});
-    } else {
-      console.log('⚠️ Backend returned error, using fallback');
-      return res.status(200).json({...fallbackResponse, backend_error: `${response.status}: ${response.statusText}`});
+    if (!response.ok) {
+      throw new Error(`API Gateway responded with ${response.status}: ${response.statusText}`);
     }
     
+    const data = await response.json();
+    console.log('✅ Validation successful:', data.company_name);
+    
+    // Return the API Gateway response with CORS headers
+    res.status(200).json(data);
+    
   } catch (error) {
-    console.log('⚠️ Backend failed, using fallback:', error.message);
-    return res.status(200).json({...fallbackResponse, backend_error: error.message});
+    console.error('Validation error:', error);
+    res.status(500).json({ 
+      error: 'Failed to validate ticker',
+      details: error.message,
+      ticker: ticker,
+      timestamp: new Date().toISOString()
+    });
   }
 }
