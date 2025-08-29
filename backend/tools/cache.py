@@ -20,8 +20,14 @@ class FileCache:
     
     def __init__(self, cache_dir: str = "data/cache", default_ttl_hours: int = 24):
         self.cache_dir = Path(cache_dir)
-        self.cache_dir.mkdir(parents=True, exist_ok=True)
         self.default_ttl_hours = default_ttl_hours
+        self.lambda_mode = os.getenv("AWS_LAMBDA_FUNCTION_NAME") is not None
+        
+        if not self.lambda_mode:
+            # Only create cache directory if not in Lambda
+            self.cache_dir.mkdir(parents=True, exist_ok=True)
+        else:
+            logger.info("Lambda mode detected - file caching disabled")
     
     def _get_cache_key(self, key: str) -> str:
         """Generate a safe filename from cache key"""
@@ -42,6 +48,10 @@ class FileCache:
     
     def get(self, key: str) -> Optional[Any]:
         """Get value from cache if not expired"""
+        if self.lambda_mode:
+            # No file caching in Lambda
+            return None
+            
         cache_key = self._get_cache_key(key)
         cache_path = self._get_cache_path(cache_key)
         
@@ -68,6 +78,11 @@ class FileCache:
     
     def set(self, key: str, value: Any, ttl_hours: Optional[int] = None) -> bool:
         """Set value in cache with TTL"""
+        if self.lambda_mode:
+            # No file caching in Lambda - just return success
+            logger.debug(f"Lambda mode: Skipping cache write for key: {key}")
+            return True
+            
         cache_key = self._get_cache_key(key)
         cache_path = self._get_cache_path(cache_key)
         
