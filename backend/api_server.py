@@ -193,6 +193,10 @@ class TickerValidation(BaseModel):
     exchange: Optional[str]
     sector: Optional[str]
     market_cap: Optional[float]
+    current_price: Optional[float]
+    day_low: Optional[float]
+    day_high: Optional[float]
+    volume: Optional[int]
     last_updated: datetime
 
 class SystemHealth(BaseModel):
@@ -323,6 +327,10 @@ async def validate_ticker(ticker: str) -> TickerValidation:
                 exchange=None,
                 sector=None,
                 market_cap=None,
+                current_price=None,
+                day_low=None,
+                day_high=None,
+                volume=None,
                 last_updated=datetime.utcnow()
             )
         
@@ -339,6 +347,10 @@ async def validate_ticker(ticker: str) -> TickerValidation:
                 exchange="Unknown",
                 sector="Unknown", 
                 market_cap=None,
+                current_price=None,
+                day_low=None,
+                day_high=None,
+                volume=None,
                 last_updated=datetime.utcnow()
             )
         
@@ -356,6 +368,10 @@ async def validate_ticker(ticker: str) -> TickerValidation:
                         exchange=profile.get("exchange", "Unknown"),
                         sector=profile.get("sector", "Unknown"),
                         market_cap=profile.get("market_cap", 0),
+                        current_price=profile.get("current_price", 0),
+                        day_low=profile.get("day_low", 0),
+                        day_high=profile.get("day_high", 0),
+                        volume=profile.get("volume", 0),
                         last_updated=datetime.utcnow()
                     )
                 else:
@@ -366,6 +382,10 @@ async def validate_ticker(ticker: str) -> TickerValidation:
                         exchange=None,
                         sector=None,
                         market_cap=None,
+                        current_price=None,
+                        day_low=None,
+                        day_high=None,
+                        volume=None,
                         last_updated=datetime.utcnow()
                     )
                     
@@ -379,6 +399,10 @@ async def validate_ticker(ticker: str) -> TickerValidation:
                 exchange="Unknown",
                 sector="Unknown", 
                 market_cap=None,
+                current_price=None,
+                day_low=None,
+                day_high=None,
+                volume=None,
                 last_updated=datetime.utcnow()
             )
             
