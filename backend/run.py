@@ -37,18 +37,25 @@ class StockResearchCLI:
             os.environ['ENV_FILE_PATH'] = env_path
         
     def setup_logging(self):
-        """Configure logging for the CLI"""
+        """Configure logging for the CLI - Lambda aware"""
+        lambda_mode = os.getenv("AWS_LAMBDA_FUNCTION_NAME") is not None
+        
+        handlers = [logging.StreamHandler(sys.stdout)]
+        
+        # Only add file handler if not in Lambda (file system is read-only in Lambda)
+        if not lambda_mode:
+            try:
+                # Create logs directory if it doesn't exist (only outside Lambda)
+                Path('logs').mkdir(exist_ok=True)
+                handlers.append(logging.FileHandler('logs/stock_research.log'))
+            except Exception as e:
+                print(f"Warning: Could not create log file: {e}")
+        
         logging.basicConfig(
             level=logging.INFO,
             format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-            handlers=[
-                logging.StreamHandler(sys.stdout),
-                logging.FileHandler('logs/stock_research.log')
-            ]
+            handlers=handlers
         )
-        
-        # Create logs directory if it doesn't exist
-        Path('logs').mkdir(exist_ok=True)
         
         # Set up rate limiting for OpenAI API
         self.api_call_count = 0

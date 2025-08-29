@@ -43,20 +43,32 @@ from tools.retrieval import retrieve_docs
 from ingestion.enhanced_sec_ingest import download_sec_documents_for_ticker
 from ingestion.enhanced_embed_index_v2 import create_enhanced_index_for_ticker  # 🆓 Local embeddings support!
 
-# Setup logging with UTF-8 encoding for emoji support
+# Setup logging with UTF-8 encoding for emoji support - Lambda aware
+lambda_mode = os.getenv("AWS_LAMBDA_FUNCTION_NAME") is not None
+
 try:
     # Try to create UTF-8 compatible console handler
     console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setLevel(logging.INFO)
     
-    file_handler = logging.FileHandler('logs/enhanced_analysis.log', encoding='utf-8')
-    file_handler.setLevel(logging.INFO)
+    handlers = [console_handler]
+    
+    # Only add file handler if not in Lambda (file system is read-only in Lambda)
+    if not lambda_mode:
+        try:
+            # Create logs directory if it doesn't exist (only outside Lambda)
+            os.makedirs('logs', exist_ok=True)
+            file_handler = logging.FileHandler('logs/enhanced_analysis.log', encoding='utf-8')
+            file_handler.setLevel(logging.INFO)
+            handlers.append(file_handler)
+        except Exception as e:
+            print(f"Warning: Could not create file handler: {e}")
     
     # Configure logging
     logging.basicConfig(
         level=logging.INFO,
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        handlers=[file_handler, console_handler]
+        handlers=handlers
     )
 except Exception:
     # Fallback to basic logging without emojis

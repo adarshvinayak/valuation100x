@@ -15,14 +15,24 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, Any
 
-# Setup logging with UTF-8 encoding
+# Setup logging with UTF-8 encoding - Lambda aware
+lambda_mode = os.getenv("AWS_LAMBDA_FUNCTION_NAME") is not None
+
+handlers = [logging.StreamHandler(sys.stdout)]
+
+# Only add file handler if not in Lambda (file system is read-only in Lambda)
+if not lambda_mode:
+    try:
+        # Create logs directory if it doesn't exist (only outside Lambda)
+        os.makedirs('logs', exist_ok=True)
+        handlers.append(logging.FileHandler('logs/damodaran_integrated.log', encoding='utf-8'))
+    except Exception as e:
+        print(f"Warning: Could not create log file: {e}")
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('logs/damodaran_integrated.log', encoding='utf-8'),
-        logging.StreamHandler(sys.stdout)
-    ]
+    handlers=handlers
 )
 logger = logging.getLogger(__name__)
 

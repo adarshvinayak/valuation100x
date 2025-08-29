@@ -271,9 +271,9 @@ ANALYSIS_STEPS = [
 DEFAULT_PORT = 3000
 DEFAULT_HOST = "0.0.0.0"
 
-# Request deduplication configuration
-REQUEST_COOLDOWN_SECONDS = int(os.getenv("REQUEST_COOLDOWN_SECONDS", "300"))  # 5 minutes default
-MAX_CONCURRENT_ANALYSES = int(os.getenv("MAX_CONCURRENT_ANALYSES", "3"))     # Maximum concurrent analyses
+# Request deduplication configuration - Reduced for development/testing
+REQUEST_COOLDOWN_SECONDS = int(os.getenv("REQUEST_COOLDOWN_SECONDS", "30"))   # 30 seconds default (was 5 minutes)
+MAX_CONCURRENT_ANALYSES = int(os.getenv("MAX_CONCURRENT_ANALYSES", "5"))      # 5 concurrent analyses (was 3)
 
 # Helper Functions
 def create_service_unavailable_response(detail: str) -> JSONResponse:
@@ -594,6 +594,20 @@ async def health_check():
             active_analyses=0,
         queue_size=0
     )
+
+@app.post("/api/admin/clear-rate-limits", tags=["Admin"])
+async def clear_rate_limits():
+    """Clear all rate limiting data (for debugging)"""
+    global incoming_requests
+    cleared_count = len(incoming_requests)
+    incoming_requests.clear()
+    logger.info(f"🧹 Cleared rate limits for {cleared_count} tickers")
+    return {
+        "message": f"Cleared rate limits for {cleared_count} tickers",
+        "timestamp": datetime.utcnow().isoformat(),
+        "rate_limit_cooldown": REQUEST_COOLDOWN_SECONDS,
+        "max_concurrent": MAX_CONCURRENT_ANALYSES
+    }
 
 @app.get("/api/validate/ticker/{ticker}", response_model=TickerValidation, tags=["Validation"])
 async def validate_ticker_endpoint(ticker: str):
