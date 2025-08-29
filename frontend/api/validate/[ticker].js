@@ -27,29 +27,42 @@ export default async function handler(req, res) {
   }
   
   try {
+    console.log('Validating ticker:', ticker);
+    
     // Proxy request to Lambda function
     const lambdaUrl = 'https://qkw44e47tsqq7ol6k6bf6n6iem0vjqzh.lambda-url.us-east-1.on.aws';
-    const response = await fetch(`${lambdaUrl}/api/validate/ticker/${ticker}`, {
+    const targetUrl = `${lambdaUrl}/api/validate/ticker/${ticker}`;
+    
+    console.log('Proxying to:', targetUrl);
+    
+    const response = await fetch(targetUrl, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
     });
     
+    console.log('Lambda response status:', response.status);
+    
     if (!response.ok) {
-      throw new Error(`Lambda responded with ${response.status}: ${response.statusText}`);
+      const errorText = await response.text();
+      console.error('Lambda error:', errorText);
+      throw new Error(`Lambda responded with ${response.status}: ${response.statusText} - ${errorText}`);
     }
     
     const data = await response.json();
+    console.log('Validation result:', { ticker, isValid: data.is_valid, company: data.company_name });
     
     // Return the Lambda response with CORS headers
     res.status(200).json(data);
     
   } catch (error) {
-    console.error('Proxy error:', error);
+    console.error('Validation proxy error:', error);
     res.status(500).json({ 
       error: 'Failed to fetch ticker data',
-      details: error.message 
+      details: error.message,
+      ticker: ticker,
+      timestamp: new Date().toISOString()
     });
   }
 }

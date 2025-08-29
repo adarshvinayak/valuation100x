@@ -28,13 +28,26 @@ export const TickerInput = ({
     const upperValue = value.toUpperCase();
     setTicker(upperValue);
     
-    if (upperValue.length >= 1) {
+    if (upperValue.length >= 1 && /^[A-Z]+$/.test(upperValue)) {
       setIsValidating(true);
+      
+      // Set immediate preview for valid-looking tickers to enable button
+      if (upperValue.length >= 1) {
+        setPreview({
+          symbol: upperValue,
+          name: "Company Name (Loading...)",
+          sector: "Validating..."
+        });
+      }
       
       try {
         // Validate ticker with backend API
+        console.log('Validating ticker:', upperValue);
         const response = await fetch(API_ENDPOINTS.VALIDATE_TICKER(upperValue));
+        console.log('Validation response status:', response.status);
+        
         const data = await response.json();
+        console.log('Validation data:', data);
         
         if (data.is_valid && data.company_name) {
           setPreview({
@@ -43,13 +56,21 @@ export const TickerInput = ({
             sector: data.sector || "Unknown"
           });
         } else {
-          // Clear preview if ticker is not valid
-          setPreview(null);
+          // Keep a basic preview to enable button, but show validation failed
+          setPreview({
+            symbol: upperValue,
+            name: "Unknown Company",
+            sector: "Will validate during analysis"
+          });
         }
       } catch (error) {
         console.error('Error fetching ticker data:', error);
-        // Clear preview on error
-        setPreview(null);
+        // Keep a basic preview to enable button even on validation error
+        setPreview({
+          symbol: upperValue,
+          name: "Unknown Company",
+          sector: "Will validate during analysis"
+        });
       } finally {
         setIsValidating(false);
       }
