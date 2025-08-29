@@ -15,6 +15,14 @@ from tenacity import retry, stop_after_attempt, wait_exponential
 
 from .cache import get_cache
 
+# Import Polygon fallback with graceful failure
+try:
+    from .polygon_client import get_polygon_fallback_data
+    POLYGON_AVAILABLE = True
+except ImportError:
+    POLYGON_AVAILABLE = False
+    get_polygon_fallback_data = None
+
 logger = logging.getLogger(__name__)
 
 
@@ -125,16 +133,41 @@ class FMPClient:
             
         except Exception as e:
             logger.error(f"Failed to get company profile for {ticker}: {e}")
-            return {}
+            return await self._try_polygon_fallback(ticker)
+    
+    async def _try_polygon_fallback(self, ticker: str) -> Dict[str, Any]:
+        """Try Polygon.io as fallback when FMP fails"""
+        if POLYGON_AVAILABLE and get_polygon_fallback_data:
+            logger.info(f"Trying Polygon.io fallback for {ticker}")
+            polygon_data = await get_polygon_fallback_data(ticker)
+            if polygon_data:
+                return polygon_data
+        
+        # Final fallback - basic data structure
+        logger.warning(f"All data sources failed for {ticker}, using basic fallback")
+        return {
+            "ticker": ticker,
+            "company_name": f"{ticker} Corporation",
+            "exchange": "Unknown",
+            "sector": "Unknown",
+            "market_cap": 0,
+            "current_price": 0,
+            "day_low": 0,
+            "day_high": 0,
+            "volume": 0,
+            "last_updated": datetime.now().isoformat()
+        }
     
     async def get_key_metrics(self, ticker: str, period: str = "annual", limit: int = 5) -> List[Dict[str, Any]]:
-        """Get key financial metrics and ratios"""
+        """Get key financial metrics and ratios using new stable endpoints"""
         try:
-            # Use the correct FMP endpoint for ratios
-            endpoint = f"ratios-ttm/{ticker}" if period == "ttm" else f"ratios/{ticker}"
-            params = {"limit": limit}
-            if period != "ttm":
-                params["period"] = period
+            # Use the new stable FMP endpoints (v4) instead of legacy ones
+            if period == "ttm":
+                endpoint = f"key-metrics-ttm/{ticker}"
+                params = {"limit": limit}
+            else:
+                endpoint = f"key-metrics/{ticker}"
+                params = {"limit": limit, "period": period}
                 
             data = await self._make_request(endpoint, params)
             
