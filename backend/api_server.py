@@ -148,15 +148,25 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# CORS middleware for frontend - Updated for Railway healthcheck and Lovable integration
+# CORS middleware for frontend - Updated for Lambda deployment
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins including Railway healthcheck hostname
+    allow_origins=["*"],  # Allow all origins for Lambda Function URLs
     allow_credentials=False,  # Set to False when using allow_origins=["*"]
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
     expose_headers=["*"],
 )
+
+# Additional CORS middleware to ensure headers are always added
+@app.middleware("http")
+async def add_cors_header(request, call_next):
+    """Ensure CORS headers are added to all responses"""
+    response = await call_next(request)
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "*"
+    return response
 
 # Pydantic models
 class AnalysisRequest(BaseModel):
@@ -481,7 +491,15 @@ async def get_analysis_state(analysis_id: str) -> Optional[dict]:
 @app.options("/{path:path}")
 async def options_handler(path: str):
     """Handle preflight OPTIONS requests for CORS"""
-    return {}
+    return JSONResponse(
+        content={},
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+            "Access-Control-Allow-Headers": "*",
+            "Access-Control-Max-Age": "86400"
+        }
+    )
 
 @app.get("/", tags=["Root"])
 async def root():
