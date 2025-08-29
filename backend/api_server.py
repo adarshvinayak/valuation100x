@@ -609,6 +609,34 @@ async def clear_rate_limits():
         "max_concurrent": MAX_CONCURRENT_ANALYSES
     }
 
+@app.get("/api/admin/circuit-breaker-status", tags=["Admin"])
+async def get_circuit_breaker_status():
+    """Check FMP circuit breaker status"""
+    try:
+        from tools.fmp import _fmp_circuit_breaker
+        return {
+            "fmp_circuit_breaker": _fmp_circuit_breaker,
+            "timestamp": datetime.utcnow().isoformat()
+        }
+    except ImportError:
+        return {"error": "Circuit breaker not available"}
+
+@app.post("/api/admin/reset-circuit-breaker", tags=["Admin"])
+async def reset_circuit_breaker():
+    """Reset FMP circuit breaker (for debugging)"""
+    try:
+        from tools.fmp import _fmp_circuit_breaker
+        _fmp_circuit_breaker["failure_count"] = 0
+        _fmp_circuit_breaker["last_failure_time"] = None
+        _fmp_circuit_breaker["circuit_open"] = False
+        logger.info("🔄 Reset FMP circuit breaker")
+        return {
+            "message": "Circuit breaker reset successfully",
+            "timestamp": datetime.utcnow().isoformat()
+        }
+    except ImportError:
+        return {"error": "Circuit breaker not available"}
+
 @app.get("/api/validate/ticker/{ticker}", response_model=TickerValidation, tags=["Validation"])
 async def validate_ticker_endpoint(ticker: str):
     """Validate a stock ticker and get company information"""

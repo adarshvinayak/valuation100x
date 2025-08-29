@@ -37,8 +37,8 @@ class PolygonClient:
             await self.session.close()
     
     @retry(
-        stop=stop_after_attempt(3),
-        wait=wait_exponential(multiplier=1, min=4, max=10)
+        stop=stop_after_attempt(2),  # Reduced from 3 to 2 attempts
+        wait=wait_exponential(multiplier=2, min=10, max=60)  # Longer waits to respect rate limits
     )
     async def _make_request(self, endpoint: str, params: Optional[Dict] = None) -> Dict:
         """Make API request with retries"""
@@ -71,8 +71,15 @@ class PolygonClient:
             
             # Check for API error messages
             if isinstance(data, dict) and data.get("status") == "ERROR":
-                logger.error(f"Polygon API returned error: {data.get('error', 'Unknown error')}")
-                raise Exception(f"Polygon API Error: {data.get('error', 'Unknown error')}")
+                error_msg = data.get('error', 'Unknown error')
+                logger.error(f"Polygon API returned error: {error_msg}")
+                
+                # Don't retry on rate limit errors - fail fast
+                if "exceeded the maximum requests" in error_msg.lower() or "rate limit" in error_msg.lower():
+                    logger.warning("Polygon rate limit reached - failing fast to avoid wasted compute")
+                    raise Exception(f"Polygon Rate Limit: {error_msg}")
+                
+                raise Exception(f"Polygon API Error: {error_msg}")
             
             # Cache the result
             self.cache.set(cache_key, data, ttl_hours=24)

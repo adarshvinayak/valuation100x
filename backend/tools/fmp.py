@@ -25,6 +25,13 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
+# Simple circuit breaker to prevent API abuse
+_fmp_circuit_breaker = {
+    "failure_count": 0,
+    "last_failure_time": None,
+    "circuit_open": False
+}
+
 
 class FMPClient:
     """Financial Modeling Prep API client"""
@@ -48,8 +55,8 @@ class FMPClient:
             await self.session.close()
     
     @retry(
-        stop=stop_after_attempt(3),
-        wait=wait_exponential(multiplier=1, min=4, max=10)
+        stop=stop_after_attempt(2),  # Reduced from 3 to 2 attempts
+        wait=wait_exponential(multiplier=2, min=10, max=60)  # Longer waits to respect rate limits
     )
     async def _make_request(self, endpoint: str, params: Optional[Dict] = None) -> Dict:
         """Make API request with retries"""
@@ -84,8 +91,15 @@ class FMPClient:
             
             # Check for API error messages
             if isinstance(data, dict) and "Error Message" in data:
-                logger.error(f"FMP API returned error: {data['Error Message']}")
-                raise Exception(f"FMP API Error: {data['Error Message']}")
+                error_msg = data['Error Message']
+                logger.error(f"FMP API returned error: {error_msg}")
+                
+                # Don't retry on rate limit or quota errors - fail fast
+                if "Limit Reach" in error_msg or "rate limit" in error_msg.lower():
+                    logger.warning("FMP rate limit reached - failing fast to avoid wasted compute")
+                    raise Exception(f"FMP Rate Limit: {error_msg}")
+                
+                raise Exception(f"FMP API Error: {error_msg}")
             
             # Cache the result
             self.cache.set(cache_key, data, ttl_hours=24)
@@ -486,6 +500,35 @@ def _normalize_financial_metrics(profile: Dict, ratios: Dict,
             }
 
 
+def _check_circuit_breaker() -> bool:
+    """Check if FMP circuit breaker is open (too many failures)"""
+    global _fmp_circuit_breaker
+    
+    # If circuit is open, check if enough time has passed to try again
+    if _fmp_circuit_breaker["circuit_open"]:
+        if _fmp_circuit_breaker["last_failure_time"]:
+            time_since_failure = (datetime.now() - _fmp_circuit_breaker["last_failure_time"]).total_seconds()
+            if time_since_failure > 300:  # 5 minutes cooldown
+                logger.info("FMP circuit breaker: Attempting to close circuit after cooldown")
+                _fmp_circuit_breaker["circuit_open"] = False
+                _fmp_circuit_breaker["failure_count"] = 0
+                return False
+        return True
+    
+    return False
+
+def _record_fmp_failure():
+    """Record an FMP API failure for circuit breaker"""
+    global _fmp_circuit_breaker
+    
+    _fmp_circuit_breaker["failure_count"] += 1
+    _fmp_circuit_breaker["last_failure_time"] = datetime.now()
+    
+    # Open circuit if too many failures
+    if _fmp_circuit_breaker["failure_count"] >= 5:
+        logger.warning("FMP circuit breaker: Opening circuit due to repeated failures")
+        _fmp_circuit_breaker["circuit_open"] = True
+
 async def get_financials_fmp(ticker: str) -> Dict[str, Any]:
     """
     Main function to get comprehensive financial data for a ticker
@@ -493,6 +536,21 @@ async def get_financials_fmp(ticker: str) -> Dict[str, Any]:
     Returns:
         Dictionary with profile, ratios, income, balance, and cash flow data
     """
+    # Check circuit breaker first
+    if _check_circuit_breaker():
+        logger.warning(f"FMP circuit breaker open - skipping API calls for {ticker}")
+        return {
+            "ticker": ticker,
+            "profile": {"ticker": ticker, "company_name": f"{ticker} Corporation"},
+            "ratios_ttm": {},
+            "income_statements": [],
+            "balance_sheets": [],
+            "cash_flows": [],
+            "normalized_metrics": {},
+            "circuit_breaker_open": True,
+            "last_updated": datetime.now().isoformat()
+        }
+    
     api_key = os.getenv("FMP_API_KEY")
     if not api_key:
         logger.error("FMP_API_KEY not found in environment")
@@ -502,18 +560,48 @@ async def get_financials_fmp(ticker: str) -> Dict[str, Any]:
     
     try:
         async with FMPClient(api_key) as client:
-            # Fetch all financial data concurrently
-            profile_task = client.get_company_profile(ticker)
-            ratios_task = client.get_key_metrics(ticker, "ttm", 1)  # TTM ratios
-            income_task = client.get_income_statement(ticker, "annual", 5)
-            balance_task = client.get_balance_sheet(ticker, "annual", 5)
-            cash_task = client.get_cash_flow(ticker, "annual", 5)
+            # Fetch financial data SEQUENTIALLY to avoid rate limits
+            # This prevents overwhelming the API with concurrent requests
+            logger.info(f"Sequential API calls for {ticker} to prevent rate limiting...")
             
-            # Wait for all requests to complete
-            profile, ratios_ttm, income, balance, cash_flow = await asyncio.gather(
-                profile_task, ratios_task, income_task, balance_task, cash_task,
-                return_exceptions=True
-            )
+            # 1. Company Profile (most important)
+            try:
+                profile = await client.get_company_profile(ticker)
+                await asyncio.sleep(0.5)  # Small delay between calls
+            except Exception as e:
+                logger.error(f"Profile fetch failed for {ticker}: {e}")
+                profile = Exception(e)
+            
+            # 2. Key Metrics (second priority)
+            try:
+                ratios_ttm = await client.get_key_metrics(ticker, "ttm", 1)
+                await asyncio.sleep(0.5)
+            except Exception as e:
+                logger.error(f"Ratios fetch failed for {ticker}: {e}")
+                ratios_ttm = Exception(e)
+            
+            # 3. Income Statement (third priority)
+            try:
+                income = await client.get_income_statement(ticker, "annual", 5)
+                await asyncio.sleep(0.5)
+            except Exception as e:
+                logger.error(f"Income fetch failed for {ticker}: {e}")
+                income = Exception(e)
+            
+            # 4. Balance Sheet (fourth priority) 
+            try:
+                balance = await client.get_balance_sheet(ticker, "annual", 5)
+                await asyncio.sleep(0.5)
+            except Exception as e:
+                logger.error(f"Balance sheet fetch failed for {ticker}: {e}")
+                balance = Exception(e)
+            
+            # 5. Cash Flow (lowest priority)
+            try:
+                cash_flow = await client.get_cash_flow(ticker, "annual", 5)
+            except Exception as e:
+                logger.error(f"Cash flow fetch failed for {ticker}: {e}")
+                cash_flow = Exception(e)
             
             # Handle any exceptions with better fallback data
             if isinstance(profile, Exception):
@@ -561,6 +649,11 @@ async def get_financials_fmp(ticker: str) -> Dict[str, Any]:
             
     except Exception as e:
         logger.error(f"Failed to get financials for {ticker}: {e}")
+        
+        # Record failure for circuit breaker
+        if "Rate Limit" in str(e) or "Limit Reach" in str(e):
+            _record_fmp_failure()
+        
         # Return basic fallback data instead of empty dict
         return {
             "profile": {
