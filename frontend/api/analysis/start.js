@@ -27,8 +27,11 @@ export default async function handler(req, res) {
       });
     }
     
-    const lambdaUrl = 'https://qkw44e47tsqq7ol6k6bf6n6iem0vjqzh.lambda-url.us-east-1.on.aws';
-    console.log('Proxying to Lambda:', `${lambdaUrl}/api/analysis/comprehensive/start`);
+    // Try multiple backend URLs
+    const backendUrls = [
+      'https://qkw44e47tsqq7ol6k6bf6n6iem0vjqzh.lambda-url.us-east-1.on.aws',
+      // Add API Gateway URL here if available
+    ];
     
     const requestBody = {
       ticker: req.body.ticker,
@@ -37,31 +40,47 @@ export default async function handler(req, res) {
     
     console.log('Request body:', requestBody);
     
-    const response = await fetch(`${lambdaUrl}/api/analysis/comprehensive/start`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(requestBody),
-    });
+    let lastError = null;
     
-    console.log('Lambda response status:', response.status);
-    
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Lambda error response:', errorText);
-      
-      // Return more specific error info
-      return res.status(response.status).json({
-        error: 'Backend analysis service error',
-        details: `Lambda returned ${response.status}: ${errorText}`,
-        lambdaStatus: response.status
-      });
+    for (const lambdaUrl of backendUrls) {
+      try {
+        const targetUrl = `${lambdaUrl}/api/analysis/comprehensive/start`;
+        console.log('Trying backend:', targetUrl);
+        
+        const response = await fetch(targetUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'User-Agent': 'Vercel-Proxy/1.0',
+          },
+          body: JSON.stringify(requestBody),
+        });
+        
+        console.log(`Backend ${lambdaUrl} response status:`, response.status);
+        
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Analysis start success:', data);
+          return res.status(200).json(data);
+        } else {
+          const errorText = await response.text();
+          console.error(`Backend ${lambdaUrl} error:`, errorText);
+          lastError = `${response.status}: ${errorText}`;
+        }
+      } catch (err) {
+        console.error(`Backend ${lambdaUrl} failed:`, err.message);
+        lastError = err.message;
+      }
     }
     
-    const data = await response.json();
-    console.log('Lambda response data:', data);
-    res.status(200).json(data);
+    // All backends failed - return a helpful error response
+    console.error('All analysis backends failed:', lastError);
+    return res.status(503).json({ 
+      error: 'Analysis service temporarily unavailable',
+      details: `Backend services are experiencing issues: ${lastError}`,
+      suggestion: 'Please try again in a few minutes',
+      timestamp: new Date().toISOString()
+    });
     
   } catch (error) {
     console.error('Proxy error:', error);
