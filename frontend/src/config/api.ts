@@ -2,12 +2,12 @@
 // Configure the backend URL for AWS Lambda
 
 const config = {
-  // AWS Lambda Backend (Production)
-  API_BASE_URL: 'https://ppi7ci4lyhypmox7p4kp73bmsi0ydcon.lambda-url.us-east-1.on.aws',
+  // AWS Lambda Backend (Production) - Updated with working URL
+  API_BASE_URL: 'https://qkw44e47tsqq7ol6k6bf6n6iem0vjqzh.lambda-url.us-east-1.on.aws',
   
   // WebSocket URL (Note: Lambda Function URLs don't support WebSocket directly)
   // For WebSocket, we'll implement polling or use API Gateway WebSocket
-  WS_BASE_URL: 'wss://ppi7ci4lyhypmox7p4kp73bmsi0ydcon.lambda-url.us-east-1.on.aws',
+  WS_BASE_URL: 'wss://qkw44e47tsqq7ol6k6bf6n6iem0vjqzh.lambda-url.us-east-1.on.aws',
 }
 
 // API endpoints
