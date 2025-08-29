@@ -10,7 +10,6 @@ interface CompanyPreview {
   symbol: string;
   name: string;
   sector: string;
-  price: string;
 }
 interface TickerInputProps {
   onStartAnalysis: (ticker: string) => void;
@@ -33,7 +32,7 @@ export const TickerInput = ({
       setIsValidating(true);
       
       try {
-        // Get real data from Lambda API for any US stock
+        // Validate ticker with backend API
         const response = await fetch(API_ENDPOINTS.VALIDATE_TICKER(upperValue));
         const data = await response.json();
         
@@ -41,9 +40,7 @@ export const TickerInput = ({
           setPreview({
             symbol: upperValue,
             name: data.company_name,
-            sector: data.sector || "Unknown",
-            price: data.current_price ? `$${data.current_price.toFixed(2)}` : 
-                   data.market_cap ? `$${(data.market_cap / 1000000000).toFixed(1)}B MC` : "N/A"
+            sector: data.sector || "Unknown"
           });
         } else {
           // Clear preview if ticker is not valid
@@ -92,6 +89,8 @@ export const TickerInput = ({
       }
 
       // Start the analysis via API
+      console.log('Starting analysis for:', ticker, preview.name);
+      
       const response = await fetch(
         API_ENDPOINTS.START_ANALYSIS,
         {
@@ -106,11 +105,16 @@ export const TickerInput = ({
         }
       );
 
+      console.log('Analysis response status:', response.status);
+
       if (!response.ok) {
-        throw new Error('Failed to start analysis');
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Analysis start failed:', errorData);
+        throw new Error(errorData.details || `Request failed with status ${response.status}`);
       }
 
       const analysisData = await response.json();
+      console.log('Analysis started:', analysisData);
       
       toast({
         title: "Analysis Started",
@@ -163,8 +167,8 @@ export const TickerInput = ({
                   <p className="text-sm text-muted-foreground">{preview.sector}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-2xl font-bold text-primary">{preview.price}</p>
-                  <p className="text-sm text-muted-foreground">Current Price</p>
+                  <p className="text-lg font-semibold text-green-600">✓ Valid</p>
+                  <p className="text-sm text-muted-foreground">Ready for analysis</p>
                 </div>
               </div>
             </div>}

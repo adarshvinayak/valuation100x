@@ -8,10 +8,23 @@ Parameters:
     Default: prod
 
 Resources:
+  DeepResearchHttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      CorsConfiguration:
+        AllowOrigins:
+          - "*"
+        AllowHeaders:
+          - "*"
+        AllowMethods:
+          - "*"
+        AllowCredentials: false
+        MaxAge: 86400
+
   DeepResearchAPI:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: !Sub "deepresearch-api-${Environment}"
+      FunctionName: !Sub "deepresearch-api-v2-${Environment}"
       PackageType: Image
       ImageConfig:
         Command: ["lambda_handler.handler"]
@@ -19,16 +32,13 @@ Resources:
         - x86_64
       Timeout: 900
       MemorySize: 3008
-      FunctionUrlConfig:
-        AuthType: NONE
-        Cors:
-          AllowCredentials: false
-          AllowHeaders:
-            - "*"
-          AllowMethods:
-            - "*"
-          AllowOrigins:
-            - "*"
+      Events:
+        HttpApi:
+          Type: HttpApi
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
+            ApiId: !Ref DeepResearchHttpApi
       Environment:
         Variables:
           ENVIRONMENT: !Ref Environment
@@ -38,8 +48,8 @@ Resources:
 
 Outputs:
   ApiUrl:
-    Description: "Lambda Function URL"
-    Value: !GetAtt DeepResearchAPIUrl.FunctionUrl
+    Description: "API Gateway URL"
+    Value: !Sub "https://${DeepResearchHttpApi}.execute-api.${AWS::Region}.amazonaws.com"
   
   LambdaFunctionName:
     Description: "Lambda Function Name"

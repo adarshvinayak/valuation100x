@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CORS Test</title>
+</head>
+<body>
+    <h1>CORS Test for DeepResearch API</h1>
+    <button onclick="testCORS()">Test CORS</button>
+    <div id="results"></div>
+
+    <script>
+        async function testCORS() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<p>Testing CORS...</p>';
+            
+            // Test the Lambda Function URL
+            const url = 'https://qkw44e47tsqq7ol6k6bf6n6iem0vjqzh.lambda-url.us-east-1.on.aws/api/validate/ticker/AAPL';
+            
+            try {
+                console.log('Making CORS request to:', url);
+                
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    results.innerHTML = `
+                        <h3>✅ CORS SUCCESS!</h3>
+                        <p><strong>Status:</strong> ${response.status}</p>
+                        <p><strong>Company:</strong> ${data.company_name}</p>
+                        <p><strong>Price:</strong> $${data.current_price || 'N/A'}</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    results.innerHTML = `
+                        <h3>❌ HTTP Error</h3>
+                        <p><strong>Status:</strong> ${response.status}</p>
+                        <p><strong>Message:</strong> ${response.statusText}</p>
+                    `;
+                }
+                
+            } catch (error) {
+                console.error('CORS Error:', error);
+                results.innerHTML = `
+                    <h3>❌ CORS Error</h3>
+                    <p><strong>Error:</strong> ${error.message}</p>
+                    <p>This indicates CORS is not properly configured.</p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
