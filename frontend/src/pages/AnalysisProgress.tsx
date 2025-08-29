@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ArrowLeft, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { API_ENDPOINTS } from "@/config/api";
 
 interface ProgressMessage {
   timestamp: string;
@@ -40,14 +41,14 @@ const AnalysisProgress = () => {
   const startAnalysis = async (ticker: string) => {
     try {
       // 1. Start the analysis
-      const startResponse = await fetch('https://valuation100x-production.up.railway.app/api/analysis/comprehensive/start', {
+      const startResponse = await fetch(API_ENDPOINTS.START_ANALYSIS, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           ticker: ticker.toUpperCase(),
-          user_preferences: {}
+          company_name: `${ticker.toUpperCase()} Corporation`
         }),
       });
 
@@ -59,7 +60,7 @@ const AnalysisProgress = () => {
       const newAnalysisId = startData.analysis_id;
 
       // 2. Connect to WebSocket with proper error handling
-      const wsUrl = `wss://valuation100x-production.up.railway.app/ws/analysis/${newAnalysisId}`;
+      const wsUrl = API_ENDPOINTS.WEBSOCKET_ANALYSIS(newAnalysisId);
       const ws = new WebSocket(wsUrl);
 
       // Connection opened
@@ -179,7 +180,7 @@ const AnalysisProgress = () => {
           // Try to fetch results after a delay
           setTimeout(async () => {
             try {
-              const resultsResponse = await fetch(`https://valuation100x-production.up.railway.app/api/analysis/${newAnalysisId}/results`);
+              const resultsResponse = await fetch(API_ENDPOINTS.ANALYSIS_RESULTS(newAnalysisId));
               if (resultsResponse.ok) {
                 const urlParams = new URLSearchParams(window.location.search);
                 const ticker = urlParams.get('ticker');
@@ -230,7 +231,7 @@ const AnalysisProgress = () => {
         }
         
         // Call cancel API
-        await fetch(`https://valuation100x-production.up.railway.app/api/analysis/${analysisId}/cancel`, {
+        await fetch(API_ENDPOINTS.CANCEL_ANALYSIS(analysisId), {
           method: 'DELETE'
         });
         

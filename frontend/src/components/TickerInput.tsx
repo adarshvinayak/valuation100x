@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Search, TrendingUp } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { API_ENDPOINTS } from "@/config/api";
 interface CompanyPreview {
   symbol: string;
   name: string;
@@ -54,6 +55,12 @@ export const TickerInput = ({
         name: "NVIDIA Corporation",
         sector: "Technology",
         price: "$462.89"
+      },
+      "MCD": {
+        symbol: "MCD",
+        name: "McDonald's Corporation",
+        sector: "Consumer Discretionary",
+        price: "$232.56"
       }
     };
     return mockData[symbol] || {
@@ -68,24 +75,43 @@ export const TickerInput = ({
     setTicker(upperValue);
     if (upperValue.length >= 2) {
       setIsValidating(true);
-      // Simulate API call delay
-      setTimeout(() => {
+      
+      try {
+        // Try to get real data from API
+        const response = await fetch(API_ENDPOINTS.VALIDATE_TICKER(upperValue));
+        const data = await response.json();
+        
+        if (data.is_valid && data.company_name) {
+          setPreview({
+            symbol: upperValue,
+            name: data.company_name,
+            sector: data.sector || "Unknown",
+            price: data.market_cap ? `$${(data.market_cap / 1000000000).toFixed(1)}B` : "N/A"
+          });
+        } else {
+          // Fallback to mock data
+          setPreview(mockPreview(upperValue));
+        }
+      } catch (error) {
+        console.error('Error fetching ticker data:', error);
+        // Fallback to mock data on error
         setPreview(mockPreview(upperValue));
+      } finally {
         setIsValidating(false);
-      }, 500);
+      }
     } else {
       setPreview(null);
     }
   };
   const validateTicker = async (tickerSymbol: string) => {
     try {
-      const response = await fetch(`https://valuation100x-production.up.railway.app/api/validate/ticker/${tickerSymbol}`);
+      const response = await fetch(API_ENDPOINTS.VALIDATE_TICKER(tickerSymbol));
       const data = await response.json();
       return data.is_valid;
     } catch (error) {
       console.error('Validation API error:', error);
       // Fallback to mock validation for known tickers
-      const knownTickers = ["TSLA", "AAPL", "MSFT", "GOOGL", "NVDA"];
+      const knownTickers = ["TSLA", "AAPL", "MSFT", "GOOGL", "NVDA", "MCD"];
       return knownTickers.includes(tickerSymbol);
     }
   };
@@ -112,13 +138,16 @@ export const TickerInput = ({
 
       // Start the analysis via API
       const response = await fetch(
-        'https://valuation100x-production.up.railway.app/api/analysis/comprehensive/start',
+        API_ENDPOINTS.START_ANALYSIS,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ ticker }),
+          body: JSON.stringify({ 
+            ticker,
+            company_name: preview.name 
+          }),
         }
       );
 
@@ -200,7 +229,7 @@ export const TickerInput = ({
       <div className="text-center space-y-3">
         <p className="text-sm text-muted-foreground">Popular stocks to research:</p>
         <div className="flex flex-wrap justify-center gap-2">
-          {["TSLA", "AAPL", "MSFT", "GOOGL", "NVDA"].map(symbol => <Button key={symbol} variant="outline" size="sm" onClick={() => handleTickerChange(symbol)} className="transition-smooth hover:bg-accent">
+          {["TSLA", "AAPL", "MSFT", "GOOGL", "NVDA", "MCD"].map(symbol => <Button key={symbol} variant="outline" size="sm" onClick={() => handleTickerChange(symbol)} className="transition-smooth hover:bg-accent">
               {symbol}
             </Button>)}
         </div>
