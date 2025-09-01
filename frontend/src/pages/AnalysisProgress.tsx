@@ -22,7 +22,7 @@ const AnalysisProgress = () => {
   const [progress, setProgress] = useState(0);
   const [progressMessages, setProgressMessages] = useState<ProgressMessage[]>([]);
   const [connectionStatus, setConnectionStatus] = useState('Connecting');
-
+  const [webSocket, setWebSocket] = useState<WebSocket | null>(null);
   const [isCancelling, setIsCancelling] = useState(false);
   const [tickerDetails, setTickerDetails] = useState<any>(null);
   
@@ -176,14 +176,11 @@ const AnalysisProgress = () => {
 
   // Cancel analysis function
   const cancelAnalysis = async () => {
-    if (analysisId) {
+    if (analysisId && webSocket) {
       setIsCancelling(true);
       try {
-        // Stop polling first
-        if (pingIntervalRef.current) {
-          clearInterval(pingIntervalRef.current);
-          pingIntervalRef.current = null;
-        }
+        // Close WebSocket first
+        webSocket.close();
         
         // Clear ping interval
         if (pingIntervalRef.current) {
@@ -225,9 +222,11 @@ const AnalysisProgress = () => {
   };
 
   const handleBack = () => {
+    if (webSocket) {
+      webSocket.close(1000, "User navigated away");
+    }
     if (pingIntervalRef.current) {
       clearInterval(pingIntervalRef.current);
-      pingIntervalRef.current = null;
     }
     navigate('/');
   };
@@ -258,14 +257,16 @@ const AnalysisProgress = () => {
       type: 'info'
     }]);
     
-    // Analysis already started by TickerInput - start polling for progress
+    // Analysis already started by TickerInput - just connect to WebSocket
     // Don't start duplicate analysis here!
     connectToExistingAnalysis(analysisId, ticker);
 
     return () => {
+      if (webSocket) {
+        webSocket.close();
+      }
       if (pingIntervalRef.current) {
         clearInterval(pingIntervalRef.current);
-        pingIntervalRef.current = null;
       }
     };
   }, [analysisId]);
