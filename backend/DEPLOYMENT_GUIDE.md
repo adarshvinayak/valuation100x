@@ -75,7 +75,7 @@ aws lambda create-function-url-config --function-name deepresearch-api-v2-prod -
 ```powershell
 # 13. Test the new Lambda function
 # Replace with your actual Function URL from step 11
-$NEW_URL = "https://[NEW-LAMBDA-URL]/api/validate/ticker/AAPL"
+$NEW_URL = "https://[NEW-LAMBDA-URL]/api/validate/ticker/MSFT"
 Invoke-RestMethod -Uri $NEW_URL -Method GET
 
 # 14. Verify current_price field is present
@@ -112,7 +112,7 @@ aws lambda delete-function --function-name deepresearch-api-prod
 ### Sample Successful Response:
 ```json
 {
-  "ticker": "AAPL",
+  "ticker": "MSFT",
   "is_valid": true,
   "company_name": "Apple Inc.",
   "exchange": "NASDAQ",
@@ -136,7 +136,7 @@ aws lambda delete-function --function-name deepresearch-api-prod
 
 ### If current_price is still missing:
 1. Verify code changes: `Get-Content api_server.py | Select-String "current_price"`
-2. Check FMP API: test `/api/debug/fmp-test/AAPL` endpoint
+2. Check FMP API: test `/api/debug/fmp-test/MSFT` endpoint
 3. Check Lambda logs: `sam logs --stack-name deepresearch-backend-v2`
 
 ## 🎉 Final Step

@@ -475,11 +475,17 @@ The following SEC documents were analyzed for this research:
                 comprehensive_data["valueinvesting_io"] = {"error": str(e)}
             
             # Get comprehensive financial data
-            logger.info("Fetching comprehensive financial data...")
+            logger.info(f"🔍 Fetching comprehensive financial data for {ticker.upper()}...")
             try:
-                detailed_financials = await get_financials_fmp(ticker)
+                # Add ticker validation to prevent contamination
+                if not ticker or ticker.strip() == "":
+                    raise ValueError("Empty ticker provided to _gather_comprehensive_data")
+                
+                ticker_clean = ticker.strip().upper()
+                logger.info(f"🔍 About to call get_financials_fmp with ticker: {ticker_clean}")
+                detailed_financials = await get_financials_fmp(ticker_clean)
                 comprehensive_data["detailed_financials"] = detailed_financials
-                logger.info("Financial data retrieved successfully")
+                logger.info(f"✅ Financial data retrieved successfully for {ticker_clean}")
             except Exception as e:
                 logger.warning(f"Financial data retrieval failed: {e}")
                 comprehensive_data["detailed_financials"] = {"error": str(e)}
@@ -744,10 +750,10 @@ async def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python run_enhanced_analysis_local.py --ticker AAPL
+  python run_enhanced_analysis_local.py --ticker TSLA
   python run_enhanced_analysis_local.py --ticker META --company "Meta Platforms" --verbose
-  python run_enhanced_analysis_local.py --ticker TSLA --years-back 2 --force-rebuild
-  python run_enhanced_analysis_local.py --ticker AAPL --embedding-provider openai  # Use paid OpenAI
+  python run_enhanced_analysis_local.py --ticker NVDA --years-back 2 --force-rebuild
+  python run_enhanced_analysis_local.py --ticker MSFT --embedding-provider openai  # Use paid OpenAI
         """
     )
     parser.add_argument("--ticker", required=True, help="Stock ticker symbol")

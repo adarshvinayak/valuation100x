@@ -337,14 +337,14 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  # Run complete analysis for AAPL
-  python run.py --tickers AAPL
+  # Run complete analysis for any ticker
+  python run.py --tickers TSLA
   
   # Ingest filings and build indexes, then analyze
-  python run.py --tickers AAPL,MSFT --ingest --build-index
+  python run.py --tickers MSFT,GOOGL --ingest --build-index
   
   # Analyze multiple stocks with custom concurrency
-  python run.py --tickers AAPL,MSFT,GOOGL --concurrency 2
+  python run.py --tickers NVDA,META,AMZN --concurrency 2
   
   # Clear cache and get statistics
   python run.py --clear-cache --cache-stats

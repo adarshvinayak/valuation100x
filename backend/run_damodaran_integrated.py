@@ -410,7 +410,7 @@ if __name__ == "__main__":
         print("="*50)
         print("Example usage:")
         print("python run_damodaran_integrated.py --ticker META --company 'Meta Platforms Inc.'")
-        print("python run_damodaran_integrated.py --ticker AAPL --verbose")
+        print("python run_damodaran_integrated.py --ticker TSLA --verbose")
         print("")
         print("Features:")
         print("✅ Full traditional analysis (working)")

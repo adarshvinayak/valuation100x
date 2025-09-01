@@ -132,8 +132,15 @@ class EnhancedReportGenerator:
             
             # Get comprehensive financial data
             try:
-                financial_data = await get_financials_fmp(ticker)
+                # Add ticker validation to prevent contamination
+                if not ticker or ticker.strip() == "":
+                    raise ValueError("Empty ticker provided to enhanced_comprehensive_report")
+                
+                ticker_clean = ticker.strip().upper()
+                logger.info(f"🔍 Enhanced report: calling FMP for ticker {ticker_clean}")
+                financial_data = await get_financials_fmp(ticker_clean)
                 additional_data["detailed_financials"] = financial_data
+                logger.info(f"✅ Enhanced report: FMP data retrieved for {ticker_clean}")
             except Exception as e:
                 logger.warning(f"Could not get detailed financials: {e}")
             

@@ -110,10 +110,10 @@ BLOOMBERG_API_KEY=your_bloomberg_key_here  # Optional
 3. **Run Analysis**
 ```bash
 # Quick analysis (uses cached/existing data)
-python run.py --tickers AAPL
+python run.py --tickers TSLA
 
 # Full pipeline with data ingestion
-python run.py --tickers AAPL,MSFT --ingest --build-index
+python run.py --tickers MSFT,GOOGL --ingest --build-index
 ```
 
 ## 🔧 API Keys Setup
@@ -140,16 +140,16 @@ python run.py --tickers AAPL,MSFT --ingest --build-index
 ### Basic Analysis
 ```bash
 # Analyze a single stock
-python run.py --tickers AAPL
+python run.py --tickers NVDA
 
 # Analyze multiple stocks
-python run.py --tickers AAPL,MSFT,GOOGL --concurrency 2
+python run.py --tickers TSLA,META,AMZN --concurrency 2
 ```
 
 ### Full Pipeline
 ```bash
 # Complete pipeline: ingest → index → analyze
-python run.py --tickers AAPL,MSFT \
+python run.py --tickers MSFT,GOOGL \
   --ingest \
   --build-index \
   --years 3 \
@@ -165,7 +165,7 @@ python run.py --cache-stats
 python run.py --clear-cache
 
 # Rebuild indexes
-python run.py --tickers AAPL --build-index --force-rebuild
+python run.py --tickers NVDA --build-index --force-rebuild
 ```
 
 ### Workflow Testing
@@ -174,8 +174,8 @@ python run.py --tickers AAPL --build-index --force-rebuild
 python workflow.py --draw-workflow
 
 # Test individual components
-python agents/questions.py --ticker AAPL
-python agents/answer.py --ticker AAPL --question "What are the key growth drivers?"
+python agents/questions.py --ticker TSLA
+python agents/answer.py --ticker MSFT --question "What are the key growth drivers?"
 ```
 
 ## 📁 Project Structure
@@ -255,7 +255,7 @@ quality_thresholds:
 
 ### Investment Score Breakdown
 ```
-📊 Analysis Results for Apple Inc. (AAPL):
+📊 Analysis Results for Your Company (TICKER):
 Investment Score: 7.2/10
 Fair Value: $185.50
 Current Price: $150.25
@@ -269,8 +269,8 @@ Component Scores:
 ```
 
 ### Generated Files
-- **JSON Results**: `data/outputs/AAPL/AAPL_analysis.json`
-- **Markdown Report**: `data/outputs/AAPL/AAPL_report.md`
+- **JSON Results**: `data/outputs/TICKER/TICKER_analysis.json`
+- **Markdown Report**: `data/outputs/TICKER/TICKER_report.md`
 - **Pipeline Summary**: `data/outputs/pipeline_results.json`
 
 ## 🔧 Customization
@@ -328,7 +328,7 @@ python synthesis/tests/test_valuation.py
 python synthesis/tests/test_scoring.py
 
 # Test workflow
-python workflow.py --ticker AAPL --company "Apple Inc."
+python workflow.py --ticker TSLA --company "Tesla Inc."
 ```
 
 ## 📈 Performance & Scaling
@@ -376,14 +376,14 @@ python workflow.py --ticker AAPL --company "Apple Inc."
 cat .env | grep API_KEY
 
 # Test individual APIs
-python tools/fmp.py --ticker AAPL
-python tools/alpha.py --ticker AAPL --prices
+python tools/fmp.py --ticker MSFT
+python tools/alpha.py --ticker TSLA --prices
 ```
 
 **💾 Memory Issues**
 ```bash
 # Reduce concurrency
-python run.py --tickers AAPL,MSFT --concurrency 1
+python run.py --tickers NVDA,MSFT --concurrency 1
 
 # Clear cache
 python run.py --clear-cache
@@ -392,7 +392,7 @@ python run.py --clear-cache
 **🐛 Analysis Failures**
 ```bash
 # Enable verbose logging
-python run.py --tickers AAPL --verbose
+python run.py --tickers NVDA --verbose
 
 # Check logs
 tail -f logs/stock_research.log
@@ -401,10 +401,10 @@ tail -f logs/stock_research.log
 **📊 Missing Data**
 ```bash
 # Rebuild indexes
-python run.py --tickers AAPL --build-index --force-rebuild
+python run.py --tickers NVDA --build-index --force-rebuild
 
 # Re-ingest filings
-python run.py --tickers AAPL --ingest --years 2
+python run.py --tickers NVDA --ingest --years 2
 ```
 
 ### Performance Tuning
