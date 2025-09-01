@@ -29,7 +29,7 @@ export default async function handler(req, res) {
     
     // Clear rate limits first to avoid 429 errors
     try {
-      await fetch('https://i5xlj4nhie.execute-api.us-east-1.amazonaws.com/api/admin/clear-rate-limits', {
+      await fetch('https://fi1vdvikyl.execute-api.us-east-1.amazonaws.com/api/admin/clear-rate-limits', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
       });
@@ -40,7 +40,7 @@ export default async function handler(req, res) {
     
     // Try multiple backend URLs
     const backendUrls = [
-      'https://i5xlj4nhie.execute-api.us-east-1.amazonaws.com',
+      'https://fi1vdvikyl.execute-api.us-east-1.amazonaws.com',
     ];
     
     const requestBody = {

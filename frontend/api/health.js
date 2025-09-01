@@ -17,7 +17,7 @@ export default async function handler(req, res) {
   }
   
   try {
-    const lambdaUrl = 'https://qkw44e47tsqq7ol6k6bf6n6iem0vjqzh.lambda-url.us-east-1.on.aws';
+    const lambdaUrl = 'https://fi1vdvikyl.execute-api.us-east-1.amazonaws.com';
     const response = await fetch(`${lambdaUrl}/health`, {
       method: 'GET',
       headers: {

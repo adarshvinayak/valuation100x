@@ -6,11 +6,11 @@ const config = {
   // This completely bypasses CORS issues by making server-side requests
   API_BASE_URL: '',  // Use relative URLs for Vercel API routes
   
-  // WebSocket URL - Still points to Lambda (will implement WebSocket proxy if needed)
-  WS_BASE_URL: 'wss://qkw44e47tsqq7ol6k6bf6n6iem0vjqzh.lambda-url.us-east-1.on.aws',
+  // WebSocket URL - Points to current Lambda
+  WS_BASE_URL: 'wss://fi1vdvikyl.execute-api.us-east-1.amazonaws.com',
   
   // Direct Lambda URL (for reference/debugging)
-  LAMBDA_BASE_URL: 'https://qkw44e47tsqq7ol6k6bf6n6iem0vjqzh.lambda-url.us-east-1.on.aws',
+  LAMBDA_BASE_URL: 'https://fi1vdvikyl.execute-api.us-east-1.amazonaws.com',
 }
 
 // API endpoints - Using Vercel API routes to bypass CORS
