@@ -50,12 +50,12 @@ export const TickerInput = ({
       const data = await response.json();
       console.log('Validation data:', data);
       
-      if (data.is_valid && data.company_name) {
+      if (data.is_valid) {
         // Valid ticker - show success card and start analysis
         setValidationResult({
           symbol: ticker,
           isValid: true,
-          companyName: data.company_name,
+          companyName: data.company_name || ticker,
           sector: data.sector || "Unknown"
         });
         
