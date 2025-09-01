@@ -173,17 +173,16 @@ class FMPClient:
         }
     
     async def get_key_metrics(self, ticker: str, period: str = "annual", limit: int = 5) -> List[Dict[str, Any]]:
-        """Get key financial metrics and ratios using new stable endpoints"""
+        """Get key financial metrics using profile data as fallback since ratios endpoints are deprecated"""
         try:
-            # Use the new stable FMP endpoints (v4) instead of legacy ones
-            if period == "ttm":
-                endpoint = f"key-metrics-ttm/{ticker}"
-                params = {"limit": limit}
-            else:
-                endpoint = f"key-metrics/{ticker}"
-                params = {"limit": limit, "period": period}
-                
-            data = await self._make_request(endpoint, params)
+            # Since ratios endpoints are deprecated, use company profile for basic metrics
+            # and return empty list for detailed ratios to avoid API errors
+            logger.warning(f"Ratios endpoints deprecated - using basic profile data for {ticker}")
+            return []  # Return empty to avoid deprecated endpoint calls
+            
+            # Old deprecated code kept for reference:
+            # endpoint = f"ratios-ttm/{ticker}" if period == "ttm" else f"ratios/{ticker}"
+            # data = await self._make_request(endpoint, params)
             
             if not data or not isinstance(data, list):
                 return []

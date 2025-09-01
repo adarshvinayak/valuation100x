@@ -239,7 +239,7 @@ class EnhancedValuationEngine(ValuationEngine):
             # Try FMP first
             fmp_api_key = os.getenv("FMP_API_KEY")
             if fmp_api_key and self.session:
-                url = f"https://financialmodelingprep.com/api/v3/company/profile/{ticker}"
+                url = f"https://financialmodelingprep.com/api/v3/profile/{ticker}"
                 params = {"apikey": fmp_api_key}
                 
                 async with self.session.get(url, params=params) as response:
