@@ -30,7 +30,7 @@ export default async function handler(req, res) {
     console.log('Validating ticker:', ticker);
     
     // Use correct API Gateway URL
-    const apiGatewayUrl = 'https://i5xlj4nhie.execute-api.us-east-1.amazonaws.com';
+    const apiGatewayUrl = 'https://fi1vdvikyl.execute-api.us-east-1.amazonaws.com';
     const targetUrl = `${apiGatewayUrl}/api/validate/ticker/${ticker}`;
     
     console.log('Calling API Gateway:', targetUrl);

@@ -3,155 +3,119 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { Search, TrendingUp } from "lucide-react";
+import { Search, AlertCircle, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { API_ENDPOINTS } from "@/config/api";
-interface CompanyPreview {
+
+interface ValidationResult {
   symbol: string;
-  name: string;
-  sector: string;
+  isValid: boolean;
+  companyName?: string;
+  sector?: string;
+  error?: string;
 }
+
 interface TickerInputProps {
   onStartAnalysis: (ticker: string) => void;
 }
+
 export const TickerInput = ({
   onStartAnalysis
 }: TickerInputProps) => {
   const [ticker, setTicker] = useState("");
-  const [preview, setPreview] = useState<CompanyPreview | null>(null);
+  const [validationResult, setValidationResult] = useState<ValidationResult | null>(null);
   const [isValidating, setIsValidating] = useState(false);
   const [isStartingAnalysis, setIsStartingAnalysis] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const handleTickerChange = async (value: string) => {
+  const handleTickerChange = (value: string) => {
     const upperValue = value.toUpperCase();
     setTicker(upperValue);
-    
-    if (upperValue.length >= 1 && /^[A-Z]+$/.test(upperValue)) {
-      setIsValidating(true);
-      
-      // Set immediate preview for valid-looking tickers to enable button
-      if (upperValue.length >= 1) {
-        setPreview({
-          symbol: upperValue,
-          name: "Company Name (Loading...)",
-          sector: "Validating..."
-        });
-      }
-      
-      try {
-        // Validate ticker with backend API
-        console.log('Validating ticker:', upperValue);
-        const response = await fetch(API_ENDPOINTS.VALIDATE_TICKER(upperValue));
-        console.log('Validation response status:', response.status);
-        
-        const data = await response.json();
-        console.log('Validation data:', data);
-        
-        if (data.is_valid && data.company_name) {
-          setPreview({
-            symbol: upperValue,
-            name: data.company_name,
-            sector: data.sector || "Unknown"
-          });
-        } else {
-          // Keep a basic preview to enable button, but show validation failed
-          setPreview({
-            symbol: upperValue,
-            name: "Unknown Company",
-            sector: "Will validate during analysis"
-          });
-        }
-      } catch (error) {
-        console.error('Error fetching ticker data:', error);
-        // Keep a basic preview to enable button even on validation error
-        setPreview({
-          symbol: upperValue,
-          name: "Unknown Company",
-          sector: "Will validate during analysis"
-        });
-      } finally {
-        setIsValidating(false);
-      }
-    } else {
-      setPreview(null);
-    }
+    // Clear any previous validation results when user types
+    setValidationResult(null);
   };
-  const validateTicker = async (tickerSymbol: string) => {
-    try {
-      const response = await fetch(API_ENDPOINTS.VALIDATE_TICKER(tickerSymbol));
-      const data = await response.json();
-      return data.is_valid;
-    } catch (error) {
-      console.error('Validation API error:', error);
-      return false;
-    }
-  };
-
-
   const handleSubmit = async () => {
-    if (!ticker || !preview || isStartingAnalysis) return;
+    if (!ticker || ticker.trim() === "" || isStartingAnalysis) return;
     
     setIsStartingAnalysis(true);
+    setIsValidating(true);
     
     try {
       // First validate the ticker
-      const isValid = await validateTicker(ticker);
+      console.log('Validating ticker:', ticker);
+      const response = await fetch(API_ENDPOINTS.VALIDATE_TICKER(ticker));
+      console.log('Validation response status:', response.status);
       
-      if (!isValid) {
-        toast({
-          title: "Invalid ticker symbol",
-          description: "Please enter a valid stock ticker symbol.",
-          variant: "destructive",
+      const data = await response.json();
+      console.log('Validation data:', data);
+      
+      if (data.is_valid && data.company_name) {
+        // Valid ticker - show success card and start analysis
+        setValidationResult({
+          symbol: ticker,
+          isValid: true,
+          companyName: data.company_name,
+          sector: data.sector || "Unknown"
         });
-        setIsStartingAnalysis(false);
-        return;
-      }
+        
+        setIsValidating(false);
+        
+        // Start the analysis
+        console.log('Starting analysis for:', ticker, data.company_name);
+        
+        const analysisResponse = await fetch(
+          API_ENDPOINTS.START_ANALYSIS,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 
+              ticker,
+              company_name: data.company_name 
+            }),
+          }
+        );
 
-      // Start the analysis via API
-      console.log('Starting analysis for:', ticker, preview.name);
-      
-      const response = await fetch(
-        API_ENDPOINTS.START_ANALYSIS,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ 
-            ticker,
-            company_name: preview.name 
-          }),
+        console.log('Analysis response status:', analysisResponse.status);
+
+        if (!analysisResponse.ok) {
+          const errorData = await analysisResponse.json().catch(() => ({}));
+          console.error('Analysis start failed:', errorData);
+          throw new Error(errorData.details || `Request failed with status ${analysisResponse.status}`);
         }
-      );
 
-      console.log('Analysis response status:', response.status);
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        console.error('Analysis start failed:', errorData);
-        throw new Error(errorData.details || `Request failed with status ${response.status}`);
+        const analysisData = await analysisResponse.json();
+        console.log('Analysis started:', analysisData);
+        
+        toast({
+          title: "Analysis Started",
+          description: `Starting comprehensive analysis for ${ticker}`,
+        });
+        
+        // Navigate to analysis progress page
+        navigate(`/analysis/${analysisData.analysis_id}?ticker=${ticker}`);
+        
+      } else {
+        // Invalid ticker - show error card
+        setValidationResult({
+          symbol: ticker,
+          isValid: false,
+          error: data.error || "Ticker not found in any data source"
+        });
+        setIsValidating(false);
+        setIsStartingAnalysis(false);
       }
-
-      const analysisData = await response.json();
-      console.log('Analysis started:', analysisData);
-      
-      toast({
-        title: "Analysis Started",
-        description: `Starting comprehensive analysis for ${ticker}`,
-      });
-      
-      // Navigate to analysis progress page with ticker parameter
-      navigate(`/analysis/${analysisData.analysis_id}?ticker=${ticker}`);
       
     } catch (error) {
-      toast({
-        title: "Analysis Failed",
-        description: "Unable to start analysis. Please try again.",
-        variant: "destructive",
+      console.error('Error during validation/analysis:', error);
+      setValidationResult({
+        symbol: ticker,
+        isValid: false,
+        error: "Failed to validate ticker. Please try again."
       });
-    } finally {
+      setIsValidating(false);
       setIsStartingAnalysis(false);
     }
   };
@@ -175,30 +139,54 @@ export const TickerInput = ({
             </div>
           </div>
 
-          {/* Company Preview */}
+          {/* Validation Loading */}
           {isValidating && <div className="animate-pulse">
               <div className="h-4 bg-muted rounded w-3/4 mb-2"></div>
               <div className="h-3 bg-muted rounded w-1/2"></div>
             </div>}
 
-          {preview && !isValidating && <div className="p-4 bg-card rounded-lg border shadow-card">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="font-semibold text-lg">{preview.name}</h3>
-                  <p className="text-sm text-muted-foreground">{preview.sector}</p>
+          {/* Validation Result Cards */}
+          {validationResult && !isValidating && (
+            <div className="space-y-4">
+              {validationResult.isValid ? (
+                // Valid Ticker Card
+                <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="h-6 w-6 text-green-600" />
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-green-900">{validationResult.companyName}</h3>
+                      <p className="text-sm text-green-700">{validationResult.sector}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-lg font-semibold text-green-600">✓ Valid</p>
+                      <p className="text-sm text-green-600">Starting analysis...</p>
+                    </div>
+                  </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-lg font-semibold text-green-600">✓ Valid</p>
-                  <p className="text-sm text-muted-foreground">Ready for analysis</p>
+              ) : (
+                // Invalid Ticker Card
+                <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <AlertCircle className="h-6 w-6 text-red-600" />
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-red-900">Invalid ticker symbol</h3>
+                      <p className="text-sm text-red-700">{validationResult.error}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-lg font-semibold text-red-600">✗ Invalid</p>
+                      <p className="text-sm text-red-600">Please try another ticker</p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>}
+              )}
+            </div>
+          )}
 
           {/* Start Analysis Button */}
           <Button 
             onClick={handleSubmit} 
-            disabled={!preview || isValidating || isStartingAnalysis} 
-            className="w-full h-14 text-lg bg-gradient-primary hover:opacity-90 transition-smooth shadow-floating disabled:opacity-100 disabled:bg-gradient-primary"
+            disabled={ticker.trim() === "" || isValidating || isStartingAnalysis} 
+            className="w-full h-14 text-lg bg-gradient-primary hover:opacity-90 transition-smooth shadow-floating disabled:opacity-50"
           >
             {isStartingAnalysis ? "Starting Analysis..." : "Start Deep Analysis"}
           </Button>
