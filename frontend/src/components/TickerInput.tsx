@@ -171,7 +171,7 @@ export const TickerInput = ({
           <div className="space-y-2">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-              <Input id="ticker" value={ticker} onChange={e => handleTickerChange(e.target.value)} placeholder="Enter any US stock symbol (e.g., AAPL, GOOGL, AMD, etc.)" className="pl-10 h-14 text-lg border-2 transition-smooth focus:border-primary" autoComplete="off" />
+              <Input id="ticker" value={ticker} onChange={e => handleTickerChange(e.target.value)} placeholder="Enter any US stock symbol (e.g., TSLA, MSFT, NVDA, etc.)" className="pl-10 h-14 text-lg border-2 transition-smooth focus:border-primary" autoComplete="off" />
             </div>
           </div>
 
@@ -207,9 +207,9 @@ export const TickerInput = ({
 
       {/* Example Stocks */}
       <div className="text-center space-y-3">
-        <p className="text-sm text-muted-foreground">Try any US stock symbol (e.g., AAPL, GOOGL, TSLA, AMD, NVDA, AMZN, META, etc.)</p>
+        <p className="text-sm text-muted-foreground">Try any US stock symbol (e.g., TSLA, MSFT, NVDA, GOOGL, AMZN, META, etc.)</p>
         <div className="flex flex-wrap justify-center gap-2">
-          {["AAPL", "GOOGL", "TSLA", "MSFT", "NVDA", "AMZN", "META", "JPM", "JNJ", "UNH"].map(symbol => <Button key={symbol} variant="outline" size="sm" onClick={() => handleTickerChange(symbol)} className="transition-smooth hover:bg-accent">
+          {["TSLA", "MSFT", "NVDA", "GOOGL", "AMZN", "META", "JPM", "JNJ", "UNH", "DIS"].map(symbol => <Button key={symbol} variant="outline" size="sm" onClick={() => handleTickerChange(symbol)} className="transition-smooth hover:bg-accent">
               {symbol}
             </Button>)}
         </div>

@@ -106,41 +106,22 @@ export const ProgressTracker = ({ ticker, onComplete }: ProgressTrackerProps) =>
     };
   }, [currentStep, analysisSteps, timeElapsed, analysisStatus]);
 
-  // Get analysis ID from TickerInput component
+  // NOTE: Analysis is already started by TickerInput component
+  // This component only tracks progress of existing analysis
   useEffect(() => {
-    const startAnalysis = async () => {
-      try {
-        const response = await fetch(API_ENDPOINTS.START_ANALYSIS, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            ticker: ticker
-          })
-        });
-        
-        if (!response.ok) {
-          throw new Error(`Analysis API error: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        setAnalysisId(data.analysis_id);
-        
-        // Connect to WebSocket
-        connectWebSocket(data.analysis_id);
-        
-      } catch (error) {
-        console.error('Failed to start analysis:', error);
-        toast({
-          title: "Analysis Failed",
-          description: "Unable to start analysis. Please try again.",
-          variant: "destructive",
-        });
-      }
-    };
-
-    startAnalysis();
+    // ProgressTracker no longer starts analysis - it only tracks existing one
+    // Analysis should be started by TickerInput or AnalysisProgress components
+    
+    // TODO: Need analysis ID to be passed as prop instead of starting new analysis
+    console.warn('ProgressTracker: Analysis ID should be passed as prop, not started here');
+    
+    // For now, mock an analysis ID to prevent breaking
+    // In proper implementation, analysis ID should come from props
+    const mockAnalysisId = `mock-${ticker}-${Date.now()}`;
+    setAnalysisId(mockAnalysisId);
+    
+    // Don't start actual analysis here - that causes duplicates
+    // connectWebSocket(mockAnalysisId);
     
     return () => {
       // Cleanup

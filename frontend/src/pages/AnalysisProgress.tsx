@@ -38,29 +38,19 @@ const AnalysisProgress = () => {
     }
   }, [progressMessages]);
 
-  const startAnalysis = async (ticker: string) => {
+  const connectToExistingAnalysis = async (existingAnalysisId: string, ticker: string) => {
     try {
-      // 1. Start the analysis
-      const startResponse = await fetch(API_ENDPOINTS.START_ANALYSIS, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ticker: ticker.toUpperCase(),
-          company_name: `${ticker.toUpperCase()} Corporation`
-        }),
-      });
+      // Analysis already exists - just connect to WebSocket for progress updates
+      console.log(`Connecting to existing analysis: ${existingAnalysisId} for ${ticker}`);
+      
+      setProgressMessages(prev => [...prev, {
+        timestamp: new Date().toLocaleTimeString(),
+        message: `Connected to analysis ${existingAnalysisId}`,
+        type: 'info'
+      }]);
 
-      if (!startResponse.ok) {
-        throw new Error(`Failed to start analysis: ${startResponse.statusText}`);
-      }
-
-      const startData = await startResponse.json();
-      const newAnalysisId = startData.analysis_id;
-
-      // 2. Connect to WebSocket with proper error handling
-      const wsUrl = API_ENDPOINTS.WEBSOCKET_ANALYSIS(newAnalysisId);
+      // Connect to WebSocket for this existing analysis
+      const wsUrl = API_ENDPOINTS.WEBSOCKET_ANALYSIS(existingAnalysisId);
       const ws = new WebSocket(wsUrl);
 
       // Connection opened
@@ -131,7 +121,7 @@ const AnalysisProgress = () => {
               // Close WebSocket and redirect to results
               ws.close();
               setTimeout(() => {
-                window.location.href = `/report/${newAnalysisId}?ticker=${ticker}`;
+                window.location.href = `/report/${existingAnalysisId}?ticker=${ticker}`;
               }, 2000);
               break;
 
@@ -180,11 +170,9 @@ const AnalysisProgress = () => {
           // Try to fetch results after a delay
           setTimeout(async () => {
             try {
-              const resultsResponse = await fetch(API_ENDPOINTS.ANALYSIS_RESULTS(newAnalysisId));
+              const resultsResponse = await fetch(API_ENDPOINTS.ANALYSIS_RESULTS(existingAnalysisId));
               if (resultsResponse.ok) {
-                const urlParams = new URLSearchParams(window.location.search);
-                const ticker = urlParams.get('ticker');
-                window.location.href = `/report/${newAnalysisId}${ticker ? `?ticker=${ticker}` : ''}`;
+                window.location.href = `/report/${existingAnalysisId}?ticker=${ticker}`;
               }
             } catch (error) {
               console.error('Error checking results:', error);
@@ -208,12 +196,17 @@ const AnalysisProgress = () => {
       setWebSocket(ws);
       
     } catch (error) {
-      console.error('Error starting analysis:', error);
+      console.error('Failed to connect to existing analysis:', error);
       setProgressMessages(prev => [...prev, {
         timestamp: new Date().toLocaleTimeString(),
-        message: `❌ Failed to start analysis: ${error.message}`,
+        message: `❌ Failed to connect to analysis: ${error.message}`,
         type: 'error'
       }]);
+      
+      // Fallback: redirect back to home
+      setTimeout(() => {
+        navigate('/');
+      }, 3000);
     }
   };
 
@@ -296,11 +289,13 @@ const AnalysisProgress = () => {
     
     setProgressMessages([{
       timestamp: new Date().toLocaleTimeString(),
-      message: `Initializing analysis for ${ticker}...`,
+      message: `Connecting to analysis for ${ticker}...`,
       type: 'info'
     }]);
     
-    startAnalysis(ticker);
+    // Analysis already started by TickerInput - just connect to WebSocket
+    // Don't start duplicate analysis here!
+    connectToExistingAnalysis(analysisId, ticker);
 
     return () => {
       if (webSocket) {
