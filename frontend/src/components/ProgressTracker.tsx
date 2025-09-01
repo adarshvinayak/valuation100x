@@ -137,68 +137,96 @@ export const ProgressTracker = ({ ticker, onComplete }: ProgressTrackerProps) =>
     };
   }, [ticker, toast]);
 
-  const connectWebSocket = (id: string) => {
-    const wsUrl = API_ENDPOINTS.WEBSOCKET_ANALYSIS(id);
+  const startStatusPolling = (id: string) => {
+    console.log('Starting status polling for analysis:', id);
     
-    try {
-      wsRef.current = new WebSocket(wsUrl);
-      
-      wsRef.current.onopen = () => {
-        console.log('WebSocket connected');
-      };
-      
-      wsRef.current.onmessage = (event) => {
-        try {
-          const message = JSON.parse(event.data);
-          handleWebSocketMessage(message);
-        } catch (error) {
-          console.error('Failed to parse WebSocket message:', error);
+    const pollStatus = async () => {
+      try {
+        const response = await fetch(API_ENDPOINTS.ANALYSIS_STATUS(id));
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
-      };
-      
-      wsRef.current.onclose = (event) => {
-        console.log('WebSocket closed:', event.code, event.reason);
-      };
-      
-      wsRef.current.onerror = (error) => {
-        console.error('WebSocket error:', error);
+        
+        const status = await response.json();
+        handleStatusUpdate(status);
+        
+        // Stop polling if analysis is complete or error
+        if (status.status === 'completed' || status.status === 'error' || status.status === 'cancelled') {
+          if (statusPollingRef.current) {
+            clearInterval(statusPollingRef.current);
+            statusPollingRef.current = null;
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch analysis status:', error);
         toast({
           title: "Connection Error",
           description: "Lost connection to analysis server. Retrying...",
           variant: "destructive",
         });
-      };
-    } catch (error) {
-      console.error('Failed to connect WebSocket:', error);
+      }
+    };
+    
+    // Poll immediately, then every 2 seconds
+    pollStatus();
+    statusPollingRef.current = setInterval(pollStatus, 2000);
+  };
+
+  const handleStatusUpdate = (status: any) => {
+    // Don't process status if analysis was cancelled
+    if (analysisStatus === 'cancelled') return;
+
+    console.log('Status update received:', status);
+    
+    // Update progress based on status
+    if (status.progress !== undefined) {
+      setProgress(status.progress);
+    }
+    
+    // Handle different status states
+    switch (status.status) {
+      case "running":
+        // Update current step based on backend status
+        updateCurrentStepFromStatus(status);
+        break;
+      case "completed":
+        handleAnalysisCompleted(status);
+        break;
+      case "error":
+        handleAnalysisError(status);
+        break;
+      default:
+        console.log('Status:', status.status);
     }
   };
 
-  const handleWebSocketMessage = (message: any) => {
-    // Don't process messages if analysis was cancelled
-    if (analysisStatus === 'cancelled') return;
-
-    switch (message.type) {
-      case "progress_update":
-        handleProgressUpdate(message);
-        break;
-      case "step_completed":
-        handleStepCompleted(message);
-        break;
-      case "analysis_completed":
-        handleAnalysisCompleted(message);
-        break;
-      case "analysis_error":
-        handleAnalysisError(message);
-        break;
-      case "heartbeat":
-        // Do nothing for heartbeat
-        break;
-      case "connection_established":
-        console.log('Live tracking started');
-        break;
-      default:
-        console.log('Unknown message type:', message.type);
-    }
+  const updateCurrentStepFromStatus = (status: any) => {
+    // Map backend steps to frontend steps
+    const stepMapping: { [key: string]: number } = {
+      'initialization': 0,
+      'sec_filing_analysis': 1,
+      'financial_data_collection': 2,
+      'comprehensive_research': 3,
+      'valuation_analysis': 4,
+      'risk_assessment': 5,
+      'report_generation': 6
+    };
+    
+    const currentStepIndex = stepMapping[status.current_step] || 0;
+    setCurrentStep(currentStepIndex);
+    
+    // Update step statuses based on completion
+    setAnalysisSteps(prevSteps => {
+      return prevSteps.map((step, index) => {
+        if (index < currentStepIndex) {
+          return { ...step, status: "completed" as const };
+        } else if (index === currentStepIndex) {
+          return { ...step, status: "running" as const };
+        } else {
+          return { ...step, status: "pending" as const };
+        }
+      });
+    });
   };
 
   const handleProgressUpdate = (message: any) => {

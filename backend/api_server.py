@@ -30,10 +30,33 @@ except ImportError:
     REDIS_AVAILABLE = False
     redis = None
 
-# Import only essential components at startup
-# Heavy imports will be loaded on-demand to prevent startup failures
+# Pre-load heavy dependencies at startup (Option 1 fix for 503 errors)
+# This prevents import failures during background task execution
 import importlib
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional as OptionalType
+
+# Global variable to store pre-loaded runner
+ANALYSIS_RUNNER: OptionalType['EnhancedAnalysisRunner'] = None
+ANALYSIS_RUNNER_ERROR: OptionalType[str] = None
+
+def preload_analysis_dependencies():
+    """Pre-load heavy analysis dependencies at startup"""
+    global ANALYSIS_RUNNER, ANALYSIS_RUNNER_ERROR
+    
+    try:
+        logger.info("🔄 Pre-loading EnhancedAnalysisRunner and dependencies...")
+        from run_enhanced_analysis import EnhancedAnalysisRunner
+        
+        # Initialize the runner to trigger all imports
+        ANALYSIS_RUNNER = EnhancedAnalysisRunner()
+        logger.info("✅ EnhancedAnalysisRunner pre-loaded successfully!")
+        return True
+        
+    except Exception as e:
+        error_msg = f"Failed to pre-load analysis dependencies: {str(e)}"
+        logger.error(f"❌ {error_msg}")
+        ANALYSIS_RUNNER_ERROR = error_msg
+        return False
 
 if TYPE_CHECKING:
     from run_enhanced_analysis import EnhancedAnalysisRunner
@@ -67,6 +90,12 @@ async def lifespan(app: FastAPI):
     
     # Startup
     logger.info("Starting DeepResearch API Server...")
+    
+    # Pre-load analysis dependencies (Option 1 fix)
+    logger.info("🚀 Step 1: Pre-loading analysis dependencies...")
+    preload_success = preload_analysis_dependencies()
+    if not preload_success:
+        logger.warning("⚠️ Analysis dependencies failed to pre-load. Analysis endpoint may be unavailable.")
     
     # Initialize Supabase with timeout and fallback
     if SUPABASE_AVAILABLE and supabase_manager:
@@ -185,6 +214,7 @@ class AnalysisResponse(BaseModel):
 class AnalysisStatus(BaseModel):
     analysis_id: str
     ticker: str
+    company_name: Optional[str]
     status: str
     progress: int
     current_step: str
@@ -193,6 +223,13 @@ class AnalysisStatus(BaseModel):
     steps_completed: List[str]
     steps_remaining: List[str]
     error: Optional[str]
+    
+    # User-friendly fields for frontend display
+    current_step_name: Optional[str] = None
+    current_step_description: Optional[str] = None
+    user_message: Optional[str] = None
+    total_steps: int = 0
+    completed_steps: int = 0
     started_at: datetime
     completed_at: Optional[datetime]
 
@@ -256,15 +293,57 @@ class ConnectionManager:
 
 manager = ConnectionManager()
 
-# Analysis step definitions
+# Analysis step definitions with user-friendly descriptions
 ANALYSIS_STEPS = [
-    {"id": "question_generation", "name": "Question Generation", "duration": 60},
-    {"id": "sec_filing_analysis", "name": "SEC Filing Analysis", "duration": 180},
-    {"id": "financial_data_collection", "name": "Financial Data Collection", "duration": 120},
-    {"id": "comprehensive_research", "name": "Comprehensive Research", "duration": 300},
-    {"id": "damodaran_story_development", "name": "Damodaran Story Development", "duration": 120},
-    {"id": "valuation_scenario_analysis", "name": "Valuation & Scenario Analysis", "duration": 90},
-    {"id": "report_generation", "name": "Report Generation", "duration": 30}
+    {
+        "id": "initialization", 
+        "name": "Getting Started", 
+        "description": "Setting up your analysis workspace and validating company data",
+        "duration": 30,
+        "user_message": "Preparing to analyze {}..."
+    },
+    {
+        "id": "sec_filing_analysis", 
+        "name": "Reading Company Documents", 
+        "description": "Downloading and analyzing official SEC filings and annual reports",
+        "duration": 180,
+        "user_message": "Reading through {}'s official filings and reports..."
+    },
+    {
+        "id": "financial_data_collection", 
+        "name": "Gathering Financial Data", 
+        "description": "Collecting current stock prices, financial statements, and key metrics",
+        "duration": 120,
+        "user_message": "Collecting {}'s latest financial data and market information..."
+    },
+    {
+        "id": "comprehensive_research", 
+        "name": "Deep Market Research", 
+        "description": "Researching industry trends, competitors, and market conditions",
+        "duration": 300,
+        "user_message": "Researching {}'s industry, competitors, and market position..."
+    },
+    {
+        "id": "valuation_analysis", 
+        "name": "Calculating Company Value", 
+        "description": "Running advanced valuation models and scenario analysis",
+        "duration": 180,
+        "user_message": "Calculating {}'s intrinsic value using multiple approaches..."
+    },
+    {
+        "id": "risk_assessment", 
+        "name": "Analyzing Investment Risks", 
+        "description": "Identifying potential risks and opportunities for investors",
+        "duration": 90,
+        "user_message": "Evaluating investment risks and opportunities for {}..."
+    },
+    {
+        "id": "report_generation", 
+        "name": "Creating Your Report", 
+        "description": "Compiling all findings into a comprehensive investment analysis",
+        "duration": 60,
+        "user_message": "Finalizing your comprehensive {} investment report..."
+    }
 ]
 
 # Server configuration constants
@@ -815,30 +894,45 @@ async def start_comprehensive_analysis(
         company_name=request.company_name or validation.company_name,
         status="started",
         estimated_duration="15 minutes",
-        websocket_url=f"/ws/analysis/{analysis_id}",
+        websocket_url=f"/api/analysis/{analysis_id}/status",  # Use polling endpoint instead
         created_at=datetime.utcnow()
     )
 
 @app.get("/api/analysis/{analysis_id}/status", response_model=AnalysisStatus, tags=["Analysis"])
 async def get_analysis_status(analysis_id: str):
-    """Get current status of a comprehensive analysis"""
+    """Get current status of a comprehensive analysis with detailed progress info"""
     
     state = await get_analysis_state(analysis_id)
     if not state:
         raise HTTPException(status_code=404, detail="Analysis not found")
     
-    # Calculate estimated completion
+    # Calculate estimated completion and detailed progress
     estimated_completion = None
-    if state["status"] == "running" and state["progress"] > 0:
-        started_at = state["started_at"] if isinstance(state["started_at"], datetime) else datetime.fromisoformat(state["started_at"].replace('Z', '+00:00'))
-        elapsed = (datetime.utcnow() - started_at).total_seconds()
-        total_estimated = elapsed / (state["progress"] / 100)
-        remaining = total_estimated - elapsed
-        estimated_completion = datetime.utcnow() + timedelta(seconds=remaining)
+    current_step_info = None
+    user_friendly_message = "Starting analysis..."
     
-    return AnalysisStatus(
-        analysis_id=state["analysis_id"],
+    if state["status"] == "running":
+        # Find current step details
+        current_step_id = state.get("current_step")
+        if current_step_id:
+            current_step_info = next((step for step in ANALYSIS_STEPS if step["id"] == current_step_id), None)
+            if current_step_info:
+                company_name = state.get("company_name", state.get("ticker", "the company"))
+                user_friendly_message = current_step_info["user_message"].format(company_name)
+        
+        # Calculate time estimates
+        if state["progress"] > 0:
+            started_at = state["started_at"] if isinstance(state["started_at"], datetime) else datetime.fromisoformat(state["started_at"].replace('Z', '+00:00'))
+            elapsed = (datetime.utcnow() - started_at).total_seconds()
+            total_estimated = elapsed / (state["progress"] / 100)
+            remaining = total_estimated - elapsed
+            estimated_completion = datetime.utcnow() + timedelta(seconds=max(0, remaining))
+    
+    # Enhanced status response with user-friendly fields
+    enhanced_status = AnalysisStatus(
+        analysis_id=analysis_id,  # Use URL parameter, not state key
         ticker=state["ticker"],
+        company_name=state.get("company_name"),
         status=state["status"],
         progress=state["progress"],
         current_step=state["current_step"],
@@ -848,8 +942,17 @@ async def get_analysis_status(analysis_id: str):
         steps_remaining=state.get("steps_remaining", []),
         error=state.get("error"),
         started_at=state["started_at"],
-        completed_at=state.get("completed_at")
+        completed_at=state.get("completed_at"),
+        
+        # User-friendly fields
+        current_step_name=current_step_info.get("name", "Processing") if current_step_info else "Processing",
+        current_step_description=current_step_info.get("description", "") if current_step_info else "",
+        user_message=user_friendly_message,
+        total_steps=len(ANALYSIS_STEPS),
+        completed_steps=len(state.get("steps_completed", []))
     )
+    
+    return enhanced_status
 
 @app.post("/api/system/cleanup-sessions", tags=["System"])
 async def cleanup_stuck_sessions():
@@ -1067,13 +1170,37 @@ async def run_comprehensive_analysis(analysis_id: str, ticker: str, company_name
         logger.info(f"🚀 Starting comprehensive analysis for {ticker.upper()} (ID: {analysis_id})")
         logger.info(f"📊 Analysis parameters: ticker={ticker}, company_name={company_name}, analysis_id={analysis_id}")
         
-        # Initialize the analysis runner (lazy import)
-        try:
-            from run_enhanced_analysis import EnhancedAnalysisRunner
-            runner = EnhancedAnalysisRunner()
-        except ImportError as e:
-            logger.error(f"Enhanced analysis runner not available: {e}")
-            return create_service_unavailable_response("Analysis service temporarily unavailable")
+        # Use pre-loaded analysis runner (Option 1 fix)
+        global ANALYSIS_RUNNER, ANALYSIS_RUNNER_ERROR
+        
+        if ANALYSIS_RUNNER is None:
+            error_msg = ANALYSIS_RUNNER_ERROR or "Analysis runner not pre-loaded at startup"
+            logger.error(f"❌ Analysis runner unavailable: {error_msg}")
+            
+            # Update analysis state with error
+            state = await get_analysis_state(analysis_id)
+            if state:
+                state["status"] = "failed"
+                state["error"] = f"Service initialization failed: {error_msg}"
+                state["completed_at"] = datetime.utcnow()
+                await store_analysis_state(analysis_id, state)
+            
+            # Send error via WebSocket
+            await manager.send_to_analysis(analysis_id, {
+                "type": "analysis_error",
+                "analysis_id": analysis_id,
+                "data": {
+                    "error_type": "service_unavailable",
+                    "error_message": "Analysis service is temporarily unavailable. Please try again later.",
+                    "technical_details": error_msg,
+                    "retry_possible": True,
+                    "timestamp": datetime.utcnow().isoformat()
+                }
+            })
+            return
+        
+        runner = ANALYSIS_RUNNER
+        logger.info(f"✅ Using pre-loaded analysis runner for {ticker}")
         
         # Update progress through steps
         for i, step in enumerate(ANALYSIS_STEPS):
@@ -1088,21 +1215,19 @@ async def run_comprehensive_analysis(analysis_id: str, ticker: str, company_name
             
             state["current_step"] = step["id"]
             state["progress"] = int((i / len(ANALYSIS_STEPS)) * 100)
+            
+            # Update completed and remaining steps
+            state["steps_completed"] = [s["id"] for s in ANALYSIS_STEPS[:i]]
+            state["steps_remaining"] = [s["id"] for s in ANALYSIS_STEPS[i+1:]]
+            
             await store_analysis_state(analysis_id, state)
             
-            # Send progress update via WebSocket
-            await manager.send_to_analysis(analysis_id, {
-                "type": "progress_update",
-                "analysis_id": analysis_id,
-                "data": {
-                    "progress": state["progress"],
-                    "current_step": step["id"],
-                    "current_component": step["name"],
-                    "step_description": step["name"],
-                    "estimated_completion": (datetime.utcnow() + timedelta(seconds=sum(s["duration"] for s in ANALYSIS_STEPS[i:]))).isoformat(),
-                    "timestamp": datetime.utcnow().isoformat()
-                }
-            })
+            # Log user-friendly progress
+            company_name = state.get("company_name", ticker)
+            user_message = step["user_message"].format(company_name)
+            logger.info(f"📊 {ticker} Progress: {state['progress']}% - {user_message}")
+            
+            # Note: WebSocket updates removed - frontend should poll status endpoint instead
             
             # Send log message
             await manager.send_to_analysis(analysis_id, {

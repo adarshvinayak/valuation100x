@@ -22,8 +22,9 @@ const AnalysisProgress = () => {
   const [progress, setProgress] = useState(0);
   const [progressMessages, setProgressMessages] = useState<ProgressMessage[]>([]);
   const [connectionStatus, setConnectionStatus] = useState('Connecting');
-  const [webSocket, setWebSocket] = useState<WebSocket | null>(null);
+
   const [isCancelling, setIsCancelling] = useState(false);
+  const [tickerDetails, setTickerDetails] = useState<any>(null);
   
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const pingIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -38,10 +39,87 @@ const AnalysisProgress = () => {
     }
   }, [progressMessages]);
 
+  const handleStatusUpdate = (status: any) => {
+    console.log('Status update received:', status);
+    
+    // Update progress
+    if (status.progress !== undefined) {
+      setProgress(status.progress);
+    }
+    
+    // Store ticker details for display
+    if (status.company_name || status.ticker) {
+      setTickerDetails({
+        ticker: status.ticker,
+        company_name: status.company_name,
+        current_price: status.current_price,
+        market_cap: status.market_cap,
+        exchange: status.exchange,
+        sector: status.sector
+      });
+    }
+    
+    // Add progress message with user-friendly text
+    const userMessage = status.user_message || status.current_step_description || `Analysis progress: ${status.progress}%`;
+    setProgressMessages(prev => [...prev, {
+      timestamp: new Date().toLocaleTimeString(),
+      message: userMessage,
+      type: status.status === 'error' ? 'error' : 
+             status.progress >= 100 ? 'success' : 'progress'
+    }]);
+    
+    // Handle completion
+    if (status.status === 'completed' || status.progress >= 100) {
+      setConnectionStatus('Completed');
+      setProgressMessages(prev => [...prev, {
+        timestamp: new Date().toLocaleTimeString(),
+        message: '🎉 Analysis completed! Generating report...',
+        type: 'success'
+      }]);
+      setTimeout(() => {
+        navigate(`/report/${status.analysis_id}`);
+      }, 2000);
+    } else if (status.status === 'error') {
+      setConnectionStatus('Error');
+      setProgressMessages(prev => [...prev, {
+        timestamp: new Date().toLocaleTimeString(),
+        message: `❌ Error: ${status.error || 'An error occurred during analysis'}`,
+        type: 'error'
+      }]);
+    }
+  };
+
+  const fetchTickerDetails = async (ticker: string) => {
+    try {
+      console.log('Fetching ticker details for:', ticker);
+      const response = await fetch(API_ENDPOINTS.VALIDATE_TICKER(ticker));
+      if (response.ok) {
+        const data = await response.json();
+        if (data.is_valid) {
+          setTickerDetails({
+            ticker: ticker,
+            company_name: data.company_name,
+            current_price: data.current_price,
+            market_cap: data.market_cap,
+            exchange: data.exchange,
+            sector: data.sector
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch ticker details:', error);
+    }
+  };
+
   const connectToExistingAnalysis = async (existingAnalysisId: string, ticker: string) => {
     try {
-      // Analysis already exists - just connect to WebSocket for progress updates
-      console.log(`Connecting to existing analysis: ${existingAnalysisId} for ${ticker}`);
+      // Analysis already exists - start polling for progress updates
+      console.log(`Starting polling for analysis: ${existingAnalysisId} for ${ticker}`);
+      
+      // Fetch ticker details if we have the ticker from URL
+      if (ticker) {
+        await fetchTickerDetails(ticker);
+      }
       
       setProgressMessages(prev => [...prev, {
         timestamp: new Date().toLocaleTimeString(),
@@ -49,151 +127,37 @@ const AnalysisProgress = () => {
         type: 'info'
       }]);
 
-      // Connect to WebSocket for this existing analysis
-      const wsUrl = API_ENDPOINTS.WEBSOCKET_ANALYSIS(existingAnalysisId);
-      const ws = new WebSocket(wsUrl);
-
-      // Connection opened
-      ws.onopen = () => {
-        console.log('WebSocket connected successfully');
-        setConnectionStatus('Connected');
-        
-        // Send ping to keep connection alive
-        const pingInterval = setInterval(() => {
-          if (ws.readyState === WebSocket.OPEN) {
-            ws.send(JSON.stringify({ type: 'ping' }));
-          } else {
-            clearInterval(pingInterval);
-          }
-        }, 30000); // Ping every 30 seconds
-        
-        pingIntervalRef.current = pingInterval;
-      };
-
-      // Handle incoming messages
-      ws.onmessage = (event) => {
+      // Start polling for status updates
+      const pollStatus = async () => {
         try {
-          const message = JSON.parse(event.data);
-          console.log('WebSocket message:', message);
-
-          switch (message.type) {
-            case 'connection_established':
-              setProgressMessages(prev => [...prev, {
-                timestamp: new Date().toLocaleTimeString(),
-                message: `Connected to analysis stream for ${ticker}`,
-                type: 'info'
-              }]);
-              break;
-
-            case 'progress_update':
-              setProgress(message.data.progress);
-              setProgressMessages(prev => [...prev, {
-                timestamp: new Date().toLocaleTimeString(),
-                message: message.data.step_description || `Progress: ${message.data.progress}%`,
-                type: 'progress'
-              }]);
-              break;
-
-            case 'analysis_log':
-              setProgressMessages(prev => [...prev, {
-                timestamp: new Date().toLocaleTimeString(),
-                message: message.data.message,
-                type: message.data.level.toLowerCase()
-              }]);
-              break;
-
-            case 'step_completed':
-              setProgressMessages(prev => [...prev, {
-                timestamp: new Date().toLocaleTimeString(),
-                message: `✅ Completed: ${message.data.completed_step}`,
-                type: 'success'
-              }]);
-              break;
-
-            case 'analysis_completed':
-              setProgress(100);
-              setProgressMessages(prev => [...prev, {
-                timestamp: new Date().toLocaleTimeString(),
-                message: `🎉 Analysis completed! Score: ${message.data.investment_score}/10`,
-                type: 'success'
-              }]);
-              
-              // Close WebSocket and redirect to results
-              ws.close();
-              setTimeout(() => {
-                window.location.href = `/report/${existingAnalysisId}?ticker=${ticker}`;
-              }, 2000);
-              break;
-
-            case 'analysis_error':
-              setProgressMessages(prev => [...prev, {
-                timestamp: new Date().toLocaleTimeString(),
-                message: `❌ Error: ${message.data.error_message}`,
-                type: 'error'
-              }]);
-              break;
-
-            case 'pong':
-              // Keep-alive response
-              console.log('Received pong');
-              break;
-
-            case 'heartbeat':
-              // Heartbeat from server
-              console.log('Received heartbeat');
-              break;
-
-            default:
-              console.log('Unknown message type:', message.type);
+          const response = await fetch(API_ENDPOINTS.ANALYSIS_STATUS(existingAnalysisId));
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+          
+          const status = await response.json();
+          handleStatusUpdate(status);
+          
+          // Stop polling if analysis is complete or error
+          if (status.status === 'completed' || status.status === 'error' || status.status === 'cancelled') {
+            if (pingIntervalRef.current) {
+              clearInterval(pingIntervalRef.current);
+              pingIntervalRef.current = null;
+            }
           }
         } catch (error) {
-          console.error('Error parsing WebSocket message:', error);
+          console.error('Failed to fetch analysis status:', error);
+          setConnectionStatus('Error');
         }
       };
 
-      // Connection closed
-      ws.onclose = (event) => {
-        console.log('WebSocket closed:', event.code, event.reason);
-        setConnectionStatus('Disconnected');
-        
-        if (pingIntervalRef.current) {
-          clearInterval(pingIntervalRef.current);
-        }
-        
-        if (event.code !== 1000) { // Not a normal closure
-          setProgressMessages(prev => [...prev, {
-            timestamp: new Date().toLocaleTimeString(),
-            message: `Connection closed unexpectedly (${event.code}). Checking results...`,
-            type: 'warning'
-          }]);
-          
-          // Try to fetch results after a delay
-          setTimeout(async () => {
-            try {
-              const resultsResponse = await fetch(API_ENDPOINTS.ANALYSIS_RESULTS(existingAnalysisId));
-              if (resultsResponse.ok) {
-                window.location.href = `/report/${existingAnalysisId}?ticker=${ticker}`;
-              }
-            } catch (error) {
-              console.error('Error checking results:', error);
-            }
-          }, 3000);
-        }
-      };
+      // Start polling immediately, then every 2 seconds
+      setConnectionStatus('Connected');
+      pollStatus();
+      const pollingInterval = setInterval(pollStatus, 2000);
+      pingIntervalRef.current = pollingInterval;
 
-      // Connection error
-      ws.onerror = (error) => {
-        console.error('WebSocket error:', error);
-        setConnectionStatus('Error');
-        setProgressMessages(prev => [...prev, {
-          timestamp: new Date().toLocaleTimeString(),
-          message: '❌ Connection error. Retrying...',
-          type: 'error'
-        }]);
-      };
 
-      // Store WebSocket reference for cleanup
-      setWebSocket(ws);
       
     } catch (error) {
       console.error('Failed to connect to existing analysis:', error);
@@ -212,11 +176,14 @@ const AnalysisProgress = () => {
 
   // Cancel analysis function
   const cancelAnalysis = async () => {
-    if (analysisId && webSocket) {
+    if (analysisId) {
       setIsCancelling(true);
       try {
-        // Close WebSocket first
-        webSocket.close();
+        // Stop polling first
+        if (pingIntervalRef.current) {
+          clearInterval(pingIntervalRef.current);
+          pingIntervalRef.current = null;
+        }
         
         // Clear ping interval
         if (pingIntervalRef.current) {
@@ -258,11 +225,9 @@ const AnalysisProgress = () => {
   };
 
   const handleBack = () => {
-    if (webSocket) {
-      webSocket.close(1000, "User navigated away");
-    }
     if (pingIntervalRef.current) {
       clearInterval(pingIntervalRef.current);
+      pingIntervalRef.current = null;
     }
     navigate('/');
   };
@@ -293,16 +258,14 @@ const AnalysisProgress = () => {
       type: 'info'
     }]);
     
-    // Analysis already started by TickerInput - just connect to WebSocket
+    // Analysis already started by TickerInput - start polling for progress
     // Don't start duplicate analysis here!
     connectToExistingAnalysis(analysisId, ticker);
 
     return () => {
-      if (webSocket) {
-        webSocket.close();
-      }
       if (pingIntervalRef.current) {
         clearInterval(pingIntervalRef.current);
+        pingIntervalRef.current = null;
       }
     };
   }, [analysisId]);
@@ -338,6 +301,37 @@ const AnalysisProgress = () => {
               Analysis ID: <span className="font-mono">{analysisId}</span>
             </p>
           </div>
+
+          {/* Ticker Details Section */}
+          {tickerDetails && (
+            <Card className="p-6 shadow-floating bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="bg-blue-600 text-white px-3 py-1 rounded-md font-mono font-bold text-lg">
+                    {tickerDetails.ticker}
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-blue-900">{tickerDetails.company_name}</h3>
+                    <p className="text-blue-700 text-sm">{tickerDetails.exchange} • {tickerDetails.sector}</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  {tickerDetails.current_price && (
+                    <div className="text-2xl font-bold text-blue-600">
+                      ${typeof tickerDetails.current_price === 'number' 
+                        ? tickerDetails.current_price.toFixed(2) 
+                        : tickerDetails.current_price}
+                    </div>
+                  )}
+                  {tickerDetails.market_cap && (
+                    <div className="text-sm text-blue-700">
+                      Market Cap: ${(tickerDetails.market_cap / 1e9).toFixed(1)}B
+                    </div>
+                  )}
+                </div>
+              </div>
+            </Card>
+          )}
 
           {/* Progress Section */}
           <Card className="p-6 shadow-floating">
