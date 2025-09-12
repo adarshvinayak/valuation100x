@@ -1,0 +1,89 @@
+# Railway Docker Build Optimization
+# Exclude unnecessary files to speed up build context transfer
+
+# Git and version control
+.git
+.gitignore
+.gitattributes
+
+# Python cache and compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Logs and temporary files
+logs/
+*.log
+*.tmp
+*.temp
+
+# Large data files (Railway has size limits)
+data/filings_raw/
+data/cache/
+data/outputs/
+models/embeddings/models--*/
+
+# Node modules (if any)
+node_modules/
+
+# AWS and Lambda specific
+.aws-sam/
+lambda-deployment.zip
+samconfig.toml
+template.yaml
+template-function-url.yaml
+
+# Documentation and README files
+README.md
+*.md
+docs/
+
+# Test files
+tests/
+test_*.py
+*_test.py
+
+# Configuration files not needed in container
+.env
+.env.local
+.env.production
+.env.example
+
+# Deployment scripts
+deploy.ps1
+push_*.bat
+
+# Other Dockerfiles
+Dockerfile
+Dockerfile.lambda

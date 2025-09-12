@@ -1,0 +1,92 @@
+# Railway-Optimized Dockerfile for Heavy ML Dependencies
+# Uses aggressive caching and build optimization for Railway's constraints
+
+FROM python:3.11-slim as base
+
+# Build arguments for Railway optimization
+ARG DEBIAN_FRONTEND=noninteractive
+ARG BUILDKIT_INLINE_CACHE=1
+
+# Railway-specific environment variables
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PIP_DEFAULT_TIMEOUT=100 \
+    PYTHONPATH="/app"
+
+# Install system dependencies in one layer with aggressive cleanup
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    g++ \
+    libc6-dev \
+    libffi-dev \
+    libssl-dev \
+    curl \
+    git \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean \
+    && apt-get autoremove -y
+
+# Dependency installation stage
+FROM base as dependencies
+
+WORKDIR /app
+
+# Copy requirements first for better caching
+COPY requirements.railway.txt .
+
+# Install dependencies with Railway-optimized settings
+RUN pip install --upgrade pip setuptools wheel && \
+    pip install --no-cache-dir --timeout=300 \
+    --retries=3 \
+    --trusted-host pypi.org \
+    --trusted-host pypi.python.org \
+    --trusted-host files.pythonhosted.org \
+    -r requirements.railway.txt
+
+# Production stage
+FROM python:3.11-slim as production
+
+# Copy system dependencies setup
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+# Copy installed packages from dependencies stage
+COPY --from=dependencies /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+COPY --from=dependencies /usr/local/bin /usr/local/bin
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONPATH="/app" \
+    PORT=8000
+
+# Create app user for security
+RUN useradd --create-home --shell /bin/bash --uid 1000 app
+
+# Set work directory
+WORKDIR /app
+
+# Create necessary directories with proper permissions
+RUN mkdir -p data/outputs data/cache data/index logs models/embeddings && \
+    chown -R app:app /app
+
+# Copy application code
+COPY --chown=app:app . .
+
+# Switch to non-root user
+USER app
+
+# Expose port (Railway sets PORT dynamically)
+EXPOSE 8000
+
+# Health check endpoint for Railway
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:${PORT}/health || exit 1
+
+# Run the application
+CMD ["python", "api_server.py"]
