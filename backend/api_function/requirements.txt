@@ -1,0 +1,23 @@
+# Lightweight API Function Requirements
+# Core dependencies only for fast startup
+
+# FastAPI Server
+fastapi>=0.100.0
+uvicorn>=0.23.0
+mangum>=0.17.0  # ASGI to Lambda adapter
+pydantic>=2.0.0
+python-multipart>=0.0.5
+
+# AWS SDK
+boto3>=1.28.0
+
+# Redis (optional for state management)
+redis>=4.5.0
+
+# Core utilities
+python-dotenv>=1.0.0
+requests>=2.28.0
+
+# Basic data processing
+pandas>=2.0.0
+numpy>=1.24.0

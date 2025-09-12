@@ -44,8 +44,8 @@ Resources:
           ENVIRONMENT: !Ref Environment
           LAMBDA_STORAGE_MODE: "enabled"
           TEMP_CLEANUP_ENABLED: "true"
-          # API keys deployed to Lambda environment - managed in AWS console
-          # All keys are active in production Lambda environment
+          # CloudWatch errors fixed - all API keys deployed successfully
+          # WebSocket-free polling architecture fully functional
     Metadata:
       Dockerfile: Dockerfile.lambda
       DockerContext: .

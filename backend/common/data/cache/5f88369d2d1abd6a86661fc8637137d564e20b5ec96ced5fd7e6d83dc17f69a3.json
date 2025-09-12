@@ -1,0 +1,44 @@
+{
+  "value": {
+    "request_id": "dad6bef16e4a3978eeb7af6320532e49",
+    "results": {
+      "ticker": "MCD",
+      "name": "McDonald's Corporation",
+      "market": "stocks",
+      "locale": "us",
+      "primary_exchange": "XNYS",
+      "type": "CS",
+      "active": true,
+      "currency_name": "usd",
+      "cik": "0000063908",
+      "composite_figi": "BBG000BNSZP1",
+      "share_class_figi": "BBG001S5T110",
+      "market_cap": 223415276196.72,
+      "phone_number": "630 623 3000",
+      "address": {
+        "address1": "110 NORTH CARPENTER STREET",
+        "city": "CHICAGO",
+        "state": "IL",
+        "postal_code": "60607"
+      },
+      "description": "McDonald's is the largest restaurant owner-operator in the world, with 2024 system sales of $131 billion across more than 43,000 stores and 115 markets. McDonald's pioneered the franchise model, building its footprint through partnerships with independent restaurant franchisees and master franchise partners around the globe. The firm earns roughly 60% of its revenue from franchise royalty fees and lease payments, with most of the remainder coming from company-operated stores across its three core segments: the United States, internationally operated markets, and international developmental/licensed markets.",
+      "sic_code": "5812",
+      "sic_description": "RETAIL-EATING PLACES",
+      "ticker_root": "MCD",
+      "homepage_url": "https://corporate.mcdonalds.com",
+      "total_employees": 150000,
+      "list_date": "1966-07-05",
+      "branding": {
+        "logo_url": "https://api.polygon.io/v1/reference/company-branding/Y29ycG9yYXRlLm1jZG9uYWxkcy5jb20/images/2025-04-04_logo.png",
+        "icon_url": "https://api.polygon.io/v1/reference/company-branding/Y29ycG9yYXRlLm1jZG9uYWxkcy5jb20/images/2025-04-04_icon.png"
+      },
+      "share_class_shares_outstanding": 713604434,
+      "weighted_shares_outstanding": 713604434,
+      "round_lot": 100
+    },
+    "status": "OK"
+  },
+  "created_at": "2025-08-22T18:37:30.948534",
+  "expires_at": "2025-08-23T18:37:30.948522",
+  "original_key": "polygon:v3/reference/tickers/MCD:[('apiKey', '1tBXkuORSbe8tc3oix3EyKWZMOXplAEN')]"
+}

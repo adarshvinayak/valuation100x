@@ -1,0 +1,129 @@
+SAFE DELETION PLAN - DeepResearch Backend Cleanup
+==================================================
+Generated: 2025-01-02
+Architecture: SQS-based decoupled Lambda functions
+
+ANALYSIS SUMMARY:
+- Source of truth: template.yaml (references api_function/, worker_function/, common/)
+- Active directories: api_function/, worker_function/, common/, tests/
+- Total files identified for deletion: 12 files + 1 directory
+- Risk level: LOW (duplicates, obsolete configs, empty/development artifacts)
+
+DELETION CHECKLIST:
+===================
+
+DUPLICATE CONFIGURATION FILES:
+-------------------------------
+[ ] requirements.txt (root)
+    Reason: Duplicate requirements file, superseded by common/requirements.txt which is used by the SharedLayer.
+
+[ ] requirements.lambda.txt
+    Reason: Obsolete Lambda-specific requirements file, functionality merged into common/requirements.txt.
+
+[ ] requirements.railway.txt
+    Reason: Railway deployment configuration no longer used, project now uses AWS Lambda exclusively.
+
+[ ] docker-compose.yml
+    Reason: Local Docker Compose setup replaced by SAM containerized builds.
+
+[ ] Dockerfile
+    Reason: Original Dockerfile replaced by Dockerfile.lambda and SAM build process.
+
+[ ] Dockerfile.lambda
+    Reason: Docker build now handled by SAM's containerized build, explicit Dockerfile no longer needed.
+
+OBSOLETE DEPLOYMENT FILES:
+---------------------------
+[ ] template-function-url.yaml
+    Reason: Alternative SAM template no longer used, replaced by current template.yaml with HTTP API.
+
+[ ] railway.json
+    Reason: Railway deployment configuration obsolete, project migrated to AWS Lambda architecture.
+
+[ ] deploy.ps1
+    Reason: Custom deployment script replaced by standard 'sam build' and 'sam deploy' commands.
+
+EMPTY/TEMPORARY FILES:
+----------------------
+[ ] methodology.txt
+    Reason: Empty file (0 bytes), appears to be placeholder that was never populated.
+
+[ ] logs/enhanced_analysis.log
+    Reason: Empty log file (0 KB), generated during development but no longer needed.
+
+DEVELOPMENT ARTIFACTS:
+----------------------
+[ ] logs/damodaran_integrated.log
+    Reason: Development log file (127.8 KB), not needed for production deployment.
+
+[ ] logs/ (entire directory)
+    Reason: Entire logs directory contains only development artifacts, Lambda uses CloudWatch for logging.
+
+DOCUMENTATION FILES (OPTIONAL):
+--------------------------------
+[ ] DEPLOYMENT_GUIDE.md
+    Reason: Development documentation that may be outdated after refactoring, deployment now follows standard SAM workflow.
+
+[ ] README.md
+    Reason: Project-level documentation that may need updating but could be preserved if still relevant.
+
+FILES TO PRESERVE:
+==================
+✅ template.yaml - Active SAM template
+✅ samconfig.toml - SAM CLI configuration still needed
+✅ api_function/ - Active API function
+✅ worker_function/ - Active worker function
+✅ common/ - Active shared layer
+✅ tests/ - Test suite
+✅ .aws-sam/ - SAM build artifacts
+
+DELETION COMMANDS (DO NOT RUN YET):
+====================================
+# Remove duplicate configuration files
+Remove-Item requirements.txt -Force
+Remove-Item requirements.lambda.txt -Force
+Remove-Item requirements.railway.txt -Force
+Remove-Item docker-compose.yml -Force
+Remove-Item Dockerfile -Force
+Remove-Item Dockerfile.lambda -Force
+
+# Remove obsolete deployment files
+Remove-Item template-function-url.yaml -Force
+Remove-Item railway.json -Force
+Remove-Item deploy.ps1 -Force
+
+# Remove empty/temporary files
+Remove-Item methodology.txt -Force
+
+# Remove development artifacts
+Remove-Item logs -Recurse -Force
+
+# Optional: Remove outdated documentation
+# Remove-Item DEPLOYMENT_GUIDE.md -Force
+# Remove-Item README.md -Force
+
+VERIFICATION AFTER DELETION:
+=============================
+1. Verify template.yaml still references correct directories
+2. Run 'sam validate' to ensure template is valid
+3. Check that api_function/, worker_function/, common/, tests/ are intact
+4. Ensure samconfig.toml is preserved for deployment configuration
+
+ESTIMATED IMPACT:
+=================
+- Space savings: ~128 KB + configuration file overhead
+- Reduced clutter: 12+ fewer files in root directory
+- Cleaner project structure aligned with new SQS architecture
+- No impact on functionality (all active code preserved)
+
+APPROVAL REQUIRED:
+==================
+Please review this list and confirm which items to delete before proceeding.
+The deletion commands above should only be executed after explicit approval.
+
+
+
+
+
+
+

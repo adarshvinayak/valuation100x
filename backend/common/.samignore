@@ -1,0 +1,18 @@
+# Exclude large model files and data files from Lambda Layer
+*.safetensors
+model.safetensors
+faiss_index
+chunk_metadata.json
+*.json
+data/
+models/
+# Keep only essential code files
+!*.py
+!requirements.txt
+!__init__.py
+
+
+
+
+
+

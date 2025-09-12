@@ -1,6 +1,6 @@
 {
   "ticker": "NVDA",
-  "created_at": "2025-08-21T21:00:06.497929",
+  "created_at": "2025-09-11T22:17:37.664636",
   "indexing_method": "enhanced_sec_integration_v2",
   "embedding_provider": "local",
   "embedding_model": "fast",
@@ -14,17 +14,73 @@
       "downloaded": 100,
       "cached": 0,
       "failed": 0,
-      "total_size_mb": 7.871238708496094,
-      "processing_time": 13.205429
+      "total_size_mb": 9.188031196594238,
+      "processing_time": 35.73659
     },
     "document_count": 100,
-    "total_size_mb": 7.87,
+    "total_size_mb": 9.19,
     "date_range": {
-      "earliest": "2024-09-23T16:45:44-04:00",
-      "latest": "2025-08-18T16:59:27-04:00"
+      "earliest": "2024-11-20T16:21:20-05:00",
+      "latest": "2025-09-10T17:42:52-04:00"
     },
     "documents_by_type": {
       "4": [
+        {
+          "accession_no": "0001415889-25-024119",
+          "filing_date": "2025-09-10T17:42:52-04:00",
+          "period_end_date": "2025-09-08",
+          "url": "https://www.sec.gov/Archives/edgar/data/1045810/000141588925024119/xslF345X05/form4-09102025_090948.xml",
+          "size_kb": 16.3,
+          "document_id": "0d1bf217f8bab9cef7423a9fe77363ce"
+        },
+        {
+          "accession_no": "0001197649-25-000029",
+          "filing_date": "2025-09-08T19:31:02-04:00",
+          "period_end_date": "2025-09-04",
+          "url": "https://www.sec.gov/Archives/edgar/data/1045810/000119764925000029/xslF345X05/wk-form4_1757374259.xml",
+          "size_kb": 31.8,
+          "document_id": "eb834b5cd35b4b3fbc159cc7bcaca526"
+        },
+        {
+          "accession_no": "0001219888-25-000005",
+          "filing_date": "2025-09-04T17:00:16-04:00",
+          "period_end_date": "2025-09-02",
+          "url": "https://www.sec.gov/Archives/edgar/data/1045810/000121988825000005/xslF345X05/wk-form4_1757019606.xml",
+          "size_kb": 15.9,
+          "document_id": "e9a9bbd1f34fb1bd7ec1d689d8835119"
+        },
+        {
+          "accession_no": "0001283854-25-000004",
+          "filing_date": "2025-09-03T20:44:02-04:00",
+          "period_end_date": "2025-08-29",
+          "url": "https://www.sec.gov/Archives/edgar/data/1045810/000128385425000004/xslF345X05/wk-form4_1756946639.xml",
+          "size_kb": 15.6,
+          "document_id": "7fe0c02fa7466b4da85e7dfc13ba7971"
+        },
+        {
+          "accession_no": "0001197652-25-000005",
+          "filing_date": "2025-09-03T20:40:46-04:00",
+          "period_end_date": "2025-08-29",
+          "url": "https://www.sec.gov/Archives/edgar/data/1045810/000119765225000005/xslF345X05/wk-form4_1756946443.xml",
+          "size_kb": 16.6,
+          "document_id": "f9e05ce10b833fecd7cf75cb0e508b23"
+        },
+        {
+          "accession_no": "0001768670-25-000005",
+          "filing_date": "2025-09-03T20:36:53-04:00",
+          "period_end_date": "2025-08-29",
+          "url": "https://www.sec.gov/Archives/edgar/data/1045810/000176867025000005/xslF345X05/wk-form4_1756946210.xml",
+          "size_kb": 17.4,
+          "document_id": "6af346bab98ca0dc7509589399bfbbc7"
+        },
+        {
+          "accession_no": "0001197649-25-000027",
+          "filing_date": "2025-09-03T20:31:52-04:00",
+          "period_end_date": "2025-08-29",
+          "url": "https://www.sec.gov/Archives/edgar/data/1045810/000119764925000027/xslF345X05/wk-form4_1756945908.xml",
+          "size_kb": 34.0,
+          "document_id": "1a5c8138a02d59f2ef5115e154d3900b"
+        },
         {
           "accession_no": "0001197649-25-000025",
           "filing_date": "2025-08-18T16:59:27-04:00",
@@ -656,57 +712,43 @@
           "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581024000318/xslF345X05/wk-form4_1732744744.xml",
           "size_kb": 15.1,
           "document_id": "d5cbd70b7994636848dae463e6ce061f"
+        }
+      ],
+      "10-Q": [
+        {
+          "accession_no": "0001045810-25-000209",
+          "filing_date": "2025-08-27T16:52:07-04:00",
+          "period_end_date": "2025-07-27",
+          "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581025000209/nvda-20250727.htm",
+          "size_kb": 1317.8,
+          "document_id": "0d39c7ffe7f0d231c9ccbc8d39696fd1"
         },
         {
-          "accession_no": "0001045810-24-000298",
-          "filing_date": "2024-10-11T17:42:48-04:00",
-          "period_end_date": "2024-10-09",
-          "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581024000298/xslF345X05/wk-form4_1728682961.xml",
-          "size_kb": 16.5,
-          "document_id": "3efcc2b7ce64727245aadf31d3061094"
+          "accession_no": "0001045810-25-000116",
+          "filing_date": "2025-05-28T16:32:57-04:00",
+          "period_end_date": "2025-04-27",
+          "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581025000116/nvda-20250427.htm",
+          "size_kb": 1105.7,
+          "document_id": "8760a5f59f1520a7f036056728601441"
         },
         {
-          "accession_no": "0001045810-24-000296",
-          "filing_date": "2024-10-07T17:27:24-04:00",
-          "period_end_date": "2024-10-03",
-          "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581024000296/xslF345X05/wk-form4_1728336437.xml",
-          "size_kb": 16.5,
-          "document_id": "c0a82f7f9f372d970d48ae4995894004"
-        },
-        {
-          "accession_no": "0001045810-24-000294",
-          "filing_date": "2024-10-01T16:19:18-04:00",
-          "period_end_date": "2024-09-27",
-          "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581024000294/xslF345X05/wk-form4_1727813951.xml",
-          "size_kb": 16.5,
-          "document_id": "5fee521b46e60959a7ad402da2bc8b9e"
-        },
-        {
-          "accession_no": "0001045810-24-000292",
-          "filing_date": "2024-09-26T17:22:24-04:00",
-          "period_end_date": "2024-09-24",
-          "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581024000292/xslF345X05/wk-form4_1727385738.xml",
-          "size_kb": 16.5,
-          "document_id": "2fe34a2b763937e0ecd51a82ea6cab14"
-        },
-        {
-          "accession_no": "0001045810-24-000290",
-          "filing_date": "2024-09-24T16:12:39-04:00",
-          "period_end_date": "2024-09-20",
-          "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581024000290/xslF345X05/wk-form4_1727208751.xml",
-          "size_kb": 18.8,
-          "document_id": "d4369bbc52d34a727a1c7c2da938bd40"
-        },
-        {
-          "accession_no": "0001225208-24-008806",
-          "filing_date": "2024-09-23T16:45:44-04:00",
-          "period_end_date": "2024-09-19",
-          "url": "https://www.sec.gov/Archives/edgar/data/1045810/000122520824008806/xslF345X05/doc4.xml",
-          "size_kb": 19.1,
-          "document_id": "0864f1c026186033bf23d41e6ca0763c"
+          "accession_no": "0001045810-24-000316",
+          "filing_date": "2024-11-20T16:31:22-05:00",
+          "period_end_date": "2024-10-27",
+          "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581024000316/nvda-20241027.htm",
+          "size_kb": 1406.5,
+          "document_id": "6a81b061e5d36fc3848d5e5a29a0d1f7"
         }
       ],
       "8-K": [
+        {
+          "accession_no": "0001045810-25-000207",
+          "filing_date": "2025-08-27T16:22:14-04:00",
+          "period_end_date": "2025-08-27",
+          "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581025000207/nvda-20250827.htm",
+          "size_kb": 25.1,
+          "document_id": "16b2a1131a9c68ce89fe4cac8c377627"
+        },
         {
           "accession_no": "0001045810-25-000197",
           "filing_date": "2025-08-05T16:31:08-04:00",
@@ -770,32 +812,6 @@
           "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581024000315/nvda-20241120.htm",
           "size_kb": 24.1,
           "document_id": "9a6a567e4666922083d20b0b711dc601"
-        },
-        {
-          "accession_no": "0001045810-24-000300",
-          "filing_date": "2024-11-07T16:35:26-05:00",
-          "period_end_date": "2024-11-07",
-          "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581024000300/nvda-20241107.htm",
-          "size_kb": 19.9,
-          "document_id": "868adc6beff102af0cb8cf1ac70f7fb9"
-        }
-      ],
-      "10-Q": [
-        {
-          "accession_no": "0001045810-25-000116",
-          "filing_date": "2025-05-28T16:32:57-04:00",
-          "period_end_date": "2025-04-27",
-          "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581025000116/nvda-20250427.htm",
-          "size_kb": 1105.7,
-          "document_id": "8760a5f59f1520a7f036056728601441"
-        },
-        {
-          "accession_no": "0001045810-24-000316",
-          "filing_date": "2024-11-20T16:31:22-05:00",
-          "period_end_date": "2024-10-27",
-          "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581024000316/nvda-20241027.htm",
-          "size_kb": 1406.5,
-          "document_id": "6a81b061e5d36fc3848d5e5a29a0d1f7"
         }
       ],
       "DEF 14A": [
@@ -817,26 +833,6 @@
           "size_kb": 2019.1,
           "document_id": "aaa21e2663213fadc2579346333ba669"
         }
-      ],
-      "3": [
-        {
-          "accession_no": "0001045810-24-000302",
-          "filing_date": "2024-11-12T16:46:53-05:00",
-          "period_end_date": "2024-11-07",
-          "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581024000302/xslF345X02/wk-form3_1731448005.xml",
-          "size_kb": 11.6,
-          "document_id": "8fa05d0ada78c06ee8b8af3d93f2d0d1"
-        }
-      ],
-      "SC 13G/A": [
-        {
-          "accession_no": "0000315066-24-002826",
-          "filing_date": "2024-11-12T10:32:12-05:00",
-          "period_end_date": "",
-          "url": "https://www.sec.gov/Archives/edgar/data/315066/000031506624002826/filing.txt",
-          "size_kb": 6.6,
-          "document_id": "29797c2ff159145d15fe00f1a86b1f88"
-        }
       ]
     },
     "coverage_quality": {
@@ -847,6 +843,78 @@
       "recent_coverage": true
     },
     "document_list": [
+      {
+        "form_type": "4",
+        "filing_date": "2025-09-10T17:42:52-04:00",
+        "accession_no": "0001415889-25-024119",
+        "company_name": "NVIDIA CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1045810/000141588925024119/xslF345X05/form4-09102025_090948.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-09-08T19:31:02-04:00",
+        "accession_no": "0001197649-25-000029",
+        "company_name": "NVIDIA CORP",
+        "size_mb": 0.03,
+        "url": "https://www.sec.gov/Archives/edgar/data/1045810/000119764925000029/xslF345X05/wk-form4_1757374259.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-09-04T17:00:16-04:00",
+        "accession_no": "0001219888-25-000005",
+        "company_name": "NVIDIA CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1045810/000121988825000005/xslF345X05/wk-form4_1757019606.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-09-03T20:44:02-04:00",
+        "accession_no": "0001283854-25-000004",
+        "company_name": "NVIDIA CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1045810/000128385425000004/xslF345X05/wk-form4_1756946639.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-09-03T20:40:46-04:00",
+        "accession_no": "0001197652-25-000005",
+        "company_name": "NVIDIA CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1045810/000119765225000005/xslF345X05/wk-form4_1756946443.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-09-03T20:36:53-04:00",
+        "accession_no": "0001768670-25-000005",
+        "company_name": "NVIDIA CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1045810/000176867025000005/xslF345X05/wk-form4_1756946210.xml"
+      },
+      {
+        "form_type": "4",
+        "filing_date": "2025-09-03T20:31:52-04:00",
+        "accession_no": "0001197649-25-000027",
+        "company_name": "NVIDIA CORP",
+        "size_mb": 0.03,
+        "url": "https://www.sec.gov/Archives/edgar/data/1045810/000119764925000027/xslF345X05/wk-form4_1756945908.xml"
+      },
+      {
+        "form_type": "10-Q",
+        "filing_date": "2025-08-27T16:52:07-04:00",
+        "accession_no": "0001045810-25-000209",
+        "company_name": "NVIDIA CORP",
+        "size_mb": 1.29,
+        "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581025000209/nvda-20250727.htm"
+      },
+      {
+        "form_type": "8-K",
+        "filing_date": "2025-08-27T16:22:14-04:00",
+        "accession_no": "0001045810-25-000207",
+        "company_name": "NVIDIA CORP",
+        "size_mb": 0.02,
+        "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581025000207/nvda-20250827.htm"
+      },
       {
         "form_type": "4",
         "filing_date": "2025-08-18T16:59:27-04:00",
@@ -1574,88 +1642,70 @@
         "company_name": "NVIDIA CORP",
         "size_mb": 0.02,
         "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581024000315/nvda-20241120.htm"
-      },
-      {
-        "form_type": "3",
-        "filing_date": "2024-11-12T16:46:53-05:00",
-        "accession_no": "0001045810-24-000302",
-        "company_name": "NVIDIA CORP",
-        "size_mb": 0.01,
-        "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581024000302/xslF345X02/wk-form3_1731448005.xml"
-      },
-      {
-        "form_type": "SC 13G/A",
-        "filing_date": "2024-11-12T10:32:12-05:00",
-        "accession_no": "0000315066-24-002826",
-        "company_name": "NVIDIA CORP",
-        "size_mb": 0.01,
-        "url": "https://www.sec.gov/Archives/edgar/data/315066/000031506624002826/filing.txt"
-      },
-      {
-        "form_type": "8-K",
-        "filing_date": "2024-11-07T16:35:26-05:00",
-        "accession_no": "0001045810-24-000300",
-        "company_name": "NVIDIA CORP",
-        "size_mb": 0.02,
-        "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581024000300/nvda-20241107.htm"
-      },
-      {
-        "form_type": "4",
-        "filing_date": "2024-10-11T17:42:48-04:00",
-        "accession_no": "0001045810-24-000298",
-        "company_name": "NVIDIA CORP",
-        "size_mb": 0.02,
-        "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581024000298/xslF345X05/wk-form4_1728682961.xml"
-      },
-      {
-        "form_type": "4",
-        "filing_date": "2024-10-07T17:27:24-04:00",
-        "accession_no": "0001045810-24-000296",
-        "company_name": "NVIDIA CORP",
-        "size_mb": 0.02,
-        "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581024000296/xslF345X05/wk-form4_1728336437.xml"
-      },
-      {
-        "form_type": "4",
-        "filing_date": "2024-10-01T16:19:18-04:00",
-        "accession_no": "0001045810-24-000294",
-        "company_name": "NVIDIA CORP",
-        "size_mb": 0.02,
-        "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581024000294/xslF345X05/wk-form4_1727813951.xml"
-      },
-      {
-        "form_type": "4",
-        "filing_date": "2024-09-26T17:22:24-04:00",
-        "accession_no": "0001045810-24-000292",
-        "company_name": "NVIDIA CORP",
-        "size_mb": 0.02,
-        "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581024000292/xslF345X05/wk-form4_1727385738.xml"
-      },
-      {
-        "form_type": "4",
-        "filing_date": "2024-09-24T16:12:39-04:00",
-        "accession_no": "0001045810-24-000290",
-        "company_name": "NVIDIA CORP",
-        "size_mb": 0.02,
-        "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581024000290/xslF345X05/wk-form4_1727208751.xml"
-      },
-      {
-        "form_type": "4",
-        "filing_date": "2024-09-23T16:45:44-04:00",
-        "accession_no": "0001225208-24-008806",
-        "company_name": "NVIDIA CORP",
-        "size_mb": 0.02,
-        "url": "https://www.sec.gov/Archives/edgar/data/1045810/000122520824008806/xslF345X05/doc4.xml"
       }
     ]
   },
   "indexing_stats": {
     "total_documents": 100,
-    "total_chunks": 3050,
+    "total_chunks": 3584,
     "embedding_time": 0.0,
     "indexing_time": 0.0,
-    "index_size_mb": 4.467816352844238,
+    "index_size_mb": 5.250042915344238,
     "documents_processed": [
+      {
+        "form_type": "4",
+        "accession_no": "0001415889-25-024119",
+        "chunks_created": 6,
+        "original_size_kb": 16.2548828125
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001197649-25-000029",
+        "chunks_created": 11,
+        "original_size_kb": 31.7568359375
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001219888-25-000005",
+        "chunks_created": 6,
+        "original_size_kb": 15.8740234375
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001283854-25-000004",
+        "chunks_created": 6,
+        "original_size_kb": 15.6357421875
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001197652-25-000005",
+        "chunks_created": 6,
+        "original_size_kb": 16.6171875
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001768670-25-000005",
+        "chunks_created": 6,
+        "original_size_kb": 17.390625
+      },
+      {
+        "form_type": "4",
+        "accession_no": "0001197649-25-000027",
+        "chunks_created": 12,
+        "original_size_kb": 33.9814453125
+      },
+      {
+        "form_type": "10-Q",
+        "accession_no": "0001045810-25-000209",
+        "chunks_created": 524,
+        "original_size_kb": 1317.7958984375
+      },
+      {
+        "form_type": "8-K",
+        "accession_no": "0001045810-25-000207",
+        "chunks_created": 10,
+        "original_size_kb": 25.09375
+      },
       {
         "form_type": "4",
         "accession_no": "0001197649-25-000025",
@@ -2201,60 +2251,6 @@
         "accession_no": "0001045810-24-000315",
         "chunks_created": 9,
         "original_size_kb": 24.1220703125
-      },
-      {
-        "form_type": "3",
-        "accession_no": "0001045810-24-000302",
-        "chunks_created": 4,
-        "original_size_kb": 11.59765625
-      },
-      {
-        "form_type": "SC 13G/A",
-        "accession_no": "0000315066-24-002826",
-        "chunks_created": 3,
-        "original_size_kb": 6.5791015625
-      },
-      {
-        "form_type": "8-K",
-        "accession_no": "0001045810-24-000300",
-        "chunks_created": 8,
-        "original_size_kb": 19.9404296875
-      },
-      {
-        "form_type": "4",
-        "accession_no": "0001045810-24-000298",
-        "chunks_created": 6,
-        "original_size_kb": 16.5029296875
-      },
-      {
-        "form_type": "4",
-        "accession_no": "0001045810-24-000296",
-        "chunks_created": 6,
-        "original_size_kb": 16.5029296875
-      },
-      {
-        "form_type": "4",
-        "accession_no": "0001045810-24-000294",
-        "chunks_created": 6,
-        "original_size_kb": 16.501953125
-      },
-      {
-        "form_type": "4",
-        "accession_no": "0001045810-24-000292",
-        "chunks_created": 6,
-        "original_size_kb": 16.5048828125
-      },
-      {
-        "form_type": "4",
-        "accession_no": "0001045810-24-000290",
-        "chunks_created": 7,
-        "original_size_kb": 18.7890625
-      },
-      {
-        "form_type": "4",
-        "accession_no": "0001225208-24-008806",
-        "chunks_created": 7,
-        "original_size_kb": 19.0859375
       }
     ],
     "embedding_provider": "local",

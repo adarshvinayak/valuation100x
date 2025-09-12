@@ -1,0 +1,44 @@
+{
+  "value": {
+    "request_id": "987dd3c004ae47da06b0c5af7eee7f2c",
+    "results": {
+      "ticker": "TSLA",
+      "name": "Tesla, Inc. Common Stock",
+      "market": "stocks",
+      "locale": "us",
+      "primary_exchange": "XNAS",
+      "type": "CS",
+      "active": true,
+      "currency_name": "usd",
+      "cik": "0001318605",
+      "composite_figi": "BBG000N9MNX3",
+      "share_class_figi": "BBG001SQKGD7",
+      "market_cap": 1044722895147.1,
+      "phone_number": "512-516-8177",
+      "address": {
+        "address1": "1 TESLA ROAD",
+        "city": "AUSTIN",
+        "state": "TX",
+        "postal_code": "78725"
+      },
+      "description": "Tesla is a vertically integrated battery electric vehicle automaker and developer of autonomous driving software. The company has multiple vehicles in its fleet, which include luxury and midsize sedans, crossover SUVs, a light truck, and a semi truck. Tesla also plans to begin selling more affordable vehicles, a sports car, and offer a robotaxi service. Global deliveries in 2024 were a little below 1.8 million vehicles. The company sells batteries for stationary storage for residential and commercial properties including utilities and solar panels and solar roofs for energy generation. Tesla also owns a fast-charging network.",
+      "sic_code": "3711",
+      "sic_description": "MOTOR VEHICLES & PASSENGER CAR BODIES",
+      "ticker_root": "TSLA",
+      "homepage_url": "https://www.tesla.com",
+      "total_employees": 125665,
+      "list_date": "2010-06-29",
+      "branding": {
+        "logo_url": "https://api.polygon.io/v1/reference/company-branding/dGVzbGEuY29t/images/2025-04-04_logo.svg",
+        "icon_url": "https://api.polygon.io/v1/reference/company-branding/dGVzbGEuY29t/images/2025-04-04_icon.png"
+      },
+      "share_class_shares_outstanding": 3225448889,
+      "weighted_shares_outstanding": 3225448889,
+      "round_lot": 100
+    },
+    "status": "OK"
+  },
+  "created_at": "2025-08-22T18:09:55.620001",
+  "expires_at": "2025-08-23T18:09:55.619990",
+  "original_key": "polygon:v3/reference/tickers/TSLA:[('apiKey', '1tBXkuORSbe8tc3oix3EyKWZMOXplAEN')]"
+}

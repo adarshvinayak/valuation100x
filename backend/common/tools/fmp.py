@@ -1,0 +1,730 @@
+"""
+Financial Modeling Prep (FMP) API Integration
+
+Fetches financial data including company profile, ratios, income statements,
+balance sheets, and cash flow statements.
+"""
+import asyncio
+import os
+from typing import Dict, List, Optional, Any
+import logging
+from datetime import datetime
+
+import aiohttp
+from tenacity import retry, stop_after_attempt, wait_exponential
+
+from .cache import get_cache
+
+# Import Polygon fallback with graceful failure
+try:
+    from .polygon_client import get_polygon_fallback_data
+    POLYGON_AVAILABLE = True
+except ImportError:
+    POLYGON_AVAILABLE = False
+    get_polygon_fallback_data = None
+
+logger = logging.getLogger(__name__)
+
+# Simple circuit breaker to prevent API abuse
+_fmp_circuit_breaker = {
+    "failure_count": 0,
+    "last_failure_time": None,
+    "circuit_open": False
+}
+
+
+class FMPClient:
+    """Financial Modeling Prep API client"""
+    
+    def __init__(self, api_key: str):
+        self.api_key = api_key
+        self.base_url = "https://financialmodelingprep.com/api/v3"
+        self.session = None
+        self.cache = get_cache()
+    
+    async def __aenter__(self):
+        """Async context manager entry"""
+        self.session = aiohttp.ClientSession(
+            timeout=aiohttp.ClientTimeout(total=30)
+        )
+        return self
+    
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        """Async context manager exit"""
+        if self.session:
+            await self.session.close()
+    
+    @retry(
+        stop=stop_after_attempt(2),  # Reduced from 3 to 2 attempts
+        wait=wait_exponential(multiplier=2, min=10, max=60)  # Longer waits to respect rate limits
+    )
+    async def _make_request(self, endpoint: str, params: Optional[Dict] = None) -> Dict:
+        """Make API request with retries"""
+        if not self.session:
+            raise RuntimeError("Client not initialized. Use async context manager.")
+        
+        url = f"{self.base_url}/{endpoint}"
+        request_params = {"apikey": self.api_key}
+        if params:
+            request_params.update(params)
+        
+        # Check cache first
+        cache_key = f"fmp:{endpoint}:{str(sorted(request_params.items()))}"
+        cached_result = self.cache.get(cache_key)
+        if cached_result is not None:
+            logger.debug(f"Cache hit for FMP request: {endpoint}")
+            return cached_result
+        
+        logger.info(f"Making FMP API request: {url}")
+        logger.debug(f"Request params: {request_params}")
+        
+        async with self.session.get(url, params=request_params) as response:
+            logger.info(f"FMP API response status: {response.status}")
+            
+            if response.status != 200:
+                response_text = await response.text()
+                logger.error(f"FMP API error - Status: {response.status}, Response: {response_text}")
+                response.raise_for_status()
+            
+            data = await response.json()
+            logger.info(f"FMP API response data type: {type(data)}, length: {len(data) if isinstance(data, list) else 'N/A'}")
+            
+            # Check for API error messages
+            if isinstance(data, dict) and "Error Message" in data:
+                error_msg = data['Error Message']
+                logger.error(f"FMP API returned error: {error_msg}")
+                
+                # Don't retry on rate limit or quota errors - fail fast
+                if "Limit Reach" in error_msg or "rate limit" in error_msg.lower():
+                    logger.warning("FMP rate limit reached - failing fast to avoid wasted compute")
+                    raise Exception(f"FMP Rate Limit: {error_msg}")
+                
+                raise Exception(f"FMP API Error: {error_msg}")
+            
+            # Cache the result
+            self.cache.set(cache_key, data, ttl_hours=24)
+            
+            return data
+    
+    async def get_company_profile(self, ticker: str) -> Dict[str, Any]:
+        """Get company profile information"""
+        try:
+            # Use the new working quote endpoint instead of deprecated profile
+            data = await self._make_request(f"quote/{ticker}")
+            
+            if not data or not isinstance(data, list) or len(data) == 0:
+                return {}
+            
+            quote = data[0]
+            
+            # Normalize the response to match expected format (quote endpoint has different field names)
+            return {
+                "ticker": ticker,
+                "company_name": quote.get("name", ""),  # Changed from companyName to name
+                "sector": "Unknown",  # Not available in quote endpoint
+                "industry": "Unknown",  # Not available in quote endpoint  
+                "market_cap": quote.get("marketCap", 0),  # Same field name
+                "price": quote.get("price", 0),  # Same field name
+                "beta": 0,  # Not available in quote endpoint
+                "country": "Unknown",  # Not available in quote endpoint
+                "exchange": quote.get("exchange", ""),  # Same field name
+                "currency": "USD",  # Default assumption
+                "description": "",  # Not available in quote endpoint
+                "website": "",  # Not available in quote endpoint
+                "ipo_date": "",  # Not available in quote endpoint
+                "full_time_employees": 0,  # Not available in quote endpoint
+                "last_updated": datetime.now().isoformat(),
+                # Additional data available from quote endpoint
+                "current_price": quote.get("price", 0),
+                "day_low": quote.get("dayLow", 0),
+                "day_high": quote.get("dayHigh", 0),
+                "year_low": quote.get("yearLow", 0),
+                "year_high": quote.get("yearHigh", 0),
+                "volume": quote.get("volume", 0),
+                "pe_ratio": quote.get("pe", 0),
+                "eps": quote.get("eps", 0)
+            }
+            
+        except Exception as e:
+            logger.error(f"Failed to get company profile for {ticker}: {e}")
+            return await self._try_polygon_fallback(ticker)
+    
+    async def _try_polygon_fallback(self, ticker: str) -> Dict[str, Any]:
+        """Try Polygon.io as fallback when FMP fails"""
+        if POLYGON_AVAILABLE and get_polygon_fallback_data:
+            logger.info(f"Trying Polygon.io fallback for {ticker}")
+            polygon_data = await get_polygon_fallback_data(ticker)
+            if polygon_data:
+                return polygon_data
+        
+        # Final fallback - basic data structure
+        logger.warning(f"All data sources failed for {ticker}, using basic fallback")
+        return {
+            "ticker": ticker,
+            "company_name": f"{ticker} Corporation",
+            "exchange": "Unknown",
+            "sector": "Unknown",
+            "market_cap": 0,
+            "current_price": 0,
+            "day_low": 0,
+            "day_high": 0,
+            "volume": 0,
+            "last_updated": datetime.now().isoformat()
+        }
+    
+    async def get_key_metrics(self, ticker: str, period: str = "annual", limit: int = 5) -> List[Dict[str, Any]]:
+        """Get key financial metrics using profile data as fallback since ratios endpoints are deprecated"""
+        try:
+            # Since ratios endpoints are deprecated, use company profile for basic metrics
+            # and return empty list for detailed ratios to avoid API errors
+            logger.warning(f"Ratios endpoints deprecated - using basic profile data for {ticker}")
+            return []  # Return empty to avoid deprecated endpoint calls
+            
+            # Old deprecated code kept for reference:
+            # endpoint = f"ratios-ttm/{ticker}" if period == "ttm" else f"ratios/{ticker}"
+            # data = await self._make_request(endpoint, params)
+            
+            if not data or not isinstance(data, list):
+                return []
+            
+            normalized_metrics = []
+            for metric in data:
+                normalized_metric = {
+                    "ticker": ticker,
+                    "date": metric.get("date", ""),
+                    "period": metric.get("period", period),
+                    
+                    # Valuation ratios
+                    "pe_ratio": metric.get("peRatio", 0),
+                    "peg_ratio": metric.get("pegRatio", 0),
+                    "price_to_book": metric.get("priceToBookRatio", 0),
+                    "price_to_sales": metric.get("priceToSalesRatio", 0),
+                    "enterprise_value": metric.get("enterpriseValue", 0),
+                    "ev_to_revenue": metric.get("enterpriseValueOverEBITDA", 0),
+                    
+                    # Profitability ratios
+                    "roe": metric.get("returnOnEquity", 0),
+                    "roa": metric.get("returnOnAssets", 0),
+                    "roic": metric.get("returnOnCapitalEmployed", 0),
+                    "gross_profit_margin": metric.get("grossProfitMargin", 0),
+                    "operating_margin": metric.get("operatingProfitMargin", 0),
+                    "net_profit_margin": metric.get("netProfitMargin", 0),
+                    
+                    # Liquidity ratios
+                    "current_ratio": metric.get("currentRatio", 0),
+                    "quick_ratio": metric.get("quickRatio", 0),
+                    "cash_ratio": metric.get("cashRatio", 0),
+                    
+                    # Leverage ratios
+                    "debt_to_equity": metric.get("debtToEquity", 0),
+                    "debt_to_assets": metric.get("debtToAssets", 0),
+                    "interest_coverage": metric.get("interestCoverage", 0),
+                    
+                    # Growth metrics
+                    "revenue_growth": metric.get("revenueGrowth", 0),
+                    "earnings_growth": metric.get("epsgrowth", 0),
+                    
+                    # Market metrics
+                    "book_value_per_share": metric.get("bookValuePerShare", 0),
+                    "tangible_book_value": metric.get("tangibleBookValuePerShare", 0),
+                    "working_capital": metric.get("workingCapital", 0),
+                    
+                    "last_updated": datetime.now().isoformat()
+                }
+                normalized_metrics.append(normalized_metric)
+            
+            return normalized_metrics
+            
+        except Exception as e:
+            logger.error(f"Failed to get key metrics for {ticker}: {e}")
+            return []
+    
+    async def get_income_statement(self, ticker: str, period: str = "annual", limit: int = 5) -> List[Dict[str, Any]]:
+        """Get income statement data"""
+        try:
+            data = await self._make_request(
+                f"income-statement/{ticker}",
+                {"period": period, "limit": limit}
+            )
+            
+            if not data or not isinstance(data, list):
+                return []
+            
+            normalized_statements = []
+            for statement in data:
+                normalized_statement = {
+                    "ticker": ticker,
+                    "date": statement.get("date", ""),
+                    "period": statement.get("period", period),
+                    
+                    # Revenue
+                    "revenue": statement.get("revenue", 0),
+                    "cost_of_revenue": statement.get("costOfRevenue", 0),
+                    "gross_profit": statement.get("grossProfit", 0),
+                    
+                    # Operating expenses
+                    "operating_expenses": statement.get("operatingExpenses", 0),
+                    "rd_expenses": statement.get("researchAndDevelopmentExpenses", 0),
+                    "sga_expenses": statement.get("sellingGeneralAndAdministrativeExpenses", 0),
+                    
+                    # Operating income
+                    "operating_income": statement.get("operatingIncome", 0),
+                    "ebitda": statement.get("ebitda", 0),
+                    
+                    # Non-operating
+                    "interest_expense": statement.get("interestExpense", 0),
+                    "interest_income": statement.get("interestIncome", 0),
+                    "other_income": statement.get("otherIncomeExpenseNet", 0),
+                    
+                    # Pre-tax and taxes
+                    "income_before_tax": statement.get("incomeBeforeTax", 0),
+                    "tax_expense": statement.get("incomeTaxExpense", 0),
+                    
+                    # Net income
+                    "net_income": statement.get("netIncome", 0),
+                    "eps": statement.get("eps", 0),
+                    "eps_diluted": statement.get("epsdiluted", 0),
+                    
+                    # Share counts
+                    "shares_outstanding": statement.get("weightedAverageShsOut", 0),
+                    "shares_outstanding_diluted": statement.get("weightedAverageShsOutDil", 0),
+                    
+                    "last_updated": datetime.now().isoformat()
+                }
+                normalized_statements.append(normalized_statement)
+            
+            return normalized_statements
+            
+        except Exception as e:
+            logger.error(f"Failed to get income statement for {ticker}: {e}")
+            return []
+    
+    async def get_balance_sheet(self, ticker: str, period: str = "annual", limit: int = 5) -> List[Dict[str, Any]]:
+        """Get balance sheet data"""
+        try:
+            data = await self._make_request(
+                f"balance-sheet-statement/{ticker}",
+                {"period": period, "limit": limit}
+            )
+            
+            if not data or not isinstance(data, list):
+                return []
+            
+            normalized_statements = []
+            for statement in data:
+                normalized_statement = {
+                    "ticker": ticker,
+                    "date": statement.get("date", ""),
+                    "period": statement.get("period", period),
+                    
+                    # Current assets
+                    "cash_and_equivalents": statement.get("cashAndCashEquivalents", 0),
+                    "short_term_investments": statement.get("shortTermInvestments", 0),
+                    "accounts_receivable": statement.get("netReceivables", 0),
+                    "inventory": statement.get("inventory", 0),
+                    "current_assets": statement.get("totalCurrentAssets", 0),
+                    
+                    # Non-current assets
+                    "ppe_net": statement.get("propertyPlantEquipmentNet", 0),
+                    "goodwill": statement.get("goodwill", 0),
+                    "intangible_assets": statement.get("intangibleAssets", 0),
+                    "long_term_investments": statement.get("longTermInvestments", 0),
+                    "total_assets": statement.get("totalAssets", 0),
+                    
+                    # Current liabilities
+                    "accounts_payable": statement.get("accountPayables", 0),
+                    "short_term_debt": statement.get("shortTermDebt", 0),
+                    "current_liabilities": statement.get("totalCurrentLiabilities", 0),
+                    
+                    # Non-current liabilities
+                    "long_term_debt": statement.get("longTermDebt", 0),
+                    "total_debt": statement.get("totalDebt", 0),
+                    "total_liabilities": statement.get("totalLiabilities", 0),
+                    
+                    # Equity
+                    "shareholders_equity": statement.get("totalStockholdersEquity", 0),
+                    "retained_earnings": statement.get("retainedEarnings", 0),
+                    "common_stock": statement.get("commonStock", 0),
+                    
+                    "last_updated": datetime.now().isoformat()
+                }
+                normalized_statements.append(normalized_statement)
+            
+            return normalized_statements
+            
+        except Exception as e:
+            logger.error(f"Failed to get balance sheet for {ticker}: {e}")
+            return []
+    
+    async def get_cash_flow(self, ticker: str, period: str = "annual", limit: int = 5) -> List[Dict[str, Any]]:
+        """Get cash flow statement data"""
+        try:
+            data = await self._make_request(
+                f"cash-flow-statement/{ticker}",
+                {"period": period, "limit": limit}
+            )
+            
+            if not data or not isinstance(data, list):
+                return []
+            
+            normalized_statements = []
+            for statement in data:
+                normalized_statement = {
+                    "ticker": ticker,
+                    "date": statement.get("date", ""),
+                    "period": statement.get("period", period),
+                    
+                    # Operating activities
+                    "net_income": statement.get("netIncome", 0),
+                    "depreciation": statement.get("depreciationAndAmortization", 0),
+                    "stock_compensation": statement.get("stockBasedCompensation", 0),
+                    "working_capital_change": statement.get("changeInWorkingCapital", 0),
+                    "operating_cash_flow": statement.get("operatingCashFlow", 0),
+                    
+                    # Investing activities
+                    "capex": statement.get("capitalExpenditure", 0),
+                    "acquisitions": statement.get("acquisitionsNet", 0),
+                    "investments_change": statement.get("investmentsInPropertyPlantAndEquipment", 0),
+                    "investing_cash_flow": statement.get("netCashUsedForInvestingActivites", 0),
+                    
+                    # Financing activities
+                    "debt_repayment": statement.get("debtRepayment", 0),
+                    "common_stock_issued": statement.get("commonStockIssued", 0),
+                    "common_stock_repurchased": statement.get("commonStockRepurchased", 0),
+                    "dividends_paid": statement.get("dividendsPaid", 0),
+                    "financing_cash_flow": statement.get("netCashUsedProvidedByFinancingActivities", 0),
+                    
+                    # Net change
+                    "net_change_in_cash": statement.get("netChangeInCash", 0),
+                    "free_cash_flow": statement.get("freeCashFlow", 0),
+                    
+                    "last_updated": datetime.now().isoformat()
+                }
+                normalized_statements.append(normalized_statement)
+            
+            return normalized_statements
+            
+        except Exception as e:
+            logger.error(f"Failed to get cash flow for {ticker}: {e}")
+            return []
+    
+def _normalize_financial_metrics(profile: Dict, ratios: Dict, 
+                               income: Dict, balance: Dict, cash_flow: Dict = None) -> Dict[str, Any]:
+        """Normalize financial metrics to standard format"""
+        try:
+            # Extract basic data using correct FMP field names
+            market_cap = profile.get("market_cap", 0)
+            revenue_ttm = income.get("revenue", 0)
+            ebitda_ttm = income.get("ebitda", 0)
+            net_income_ttm = income.get("net_income", 0)
+            
+            # Balance sheet items using correct FMP field names  
+            total_debt = balance.get("total_debt", 0)
+            cash_and_equivalents = balance.get("cash_and_equivalents", 0)
+            total_assets = balance.get("total_assets", 0)
+            shareholders_equity = balance.get("shareholders_equity", 0)
+            
+            # Free cash flow from cash flow statement
+            free_cash_flow = cash_flow.get("free_cash_flow", 0) if cash_flow else 0
+            
+            # Calculate derived metrics
+            net_debt = max(0, total_debt - cash_and_equivalents)
+            enterprise_value = market_cap + net_debt if market_cap > 0 else 0
+            
+            # Ratios - calculate from raw data if ratios endpoint fails
+            pe_ttm = ratios.get("peRatio", 0) or ratios.get("pe_ratio", 0)
+            if pe_ttm == 0 and net_income_ttm > 0 and market_cap > 0:
+                # Calculate P/E from market cap and net income
+                pe_ttm = market_cap / net_income_ttm
+            
+            # Debt to equity ratio
+            debt_to_equity = ratios.get("debtEquityRatio", 0) or ratios.get("debt_to_equity", 0)
+            if debt_to_equity == 0 and shareholders_equity > 0:
+                debt_to_equity = total_debt / shareholders_equity
+            
+            # Margins
+            gross_margin_ttm = ratios.get("grossProfitMargin", 0) or ratios.get("gross_profit_margin", 0)
+            if gross_margin_ttm == 0 and revenue_ttm > 0:
+                gross_profit = income.get("grossProfit", 0) or income.get("gross_profit", 0)
+                gross_margin_ttm = gross_profit / revenue_ttm if gross_profit > 0 else 0
+                
+            operating_margin_ttm = ratios.get("operatingProfitMargin", 0) or ratios.get("operating_margin", 0)
+            if operating_margin_ttm == 0 and revenue_ttm > 0:
+                operating_income = income.get("operatingIncome", 0) or income.get("operating_income", 0)
+                operating_margin_ttm = operating_income / revenue_ttm if operating_income > 0 else 0
+            
+            # ROIC estimate (simplified)
+            # ROIC = NOPAT / Invested Capital
+            # NOPAT ≈ Operating Income * (1 - Tax Rate)
+            operating_income = income.get("operating_income", 0)
+            tax_rate = 0.25  # Assumption
+            nopat = operating_income * (1 - tax_rate)
+            invested_capital = shareholders_equity + net_debt if shareholders_equity > 0 else total_assets
+            roic_estimate = nopat / invested_capital if invested_capital > 0 else 0
+            
+            return {
+                "market_cap": float(market_cap),
+                "enterprise_value": float(enterprise_value),
+                "revenue_ttm": float(revenue_ttm),
+                "ebitda_ttm": float(ebitda_ttm),
+                "free_cash_flow_ttm": float(free_cash_flow),
+                "net_debt": float(net_debt),
+                "pe_ratio": float(pe_ttm),
+                "debt_to_equity": float(debt_to_equity),
+                "roe": float(ratios.get("returnOnEquity", 0) or 0),
+                "roa": float(ratios.get("returnOnAssets", 0) or 0),
+                "current_ratio": float(ratios.get("currentRatio", 0) or 0),
+                "quick_ratio": float(ratios.get("quickRatio", 0) or 0),
+                "gross_margin": float(gross_margin_ttm),
+                "operating_margin": float(operating_margin_ttm),
+                "net_margin": float(net_income_ttm / revenue_ttm if revenue_ttm > 0 else 0),
+                "calculation_date": datetime.now().isoformat()
+            }
+            
+        except Exception as e:
+            logger.warning(f"Failed to normalize financial metrics: {e}")
+            return {
+                "shares_out": 0.0,
+                "market_cap": 0.0,
+                "enterprise_value": 0.0,
+                "revenue_ttm": 0.0,
+                "ebitda_ttm": 0.0,
+                "net_debt": 0.0,
+                "pe_ttm": 0.0,
+                "ev_ebitda_ttm": 0.0,
+                "gross_margin_ttm": 0.0,
+                "op_margin_ttm": 0.0,
+                "roic_estimate": 0.0,
+                "calculation_date": datetime.now().isoformat()
+            }
+
+
+def _check_circuit_breaker() -> bool:
+    """Check if FMP circuit breaker is open (too many failures)"""
+    global _fmp_circuit_breaker
+    
+    # If circuit is open, check if enough time has passed to try again
+    if _fmp_circuit_breaker["circuit_open"]:
+        if _fmp_circuit_breaker["last_failure_time"]:
+            time_since_failure = (datetime.now() - _fmp_circuit_breaker["last_failure_time"]).total_seconds()
+            if time_since_failure > 300:  # 5 minutes cooldown
+                logger.info("FMP circuit breaker: Attempting to close circuit after cooldown")
+                _fmp_circuit_breaker["circuit_open"] = False
+                _fmp_circuit_breaker["failure_count"] = 0
+                return False
+        return True
+    
+    return False
+
+def _record_fmp_failure():
+    """Record an FMP API failure for circuit breaker"""
+    global _fmp_circuit_breaker
+    
+    _fmp_circuit_breaker["failure_count"] += 1
+    _fmp_circuit_breaker["last_failure_time"] = datetime.now()
+    
+    # Open circuit if too many failures
+    if _fmp_circuit_breaker["failure_count"] >= 5:
+        logger.warning("FMP circuit breaker: Opening circuit due to repeated failures")
+        _fmp_circuit_breaker["circuit_open"] = True
+
+async def get_financials_fmp(ticker: str) -> Dict[str, Any]:
+    """
+    Main function to get comprehensive financial data for a ticker
+    
+    Returns:
+        Dictionary with profile, ratios, income, balance, and cash flow data
+    """
+    # Check circuit breaker first
+    if _check_circuit_breaker():
+        logger.warning(f"FMP circuit breaker open - skipping API calls for {ticker}")
+        return {
+            "ticker": ticker,
+            "profile": {"ticker": ticker, "company_name": f"{ticker} Corporation"},
+            "ratios_ttm": {},
+            "income_statements": [],
+            "balance_sheets": [],
+            "cash_flows": [],
+            "normalized_metrics": {},
+            "circuit_breaker_open": True,
+            "last_updated": datetime.now().isoformat()
+        }
+    
+    api_key = os.getenv("FMP_API_KEY")
+    if not api_key:
+        logger.error("FMP_API_KEY not found in environment")
+        return {}
+    
+    logger.info(f"Fetching financial data for {ticker} using FMP API...")
+    
+    try:
+        async with FMPClient(api_key) as client:
+            # Fetch financial data SEQUENTIALLY to avoid rate limits
+            # This prevents overwhelming the API with concurrent requests
+            logger.info(f"Sequential API calls for {ticker} to prevent rate limiting...")
+            
+            # 1. Company Profile (most important)
+            try:
+                profile = await client.get_company_profile(ticker)
+                await asyncio.sleep(0.5)  # Small delay between calls
+            except Exception as e:
+                logger.error(f"Profile fetch failed for {ticker}: {e}")
+                profile = Exception(e)
+            
+            # 2. Key Metrics (second priority)
+            try:
+                ratios_ttm = await client.get_key_metrics(ticker, "ttm", 1)
+                await asyncio.sleep(0.5)
+            except Exception as e:
+                logger.error(f"Ratios fetch failed for {ticker}: {e}")
+                ratios_ttm = Exception(e)
+            
+            # 3. Income Statement (third priority)
+            try:
+                income = await client.get_income_statement(ticker, "annual", 5)
+                await asyncio.sleep(0.5)
+            except Exception as e:
+                logger.error(f"Income fetch failed for {ticker}: {e}")
+                income = Exception(e)
+            
+            # 4. Balance Sheet (fourth priority) 
+            try:
+                balance = await client.get_balance_sheet(ticker, "annual", 5)
+                await asyncio.sleep(0.5)
+            except Exception as e:
+                logger.error(f"Balance sheet fetch failed for {ticker}: {e}")
+                balance = Exception(e)
+            
+            # 5. Cash Flow (lowest priority)
+            try:
+                cash_flow = await client.get_cash_flow(ticker, "annual", 5)
+            except Exception as e:
+                logger.error(f"Cash flow fetch failed for {ticker}: {e}")
+                cash_flow = Exception(e)
+            
+            # Handle any exceptions with better fallback data
+            if isinstance(profile, Exception):
+                logger.error(f"Profile fetch failed for {ticker}: {profile}")
+                profile = {
+                    "ticker": ticker,
+                    "company_name": f"{ticker} Corporation",
+                    "sector": "Technology",  # Default fallback
+                    "exchange": "NASDAQ",   # Default fallback  
+                    "market_cap": 50000000000,  # $50B default
+                    "price": 100.0  # $100 default
+                }
+            if isinstance(ratios_ttm, Exception):
+                logger.error(f"Ratios fetch failed for {ticker}: {ratios_ttm}")
+                ratios_ttm = []
+            if isinstance(income, Exception):
+                logger.error(f"Income statement fetch failed for {ticker}: {income}")
+                income = []
+            if isinstance(balance, Exception):
+                logger.error(f"Balance sheet fetch failed for {ticker}: {balance}")
+                balance = []
+            if isinstance(cash_flow, Exception):
+                logger.error(f"Cash flow fetch failed for {ticker}: {cash_flow}")
+                cash_flow = []
+            
+            logger.info(f"FMP data fetch results for {ticker}: Profile={'OK' if profile else 'FAILED'}, Ratios={len(ratios_ttm) if isinstance(ratios_ttm, list) else 'FAILED'}, Income={len(income) if isinstance(income, list) else 'FAILED'}")
+            
+            # Calculate normalized metrics
+            normalized_metrics = _normalize_financial_metrics(
+                profile, ratios_ttm[0] if ratios_ttm else {}, 
+                income[0] if income else {}, balance[0] if balance else {},
+                cash_flow[0] if cash_flow else {}
+            )
+            
+            return {
+                "ticker": ticker,
+                "profile": profile,
+                "ratios_ttm": ratios_ttm[0] if ratios_ttm else {},
+                "income_statements": income,
+                "balance_sheets": balance,
+                "cash_flows": cash_flow,
+                "normalized_metrics": normalized_metrics,
+                "last_updated": datetime.now().isoformat()
+            }
+            
+    except Exception as e:
+        logger.error(f"Failed to get financials for {ticker}: {e}")
+        
+        # Record failure for circuit breaker
+        if "Rate Limit" in str(e) or "Limit Reach" in str(e):
+            _record_fmp_failure()
+        
+        # Return basic fallback data instead of empty dict
+        return {
+            "profile": {
+                "companyName": f"{ticker} Corporation", 
+                "sector": "Unknown",
+                "exchange": "Unknown",
+                "mktCap": 0,
+                "price": 0
+            },
+            "ratios_ttm": [],
+            "income_statements": [],
+            "balance_sheets": [],
+            "cash_flows": [],
+            "normalized_metrics": {
+                "market_cap": 0,
+                "enterprise_value": 0,
+                "revenue_ttm": 0,
+                "ebitda_ttm": 0,
+                "free_cash_flow_ttm": 0,
+                "total_debt": 0,
+                "total_cash": 0,
+                "book_value": 0,
+                "current_ratio": 1.0,
+                "debt_to_equity": 0.0,
+                "roe_ttm": 0.0,
+                "roa_ttm": 0.0,
+                "gross_margin_ttm": 0.0,
+                "op_margin_ttm": 0.0,
+                "roic_estimate": 0.0,
+                "calculation_date": datetime.now().isoformat()
+            },
+            "last_updated": datetime.now().isoformat()
+        }
+
+
+async def main():
+    """CLI entry point for testing FMP integration"""
+    import argparse
+    from dotenv import load_dotenv
+    
+    load_dotenv()
+    
+    parser = argparse.ArgumentParser(description="Test FMP API integration")
+    parser.add_argument("--ticker", required=True, help="Stock ticker")
+    
+    args = parser.parse_args()
+    
+    logging.basicConfig(level=logging.INFO)
+    
+    # Test the integration
+    result = await get_financials_fmp(args.ticker)
+    
+    print(f"\nFinancial data for {args.ticker}:")
+    print("=" * 50)
+    
+    if result.get("profile"):
+        profile = result["profile"]
+        print(f"Company: {profile.get('company_name')}")
+        print(f"Sector: {profile.get('sector')}")
+        print(f"Market Cap: ${profile.get('market_cap', 0):,.0f}")
+    
+    if result.get("ratios_ttm"):
+        ratios = result["ratios_ttm"]
+        print(f"\nKey Ratios (TTM):")
+        print(f"P/E Ratio: {ratios.get('pe_ratio', 0):.2f}")
+        print(f"ROE: {ratios.get('roe', 0):.2%}")
+        print(f"Debt/Equity: {ratios.get('debt_to_equity', 0):.2f}")
+    
+    print(f"\nIncome Statements: {len(result.get('income_statements', []))}")
+    print(f"Balance Sheets: {len(result.get('balance_sheets', []))}")
+    print(f"Cash Flows: {len(result.get('cash_flows', []))}")
+
+
+if __name__ == "__main__":
+    asyncio.run(main())

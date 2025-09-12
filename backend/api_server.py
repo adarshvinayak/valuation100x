@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
 FastAPI Server for DeepResearch Comprehensive Analysis
-Provides REST API endpoints and WebSocket connections for the frontend.
-Updated: Fresh deployment - datetime fixes active
+Provides REST API endpoints with polling-based status updates.
+Updated: WebSocket removed, polling-based architecture
 """
 
 import asyncio
@@ -16,11 +16,11 @@ from typing import Dict, Any, Optional, List
 from contextlib import asynccontextmanager
 
 import uvicorn
-from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect, BackgroundTasks, Depends
+from fastapi import FastAPI, HTTPException, BackgroundTasks, Depends
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, StreamingResponse
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 # Try to import Redis with fallback
 try:
@@ -40,23 +40,37 @@ ANALYSIS_RUNNER: OptionalType['EnhancedAnalysisRunner'] = None
 ANALYSIS_RUNNER_ERROR: OptionalType[str] = None
 
 def preload_analysis_dependencies():
-    """Pre-load heavy analysis dependencies at startup"""
+    """Pre-load ALL heavy analysis dependencies at startup (Option 1)"""
     global ANALYSIS_RUNNER, ANALYSIS_RUNNER_ERROR
     
     try:
-        logger.info("🔄 Pre-loading EnhancedAnalysisRunner and dependencies...")
-        from run_enhanced_analysis import EnhancedAnalysisRunner
+        logger.info("🔄 Pre-loading EnhancedAnalysisRunner and ALL dependencies at startup...")
         
-        # Initialize the runner to trigger all imports
-        ANALYSIS_RUNNER = EnhancedAnalysisRunner()
-        logger.info("✅ EnhancedAnalysisRunner pre-loaded successfully!")
-        return True
+        # Import and initialize ALL heavy dependencies upfront
+        try:
+            # Import the runner class
+            from run_enhanced_analysis import EnhancedAnalysisRunner
+            
+            # Initialize the runner (this will trigger all dependency imports)
+            ANALYSIS_RUNNER = EnhancedAnalysisRunner()
+            
+            logger.info("✅ EnhancedAnalysisRunner and all dependencies pre-loaded successfully!")
+            # Success - no return needed, exceptions handle failures
+            
+        except ImportError as ie:
+            logger.error(f"❌ EnhancedAnalysisRunner import failed: {ie}")
+            ANALYSIS_RUNNER_ERROR = f"Import failed: {ie}"
+            raise ie  # Fail hard - no mock fallback
+        except Exception as e:
+            logger.error(f"❌ EnhancedAnalysisRunner initialization failed: {e}")
+            ANALYSIS_RUNNER_ERROR = f"Initialization failed: {e}"
+            raise e  # Fail hard - no mock fallback
         
     except Exception as e:
         error_msg = f"Failed to pre-load analysis dependencies: {str(e)}"
         logger.error(f"❌ {error_msg}")
         ANALYSIS_RUNNER_ERROR = error_msg
-        return False
+        raise e  # Fail hard - no mock fallback
 
 if TYPE_CHECKING:
     from run_enhanced_analysis import EnhancedAnalysisRunner
@@ -65,6 +79,14 @@ if TYPE_CHECKING:
 # Configure logging first
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# Import secure configuration
+try:
+    from config import config, validate_ticker_symbol, sanitize_input, validate_request_data
+    logger.info("✅ Secure configuration imported successfully")
+except Exception as e:
+    logger.error(f"❌ Failed to import secure configuration: {e}")
+    raise
 
 # Try to import Supabase client with fallback
 try:
@@ -80,7 +102,7 @@ analysis_tasks: Dict[str, Dict[str, Any]] = {}
 
 # Request tracking to debug multiple calls
 incoming_requests: Dict[str, List[str]] = {}
-websocket_connections: Dict[str, List[WebSocket]] = {}
+# WebSocket connections removed - using polling-based updates instead
 redis_client = None
 
 @asynccontextmanager
@@ -93,9 +115,21 @@ async def lifespan(app: FastAPI):
     
     # Pre-load analysis dependencies (Option 1 fix)
     logger.info("🚀 Step 1: Pre-loading analysis dependencies...")
-    preload_success = preload_analysis_dependencies()
-    if not preload_success:
-        logger.warning("⚠️ Analysis dependencies failed to pre-load. Analysis endpoint may be unavailable.")
+    try:
+        preload_analysis_dependencies()
+        
+        # Verify pre-loading actually worked
+        global ANALYSIS_RUNNER
+        if ANALYSIS_RUNNER is None:
+            raise RuntimeError("Pre-loading appeared to succeed but ANALYSIS_RUNNER is still None")
+            
+        logger.info("✅ Analysis dependencies pre-loaded and verified successfully!")
+    except Exception as e:
+        logger.error(f"❌ CRITICAL: Analysis dependencies failed to pre-load: {e}")
+        logger.error("🚨 Lambda will fail to start - this is intentional (no mock fallback)")
+        # Force immediate failure - don't let FastAPI continue
+        import sys
+        sys.exit(1)
     
     # Initialize Supabase with timeout and fallback
     if SUPABASE_AVAILABLE and supabase_manager:
@@ -187,14 +221,24 @@ app.add_middleware(
     expose_headers=["*"],
 )
 
-# Additional CORS middleware to ensure headers are always added
+# Security headers middleware
 @app.middleware("http")
-async def add_cors_header(request, call_next):
-    """Ensure CORS headers are added to all responses"""
+async def security_headers_middleware(request, call_next):
+    """Add security headers to all responses"""
     response = await call_next(request)
+
+    # Security headers
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Content-Security-Policy"] = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'"
+
+    # CORS headers (keeping existing for now as requested)
     response.headers["Access-Control-Allow-Origin"] = "*"
     response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
     response.headers["Access-Control-Allow-Headers"] = "*"
+
     return response
 
 # Pydantic models
@@ -202,13 +246,30 @@ class AnalysisRequest(BaseModel):
     ticker: str = Field(..., min_length=1, max_length=10, description="Stock ticker symbol")
     company_name: Optional[str] = Field(None, description="Optional company name")
 
+    @field_validator('ticker')
+    @classmethod
+    def validate_ticker_format(cls, v):
+        """Validate ticker format and security"""
+        is_valid, error_message = validate_ticker_symbol(v)
+        if not is_valid:
+            raise ValueError(f"Invalid ticker: {error_message}")
+        return v.upper().strip()
+
+    @field_validator('company_name')
+    @classmethod
+    def sanitize_company_name(cls, v):
+        """Sanitize company name input"""
+        if v is not None:
+            return sanitize_input(v, max_length=100)
+        return v
+
 class AnalysisResponse(BaseModel):
     analysis_id: str
     ticker: str
     company_name: Optional[str]
     status: str
     estimated_duration: str
-    websocket_url: str
+    polling_url: str
     created_at: datetime
 
 class AnalysisStatus(BaseModel):
@@ -254,44 +315,7 @@ class SystemHealth(BaseModel):
     active_analyses: int
     queue_size: int
 
-# WebSocket Connection Manager
-class ConnectionManager:
-    def __init__(self):
-        self.active_connections: Dict[str, List[WebSocket]] = {}
-
-    async def connect(self, websocket: WebSocket, analysis_id: str):
-        await websocket.accept()
-        if analysis_id not in self.active_connections:
-            self.active_connections[analysis_id] = []
-        self.active_connections[analysis_id].append(websocket)
-        logger.info(f"WebSocket connected for analysis {analysis_id}")
-
-    def disconnect(self, websocket: WebSocket, analysis_id: str):
-        if analysis_id in self.active_connections:
-            self.active_connections[analysis_id].remove(websocket)
-            if not self.active_connections[analysis_id]:
-                del self.active_connections[analysis_id]
-        logger.info(f"WebSocket disconnected for analysis {analysis_id}")
-
-    async def send_to_analysis(self, analysis_id: str, message: dict):
-        if analysis_id in self.active_connections:
-            disconnected = []
-            for connection in self.active_connections[analysis_id]:
-                try:
-                    await connection.send_json(message)
-                except:
-                    disconnected.append(connection)
-            
-            # Remove disconnected connections
-            for conn in disconnected:
-                self.disconnect(conn, analysis_id)
-
-    async def broadcast_system_status(self, message: dict):
-        """Broadcast system-wide messages to all connections"""
-        for analysis_id, connections in self.active_connections.items():
-            await self.send_to_analysis(analysis_id, message)
-
-manager = ConnectionManager()
+# WebSocket Connection Manager removed - using polling-based updates instead
 
 # Analysis step definitions with user-friendly descriptions
 ANALYSIS_STEPS = [
@@ -402,13 +426,12 @@ def is_ticker_request_allowed(ticker: str, incoming_requests: Dict) -> tuple[boo
     return True, "", 0
 
 async def validate_ticker(ticker: str) -> TickerValidation:
-    """Validate ticker symbol and get company information"""
+    """Validate ticker symbol and get company information with security checks"""
     try:
-        # Use your existing FMP tool to validate
-        ticker = ticker.upper().strip()
-        
-        # Basic ticker format validation
-        if not ticker.isalpha() or len(ticker) > 10:
+        # First perform security validation
+        is_valid, error_message = validate_ticker_symbol(ticker)
+        if not is_valid:
+            logger.warning(f"Security validation failed for ticker {ticker}: {error_message}")
             return TickerValidation(
                 ticker=ticker,
                 is_valid=False,
@@ -422,6 +445,9 @@ async def validate_ticker(ticker: str) -> TickerValidation:
                 volume=None,
                 last_updated=datetime.utcnow()
             )
+
+        # Use your existing FMP tool to validate
+        ticker = ticker.upper().strip()
         
         # Use FMP API to validate real stocks (lazy import)
         try:
@@ -768,7 +794,7 @@ async def recover_analysis(analysis_id: str):
             company_name=state.get("company_name"),
             status=state.get("status", "unknown"),
             estimated_duration="5 minutes" if state.get("status") == "running" else "0 minutes",
-            websocket_url=f"/api/analysis/{analysis_id}/ws",
+            polling_url=f"/api/analysis/{analysis_id}/status",
             created_at=state.get("started_at", datetime.utcnow())
         )
         
@@ -845,8 +871,8 @@ async def start_comprehensive_analysis(
                 ticker=request.ticker,
                 company_name=existing_state.get("company_name"),
                 status="running",
-                estimated_duration="5 minutes",  # Will be updated via WebSocket
-                websocket_url=f"/api/analysis/{existing_analysis}/ws",
+                estimated_duration="5 minutes",  # Will be updated via polling
+                polling_url=f"/api/analysis/{existing_analysis}/status",
                 created_at=existing_state.get("started_at", datetime.utcnow())
             )
     
@@ -894,7 +920,7 @@ async def start_comprehensive_analysis(
         company_name=request.company_name or validation.company_name,
         status="started",
         estimated_duration="15 minutes",
-        websocket_url=f"/api/analysis/{analysis_id}/status",  # Use polling endpoint instead
+        polling_url=f"/api/analysis/{analysis_id}/status",  # Use polling endpoint instead
         created_at=datetime.utcnow()
     )
 
@@ -921,27 +947,29 @@ async def get_analysis_status(analysis_id: str):
                 user_friendly_message = current_step_info["user_message"].format(company_name)
         
         # Calculate time estimates
-        if state["progress"] > 0:
-            started_at = state["started_at"] if isinstance(state["started_at"], datetime) else datetime.fromisoformat(state["started_at"].replace('Z', '+00:00'))
+        if state.get("progress", 0) > 0:
+            started_at = state.get("started_at", datetime.utcnow())
+            if isinstance(started_at, str):
+                started_at = datetime.fromisoformat(started_at.replace('Z', '+00:00'))
             elapsed = (datetime.utcnow() - started_at).total_seconds()
-            total_estimated = elapsed / (state["progress"] / 100)
+            total_estimated = elapsed / (state.get("progress", 1) / 100)
             remaining = total_estimated - elapsed
             estimated_completion = datetime.utcnow() + timedelta(seconds=max(0, remaining))
     
     # Enhanced status response with user-friendly fields
     enhanced_status = AnalysisStatus(
         analysis_id=analysis_id,  # Use URL parameter, not state key
-        ticker=state["ticker"],
+        ticker=state.get("ticker", ""),
         company_name=state.get("company_name"),
-        status=state["status"],
-        progress=state["progress"],
-        current_step=state["current_step"],
+        status=state.get("status", "unknown"),
+        progress=state.get("progress", 0),
+        current_step=state.get("current_step", "initializing"),
         current_component=state.get("current_component"),
         estimated_completion=estimated_completion,
         steps_completed=state.get("steps_completed", []),
         steps_remaining=state.get("steps_remaining", []),
         error=state.get("error"),
-        started_at=state["started_at"],
+        started_at=state.get("started_at", datetime.utcnow()),
         completed_at=state.get("completed_at"),
         
         # User-friendly fields
@@ -1028,15 +1056,7 @@ async def cancel_analysis(analysis_id: str):
         
         asyncio.create_task(cleanup_cancelled_analysis())
     
-    # Notify WebSocket clients
-    await manager.send_to_analysis(analysis_id, {
-        "type": "analysis_cancelled",
-        "analysis_id": analysis_id,
-        "data": {
-            "status": "cancelled",
-            "cancelled_at": datetime.utcnow().isoformat()
-        }
-    })
+    # Analysis cancelled - status will be available via polling endpoint
     
     return {
         "analysis_id": analysis_id,
@@ -1122,49 +1142,11 @@ async def generate_pdf_report(analysis_id: str):
     # In production, you would generate PDF from markdown
     raise HTTPException(status_code=501, detail="PDF generation not implemented yet")
 
-# WebSocket endpoint
-@app.websocket("/ws/analysis/{analysis_id}")
-async def websocket_endpoint(websocket: WebSocket, analysis_id: str):
-    """WebSocket connection for real-time analysis updates"""
-    
-    await manager.connect(websocket, analysis_id)
-    
-    try:
-        # Send initial connection confirmation
-        await websocket.send_json({
-            "type": "connection_established",
-            "analysis_id": analysis_id,
-            "timestamp": datetime.utcnow().isoformat()
-        })
-        
-        # Keep connection alive and handle client messages
-        while True:
-            try:
-                # Wait for messages from client (e.g., subscription confirmations)
-                data = await websocket.receive_json()
-                
-                if data.get("type") == "ping":
-                    await websocket.send_json({
-                        "type": "pong",
-                        "timestamp": datetime.utcnow().isoformat()
-                    })
-                    
-            except asyncio.TimeoutError:
-                # Send heartbeat
-                await websocket.send_json({
-                    "type": "heartbeat",
-                    "timestamp": datetime.utcnow().isoformat()
-                })
-                
-    except WebSocketDisconnect:
-        manager.disconnect(websocket, analysis_id)
-    except Exception as e:
-        logger.error(f"WebSocket error: {e}")
-        manager.disconnect(websocket, analysis_id)
+# WebSocket endpoint removed - using polling-based updates instead
 
 # Background task for running analysis
 async def run_comprehensive_analysis(analysis_id: str, ticker: str, company_name: Optional[str]):
-    """Run the comprehensive analysis and update progress via WebSocket"""
+    """Run the comprehensive analysis and update progress via polling status endpoint"""
     
     try:
         logger.info(f"🚀 Starting comprehensive analysis for {ticker.upper()} (ID: {analysis_id})")
@@ -1185,18 +1167,7 @@ async def run_comprehensive_analysis(analysis_id: str, ticker: str, company_name
                 state["completed_at"] = datetime.utcnow()
                 await store_analysis_state(analysis_id, state)
             
-            # Send error via WebSocket
-            await manager.send_to_analysis(analysis_id, {
-                "type": "analysis_error",
-                "analysis_id": analysis_id,
-                "data": {
-                    "error_type": "service_unavailable",
-                    "error_message": "Analysis service is temporarily unavailable. Please try again later.",
-                    "technical_details": error_msg,
-                    "retry_possible": True,
-                    "timestamp": datetime.utcnow().isoformat()
-                }
-            })
+            # Error status will be available via polling endpoint
             return
         
         runner = ANALYSIS_RUNNER
@@ -1227,23 +1198,7 @@ async def run_comprehensive_analysis(analysis_id: str, ticker: str, company_name
             user_message = step["user_message"].format(company_name)
             logger.info(f"📊 {ticker} Progress: {state['progress']}% - {user_message}")
             
-            # Note: WebSocket updates removed - frontend should poll status endpoint instead
-            
-            # Send log message
-            await manager.send_to_analysis(analysis_id, {
-                "type": "analysis_log",
-                "analysis_id": analysis_id,
-                "data": {
-                    "level": "INFO",
-                    "component": step["name"],
-                    "message": f"Starting {step['name']} for {ticker}",
-                    "timestamp": datetime.utcnow().isoformat(),
-                    "metadata": {
-                        "step": step["id"],
-                        "progress": state["progress"]
-                    }
-                }
-            })
+            # Progress updates available via polling status endpoint
             
             # Simulate step duration (in production, this would be actual analysis)
             await asyncio.sleep(min(step["duration"] / 10, 5))  # Accelerated for demo
@@ -1268,36 +1223,13 @@ async def run_comprehensive_analysis(analysis_id: str, ticker: str, company_name
             await store_analysis_state(analysis_id, state)
             
             # Send step completion
-            await manager.send_to_analysis(analysis_id, {
-                "type": "step_completed",
-                "analysis_id": analysis_id,
-                "data": {
-                    "completed_step": step["id"],
-                    "next_step": ANALYSIS_STEPS[i + 1]["id"] if i + 1 < len(ANALYSIS_STEPS) else None,
-                    "progress": state["progress"],
-                    "step_duration": f"{step['duration']} seconds",
-                    "timestamp": datetime.utcnow().isoformat()
-                }
-            })
+            # Progress updates available via polling status endpoint
         
         # Run the actual comprehensive analysis
         logger.info(f"Running actual comprehensive analysis for {ticker}")
         
         # Update to show actual analysis running
-        await manager.send_to_analysis(analysis_id, {
-            "type": "analysis_log",
-            "analysis_id": analysis_id,
-            "data": {
-                "level": "INFO",
-                "component": "EnhancedAnalysisRunner",
-                "message": f"Executing comprehensive analysis workflow for {ticker}",
-                "timestamp": datetime.utcnow().isoformat(),
-                "metadata": {
-                    "step": "comprehensive_execution",
-                    "progress": 95
-                }
-            }
-        })
+            # Progress updates available via polling status endpoint
         
         # Run the actual analysis (this is your existing code)
         results = await runner.run_comprehensive_analysis(ticker, company_name)
@@ -1348,19 +1280,7 @@ async def run_comprehensive_analysis(analysis_id: str, ticker: str, company_name
             asyncio.create_task(cleanup_completed_analysis())
         
         # Send completion notification
-        await manager.send_to_analysis(analysis_id, {
-            "type": "analysis_completed",
-            "analysis_id": analysis_id,
-            "data": {
-                "status": "completed",
-                "total_duration": f"{(state['completed_at'] - state['started_at']).total_seconds() / 60:.1f} minutes" if isinstance(state['completed_at'], datetime) and isinstance(state['started_at'], datetime) else "N/A",
-                "investment_score": state["results"]["investment_score"],
-                "recommendation": state["results"]["recommendation"],
-                "results_available": True,
-                "report_ready": True,
-                "completed_at": state["completed_at"].isoformat() if isinstance(state["completed_at"], datetime) else str(state["completed_at"])
-            }
-        })
+            # Progress updates available via polling status endpoint
         
         logger.info(f"Comprehensive analysis completed for {ticker} (ID: {analysis_id})")
         
@@ -1392,18 +1312,7 @@ async def run_comprehensive_analysis(analysis_id: str, ticker: str, company_name
                 asyncio.create_task(cleanup_failed_analysis())
             
             # Send error notification
-            await manager.send_to_analysis(analysis_id, {
-                "type": "analysis_error",
-                "analysis_id": analysis_id,
-                "data": {
-                    "error_type": "analysis_failure",
-                    "error_message": str(e),
-                    "failed_step": state.get("current_step", "unknown"),
-                    "retry_possible": True,
-                    "partial_results_available": False,
-                    "timestamp": datetime.utcnow().isoformat()
-                }
-            })
+            # Progress updates available via polling status endpoint
 
 if __name__ == "__main__":
     # Port configuration with environment variables
@@ -1426,4 +1335,3 @@ if __name__ == "__main__":
         log_level="info",
         timeout_keep_alive=60  # Keep connections alive longer
     )
-
