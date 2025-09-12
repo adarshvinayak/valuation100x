@@ -143,9 +143,9 @@ class DeepStockResearchWorkflow(Workflow):
                     raise ValueError(f"Missing required environment variable: {key}")
             
             # Store workflow context
-            await ctx.set("ticker", ticker)
-            await ctx.set("company_name", company_name)
-            await ctx.set("start_time", datetime.now())
+            ctx.data["ticker"] = ticker
+            ctx.data["company_name"] = company_name
+            ctx.data["start_time"] = datetime.now()
             
             # Initialize progress tracking
             ctx.write_event_to_stream(ProgressEvent(
@@ -181,8 +181,8 @@ class DeepStockResearchWorkflow(Workflow):
                 raise ValueError("Failed to generate research questions")
             
             # Store questions in context
-            await ctx.set("questions", questions)
-            await ctx.set("total_questions", len(questions))
+            ctx.data["questions"] = questions
+            ctx.data["total_questions"] = len(questions)
             self.total_questions = len(questions)
             
             logger.info(f"Generated {len(questions)} questions for {ev.ticker}")
@@ -211,8 +211,8 @@ class DeepStockResearchWorkflow(Workflow):
     async def research_question(self, ctx: Context, ev: QuestionGeneratedEvent) -> ResearchCompleteEvent:
         """Research individual questions using the answer agent"""
         try:
-            ticker = await ctx.get("ticker")
-            company_name = await ctx.get("company_name")
+            ticker = ctx.data["ticker"]
+            company_name = ctx.data["company_name"]
             
             ctx.write_event_to_stream(ProgressEvent(
                 message=f"🔍 Researching: {ev.question[:60]}... (Using SEC documents + market data)",
@@ -253,7 +253,7 @@ class DeepStockResearchWorkflow(Workflow):
             # Collect this answer
             self.research_answers.append(ev.answer)
             
-            total_questions = await ctx.get("total_questions")
+            total_questions = ctx.data["total_questions"]
             
             # Check if we have all answers
             if len(self.research_answers) < total_questions:
@@ -264,7 +264,7 @@ class DeepStockResearchWorkflow(Workflow):
                 return None  # Wait for more answers
             
             # All research complete, get financial data for valuation
-            ticker = await ctx.get("ticker")
+            ticker = ctx.data["ticker"]
             
             ctx.write_event_to_stream(ProgressEvent(
                 message="Research complete, starting valuation analysis",
@@ -297,9 +297,9 @@ class DeepStockResearchWorkflow(Workflow):
                 current_price = 100.0  # Default fallback
             
             # Store research results
-            await ctx.set("research_answers", self.research_answers)
-            await ctx.set("financial_data", financial_data)
-            await ctx.set("current_price", current_price)
+            ctx.data["research_answers"] = self.research_answers
+            ctx.data["financial_data"] = financial_data
+            ctx.data["current_price"] = current_price
             
             logger.info(f"Collected all {len(self.research_answers)} research answers")
             
@@ -320,7 +320,7 @@ class DeepStockResearchWorkflow(Workflow):
     async def perform_valuation(self, ctx: Context, ev: ValuationEvent) -> ScoringEvent:
         """Perform comprehensive valuation analysis"""
         try:
-            ticker = await ctx.get("ticker")
+            ticker = ctx.data["ticker"]
             
             ctx.write_event_to_stream(ProgressEvent(
                 message="Performing valuation analysis",
@@ -345,12 +345,12 @@ class DeepStockResearchWorkflow(Workflow):
                 technical_data = {"indicators": {}}
             
             # Extract sentiment data from research answers
-            sentiment_data = self._extract_sentiment_from_research(await ctx.get("research_answers"))
+            sentiment_data = self._extract_sentiment_from_research(ctx.data["research_answers"])
             
             # Store valuation results
-            await ctx.set("valuation_data", valuation_data)
-            await ctx.set("technical_data", technical_data)
-            await ctx.set("sentiment_data", sentiment_data)
+            ctx.data["valuation_data"] = valuation_data
+            ctx.data["technical_data"] = technical_data
+            ctx.data["sentiment_data"] = sentiment_data
             
             logger.info(f"Completed valuation analysis for {ticker}")
             
@@ -373,7 +373,7 @@ class DeepStockResearchWorkflow(Workflow):
     async def calculate_score(self, ctx: Context, ev: ScoringEvent) -> ReportEvent:
         """Calculate comprehensive investment score"""
         try:
-            ticker = await ctx.get("ticker")
+            ticker = ctx.data["ticker"]
             
             ctx.write_event_to_stream(ProgressEvent(
                 message="Calculating investment score",
@@ -389,12 +389,12 @@ class DeepStockResearchWorkflow(Workflow):
             )
             
             # Store scoring results
-            await ctx.set("scoring_data", scoring_data)
+            ctx.data["scoring_data"] = scoring_data
             
             logger.info(f"Calculated investment score: {scoring_data.get('final_score', 'N/A')}/10 for {ticker}")
             
             return ReportEvent(
-                research_answers=await ctx.get("research_answers"),
+                research_answers=ctx.data["research_answers"],
                 valuation_data=ev.valuation_data,
                 scoring_data=scoring_data
             )
@@ -411,8 +411,8 @@ class DeepStockResearchWorkflow(Workflow):
     async def prepare_draft_report(self, ctx: Context, ev: ReportEvent) -> HumanApprovalEvent:
         """Generate comprehensive investment report"""
         try:
-            ticker = await ctx.get("ticker")
-            company_name = await ctx.get("company_name")
+            ticker = ctx.data["ticker"]
+            company_name = ctx.data["company_name"]
             
             ctx.write_event_to_stream(ProgressEvent(
                 message="Generating final investment report",
@@ -430,9 +430,9 @@ class DeepStockResearchWorkflow(Workflow):
                         ev.research_answers,
                         ev.valuation_data,
                         ev.scoring_data,
-                        financial_data=await ctx.get("financial_data"),
-                        technical_data=await ctx.get("technical_data"),
-                        sentiment_data=await ctx.get("sentiment_data")
+                        financial_data=ctx.data["financial_data"],
+                        technical_data=ctx.data["technical_data"],
+                        sentiment_data=ctx.data["sentiment_data"]
                     )
                     logger.info(f"Generated comprehensive report for {ticker}")
                 except Exception as e:
@@ -450,7 +450,7 @@ class DeepStockResearchWorkflow(Workflow):
             )
             
             # Calculate completion time
-            start_time = await ctx.get("start_time")
+            start_time = ctx.data["start_time"]
             completion_time = datetime.now()
             duration = (completion_time - start_time).total_seconds()
             
@@ -460,16 +460,16 @@ class DeepStockResearchWorkflow(Workflow):
                 "company_name": company_name,
                 "investment_score": ev.scoring_data.get("final_score", 5.0),
                 "fair_value": ev.valuation_data.get("median_fv", 0.0),
-                "current_price": await ctx.get("current_price"),
+                "current_price": ctx.data["current_price"],
                 "probability_undervalued": ev.valuation_data.get("p_underv", 0.5),
                 "report": report,  # Standard report
                 "comprehensive_report": comprehensive_report,  # Detailed report with full justification (if available)
                 "research_answers": ev.research_answers,  # Full research data
                 "valuation_data": ev.valuation_data,  # Complete valuation analysis
                 "scoring_data": ev.scoring_data,  # Detailed scoring breakdown
-                "financial_data": await ctx.get("financial_data"),
-                "technical_data": await ctx.get("technical_data"),
-                "sentiment_data": await ctx.get("sentiment_data"),
+                "financial_data": ctx.data["financial_data"],
+                "technical_data": ctx.data["technical_data"],
+                "sentiment_data": ctx.data["sentiment_data"],
                 "research_summary": {
                     "questions_answered": len(ev.research_answers),
                     "average_confidence": sum(a.get("confidence", 0.5) for a in ev.research_answers) / len(ev.research_answers),
@@ -501,7 +501,7 @@ class DeepStockResearchWorkflow(Workflow):
                 "company_name": company_name,
                 "investment_score": ev.scoring_data.get("final_score", 5.0),
                 "fair_value": ev.valuation_data.get("median_fv", 0.0),
-                "current_price": await ctx.get("current_price"),
+                "current_price": ctx.data["current_price"],
                 "probability_undervalued": ev.valuation_data.get("p_underv", 0.5),
                 "component_scores": ev.scoring_data.get("component_scores", {}),
                 "research_summary": {
@@ -519,7 +519,7 @@ class DeepStockResearchWorkflow(Workflow):
             }
             
             # Store draft for potential finalization
-            await ctx.set("draft_results", draft_results)
+            ctx.data["draft_results"] = draft_results
             
             ctx.write_event_to_stream(ProgressEvent(
                 message="Draft analysis complete, requesting human approval",
@@ -543,7 +543,7 @@ class DeepStockResearchWorkflow(Workflow):
         """Human-in-the-Loop checkpoint before final report - auto-approve for CLI"""
         try:
             # Check if auto-approval is enabled (default for CLI)
-            auto_approve = await ctx.get("auto_approve", default=True)
+            auto_approve = ctx.data.get("auto_approve", True)
             
             if auto_approve:
                 logger.info(f"Auto-approving analysis for {ev.draft_results['ticker']} (CLI mode)")
@@ -553,7 +553,7 @@ class DeepStockResearchWorkflow(Workflow):
                 ))
                 
                 # Store for final output
-                await ctx.set("draft_results", ev.draft_results)
+                ctx.data["draft_results"] = ev.draft_results
                 
                 # Auto-approve and finalize
                 ev.draft_results["auto_approved"] = True
@@ -573,7 +573,7 @@ class DeepStockResearchWorkflow(Workflow):
             }, indent=2)
             
             # Store for interactive response
-            await ctx.set("draft_results", ev.draft_results)
+            ctx.data["draft_results"] = ev.draft_results
             
             # For now, print the analysis and auto-approve after 5 seconds
             logger.info(f"""
