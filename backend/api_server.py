@@ -40,11 +40,22 @@ ANALYSIS_RUNNER: OptionalType['EnhancedAnalysisRunner'] = None
 ANALYSIS_RUNNER_ERROR: OptionalType[str] = None
 
 def preload_analysis_dependencies():
-    """Pre-load ALL heavy analysis dependencies at startup (Option 1)"""
+    """Pre-load ALL heavy analysis dependencies at startup with runtime installation fallback"""
     global ANALYSIS_RUNNER, ANALYSIS_RUNNER_ERROR
     
     try:
         logger.info("🔄 Pre-loading EnhancedAnalysisRunner and ALL dependencies at startup...")
+        
+        # Try runtime installation of heavy dependencies first
+        try:
+            from runtime_installer import install_if_needed
+            logger.info("🔄 Checking and installing heavy ML dependencies at runtime...")
+            if install_if_needed():
+                logger.info("✅ Heavy dependencies ready")
+            else:
+                logger.warning("⚠️ Some heavy dependencies failed to install - continuing with available features")
+        except Exception as e:
+            logger.warning(f"⚠️ Runtime installer failed: {e} - continuing with available dependencies")
         
         # Import and initialize ALL heavy dependencies upfront
         try:
@@ -60,17 +71,29 @@ def preload_analysis_dependencies():
         except ImportError as ie:
             logger.error(f"❌ EnhancedAnalysisRunner import failed: {ie}")
             ANALYSIS_RUNNER_ERROR = f"Import failed: {ie}"
-            raise ie  # Fail hard - no mock fallback
+            
+            # Try to continue with basic functionality instead of failing hard
+            logger.warning("🔄 Attempting to continue with basic API functionality...")
+            ANALYSIS_RUNNER = None  # Will use fallback mode
+            return  # Don't raise - allow basic API to work
+            
         except Exception as e:
             logger.error(f"❌ EnhancedAnalysisRunner initialization failed: {e}")
             ANALYSIS_RUNNER_ERROR = f"Initialization failed: {e}"
-            raise e  # Fail hard - no mock fallback
+            
+            # Try to continue with basic functionality instead of failing hard
+            logger.warning("🔄 Attempting to continue with basic API functionality...")
+            ANALYSIS_RUNNER = None  # Will use fallback mode
+            return  # Don't raise - allow basic API to work
         
     except Exception as e:
         error_msg = f"Failed to pre-load analysis dependencies: {str(e)}"
         logger.error(f"❌ {error_msg}")
         ANALYSIS_RUNNER_ERROR = error_msg
-        raise e  # Fail hard - no mock fallback
+        
+        # Don't fail hard - allow basic API functionality
+        logger.warning("🔄 Continuing with basic API functionality only...")
+        ANALYSIS_RUNNER = None
 
 if TYPE_CHECKING:
     from run_enhanced_analysis import EnhancedAnalysisRunner
