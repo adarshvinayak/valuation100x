@@ -48,27 +48,11 @@ logs/
 *.tmp
 *.temp
 
-# Large data files (Railway has size limits) - EXCLUDE EVERYTHING
-data/
-models/
-logs/
-*.json
-*.zip
-*.tar.gz
-*.bin
-*.safetensors
-*.model
-
-# Exclude ALL large ML library files (causing Docker context timeout)
-*.so
-*.so.*
-*.a
-*.dll
-*.dylib
-__pycache__/
-site-packages/
-.cache/
-.local/
+# Large data files (Railway has size limits)
+data/filings_raw/
+data/cache/
+data/outputs/
+models/embeddings/models--*/
 
 # Node modules (if any)
 node_modules/

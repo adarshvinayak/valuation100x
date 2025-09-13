@@ -1,8 +1,0 @@
-{
-  "value": {
-    "Information": "Thank you for using Alpha Vantage! This is a premium endpoint. You may subscribe to any of the premium plans at https://www.alphavantage.co/premium/ to instantly unlock all premium endpoints"
-  },
-  "created_at": "2025-08-22T16:26:39.773038",
-  "expires_at": "2025-08-23T16:26:39.773014",
-  "original_key": "alpha:[('apikey', 'JI1XE4RKZXV9M5CO'), ('function', 'TIME_SERIES_DAILY_ADJUSTED'), ('outputsize', 'compact'), ('symbol', 'MSFT')]"
-}

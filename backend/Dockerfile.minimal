@@ -1,5 +1,5 @@
-# Ultra-Fast Railway Dockerfile - Bypass Build Timeouts
-# Strategy: Install only essential deps, lazy-load heavy ML packages at runtime
+# Ultra-Minimal Railway Dockerfile - Absolute Minimum Context
+# Copies only essential Python files to minimize Docker context
 
 FROM python:3.11-slim
 
@@ -11,7 +11,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONPATH="/app" \
     PORT=8000
 
-# Install system dependencies (minimal)
+# Install minimal system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     git \
@@ -26,28 +26,36 @@ RUN useradd --create-home --shell /bin/bash --uid 1000 app
 # Set work directory
 WORKDIR /app
 
-# Copy fast requirements first (for better caching)
+# Copy ONLY the requirements file first
 COPY requirements.railway.fast.txt .
 
-# Install only fast dependencies (should complete in <5 minutes)
+# Install dependencies
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir --timeout=120 \
     -r requirements.railway.fast.txt
 
-# Create necessary directories
+# Create directories
 RUN mkdir -p data/outputs data/cache data/index logs models/embeddings && \
     chown -R app:app /app
 
-# Copy application code (exclude large files via .dockerignore)
-COPY --chown=app:app *.py ./
-COPY --chown=app:app agents/ ./agents/
-COPY --chown=app:app tools/ ./tools/
-COPY --chown=app:app synthesis/ ./synthesis/
-COPY --chown=app:app database/ ./database/
-COPY --chown=app:app ingestion/ ./ingestion/
-COPY --chown=app:app utils/ ./utils/
+# Copy ONLY essential Python files (minimize context)
+COPY --chown=app:app api_server.py ./
+COPY --chown=app:app config.py ./
+COPY --chown=app:app workflow.py ./
+COPY --chown=app:app runtime_installer.py ./
+COPY --chown=app:app run_enhanced_analysis.py ./
+COPY --chown=app:app run_damodaran_integrated.py ./
+
+# Copy essential directories (only .py files)
+COPY --chown=app:app agents/*.py ./agents/
+COPY --chown=app:app tools/*.py ./tools/
+COPY --chown=app:app synthesis/*.py ./synthesis/
+COPY --chown=app:app database/*.py ./database/
+COPY --chown=app:app ingestion/*.py ./ingestion/
+COPY --chown=app:app utils/*.py ./utils/
+
+# Copy essential config files
 COPY --chown=app:app configs/ ./configs/
-COPY --chown=app:app requirements.railway.fast.txt ./
 
 # Switch to non-root user
 USER app

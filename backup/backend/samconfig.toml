@@ -1,0 +1,29 @@
+# SAM configuration file for different environments
+version = 0.1
+
+[default]
+[default.build]
+[default.build.parameters]
+cached = true
+parallel = true
+
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "valuation100x-backend"
+s3_bucket = ""  # SAM will create this automatically
+s3_prefix = "valuation100x-backend"
+region = "us-east-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+image_repositories = ["DeepResearchAPI=302780033749.dkr.ecr.us-east-1.amazonaws.com/deepresearch100xvaluationbackend757740e0/deepresearchapi7a2b7ef8repo"]
+parameter_overrides = "Environment=\"prod\""
+resolve_s3 = true
+disable_rollback = true
+
+[staging]
+[staging.deploy]
+[staging.deploy.parameters]
+stack_name = "deepresearch-backend-staging"
+parameter_overrides = "Environment=staging"
+
+

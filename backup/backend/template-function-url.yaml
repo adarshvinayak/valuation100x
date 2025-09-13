@@ -1,0 +1,46 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: DeepResearch Backend API - Function URL Version
+
+Parameters:
+  Environment:
+    Type: String
+    Default: prod
+
+Resources:
+  DeepResearchAPI:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "deepresearch-api-${Environment}"
+      PackageType: Image
+      ImageConfig:
+        Command: ["lambda_handler.handler"]
+      Architectures:
+        - x86_64
+      Timeout: 900
+      MemorySize: 3008
+      FunctionUrlConfig:
+        AuthType: NONE
+        Cors:
+          AllowCredentials: false
+          AllowHeaders:
+            - "*"
+          AllowMethods:
+            - "*"
+          AllowOrigins:
+            - "*"
+      Environment:
+        Variables:
+          ENVIRONMENT: !Ref Environment
+    Metadata:
+      Dockerfile: Dockerfile.lambda
+      DockerContext: .
+
+Outputs:
+  ApiUrl:
+    Description: "Lambda Function URL"
+    Value: !GetAtt DeepResearchAPIUrl.FunctionUrl
+  
+  LambdaFunctionName:
+    Description: "Lambda Function Name"
+    Value: !Ref DeepResearchAPI

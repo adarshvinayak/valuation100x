@@ -1,0 +1,5 @@
+frontend/netlify.toml
+frontend/package-lock.json
+frontend/public/_headers
+frontend/public/_redirects
+frontend/src/config/api.ts

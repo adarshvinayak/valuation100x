@@ -1,0 +1,60 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: DeepResearch Backend API - Function URL Version
+
+Parameters:
+  Environment:
+    Type: String
+    Default: prod
+
+Resources:
+  DeepResearchHttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      CorsConfiguration:
+        AllowOrigins:
+          - "*"
+        AllowHeaders:
+          - "*"
+        AllowMethods:
+          - "*"
+        AllowCredentials: false
+        MaxAge: 86400
+
+  DeepResearchAPI:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "deepresearch-api-v2-${Environment}"
+      PackageType: Image
+      ImageConfig:
+        Command: ["lambda_handler.handler"]
+      Architectures:
+        - x86_64
+      Timeout: 900
+      MemorySize: 3008
+      Events:
+        HttpApi:
+          Type: HttpApi
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
+            ApiId: !Ref DeepResearchHttpApi
+      Environment:
+        Variables:
+          ENVIRONMENT: !Ref Environment
+          LAMBDA_STORAGE_MODE: "enabled"
+          TEMP_CLEANUP_ENABLED: "true"
+          # CloudWatch errors fixed - all API keys deployed successfully
+          # WebSocket-free polling architecture fully functional
+    Metadata:
+      Dockerfile: Dockerfile.lambda
+      DockerContext: .
+
+Outputs:
+  ApiUrl:
+    Description: "API Gateway URL"
+    Value: !Sub "https://${DeepResearchHttpApi}.execute-api.${AWS::Region}.amazonaws.com"
+  
+  LambdaFunctionName:
+    Description: "Lambda Function Name"
+    Value: !Ref DeepResearchAPI
